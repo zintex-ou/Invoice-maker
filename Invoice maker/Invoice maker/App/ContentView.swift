@@ -3,10 +3,14 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("Invoice Maker!")
+                .font(.sans(style: .bold, size: 30))
+
+            Text("Invoice Maker!")
+                .font(.sans(style: .semiBold, size: 30))
+
+            Text("Invoice Maker!")
+                .font(.sans(style: .regular, size: 30))
         }
         .padding()
     }

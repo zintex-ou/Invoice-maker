@@ -10,9 +10,22 @@
 		7C7A6FC62DEEDE2300127AEC /* Invoice maker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Invoice maker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0A7A5C8E2DF8614B0027B5A4 /* Exceptions for "Invoice maker" folder in "Invoice maker" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				App/Resources/Plists/Info.plist,
+			);
+			target = 7C7A6FC52DEEDE2300127AEC /* Invoice maker */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		7C7A6FC82DEEDE2300127AEC /* Invoice maker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				0A7A5C8E2DF8614B0027B5A4 /* Exceptions for "Invoice maker" folder in "Invoice maker" target */,
+			);
 			path = "Invoice maker";
 			sourceTree = "<group>";
 		};
@@ -249,6 +262,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Invoice maker/App/Resources/Plists/Info.plist";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -288,6 +302,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Invoice maker/App/Resources/Plists/Info.plist";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
