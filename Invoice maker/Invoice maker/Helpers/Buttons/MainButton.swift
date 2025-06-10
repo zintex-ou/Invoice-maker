@@ -13,8 +13,14 @@ struct MainButton: ButtonStyle {
     }
 }
 
+extension ButtonStyle where Self == MainButton {
+    static var main: Self {
+        MainButton()
+    }
+}
+
 #Preview {
     Button("Create invoice") {}
-        .buttonStyle(MainButton())
+        .buttonStyle(.main)
         .padding(16)
 }
