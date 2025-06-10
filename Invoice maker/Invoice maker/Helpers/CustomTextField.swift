@@ -51,7 +51,7 @@ struct CustomTextField: View {
     private var textFieldView: some View {
         ZStack {
             Capsule()
-                .fill(.greyF5F5F5)
+                .fill(.grayF5F5F5)
                 .frame(height: 48)
                 .overlay {
                     Capsule()
@@ -61,6 +61,7 @@ struct CustomTextField: View {
             TextField(placeholder, text: $text)
                 .font(.sans(style: .regular, size: 16))
                 .foregroundStyle(.black)
+                .tint(.black)
                 .keyboardType(keyboardType)
                 .textContentType(.emailAddress)
                 .submitLabel(.done)
@@ -74,18 +75,21 @@ struct CustomTextField: View {
                         Image(.property1Cross)
                             .resizable()
                             .renderingMode(.template)
-                            .frame(width: 24, height: 24)
+                            .frame(width: 15, height: 15)
                             .foregroundStyle(.white)
                             .background {
                                 Circle()
-                                    .fill(.violet4663FF)
+                                    .foregroundStyle(.violet4663FF)
+                                    .frame(width: 20, height: 20)
                             }
                             .opacity(isFocused && !text.isEmpty ? 1 : 0)
+                            .animation(.linear(duration: 0.1), value: !text.isEmpty)
                     }
                 }
                 .padding(.horizontal, 16)
         }
-        .onChange(of: text) { newValue in
+        .animation(.linear(duration: 0.1), value: isFocused)
+        .onChange(of: text) { _ in
             callError = false
         }
     }
@@ -95,13 +99,14 @@ struct CustomTextField: View {
             .font(.sans(style: .regular, size: 12))
             .foregroundColor(.redDF0101)
             .padding(.leading, 16)
+            .transition(.opacity)
+            .animation(.linear(duration: 0.1), value: callError)
     }
 }
 
 struct CustomTextField_Previews: PreviewProvider {
     static var previews: some View {
         PreviewContainer()
-            .previewLayout(.sizeThatFits)
     }
     
     private struct PreviewContainer: View {

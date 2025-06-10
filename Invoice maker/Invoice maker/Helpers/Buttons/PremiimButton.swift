@@ -7,7 +7,7 @@ struct PremiumButton: ButtonStyle {
                 .renderingMode(.template)
                 .resizable()
                 .frame(width: 20, height: 20)
-            
+
             configuration.label
                 .font(.sans(style: .semiBold, size: 20))
         }
@@ -37,6 +37,6 @@ extension ButtonStyle where Self == PremiumButton {
 }
 
 #Preview {
-    Button("Pro".uppercased()) { }
+    Button("Pro".uppercased()) {}
         .buttonStyle(.premium)
 }
