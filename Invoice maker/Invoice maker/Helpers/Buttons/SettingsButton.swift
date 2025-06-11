@@ -21,7 +21,7 @@ struct SettingsButton: ButtonStyle {
                 .frame(width: 24, height: 24)
                 .foregroundStyle(configuration.isPressed ? .black.opacity(0.5) : .black)
         }
-        .frame(maxWidth: .infinity, maxHeight: 56)
+        .frame(maxWidth: .infinity, minHeight: 56, maxHeight: 56)
         .padding(.horizontal, 16)
         .background(.grayF5F5F5)
         .clipShape(Capsule())
