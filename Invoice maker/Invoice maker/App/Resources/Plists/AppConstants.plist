@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>email</key>
+	<string>qweqwe@gmail.com</string>
+	<key>appUrl</key>
+	<string>https://apps.apple.com/app/1517783697</string>
+	<key>termsUrl</key>
+	<string>https://telegra.ph/Invoice-Terms-06-11</string>
+	<key>privacyUrl</key>
+	<string>https://telegra.ph/Invoice-Privacy-06-11</string>
+	<key>adaptyKey</key>
+	<string>public_live_</string>
+	<key>mailAppUrl</key>
+	<string>https://apps.apple.com/app/1108187098</string>
+	<key>isOnboardingCompleted</key>
+	<string>isOnboardingCompleted</string>
+</dict>
+</plist>

@@ -1,13 +1,16 @@
+import StoreKit
 import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var coordinator: Coordinator
+    @Environment(\.requestReview) private var requestReview
     @StateObject private var viewModel = SettingsViewModel()
 
     var body: some View {
         ZStack(alignment: .top) {
             VStack(spacing: 0) {
                 MainHeader(isPremium: $viewModel.isPremium) {
+                    // TODO: todo
 //                    coordinator.presentFullScreenCover(id: PaywallView.navigationID) {
 //                        PaywallView()
 //                    }
@@ -37,7 +40,30 @@ struct SettingsView: View {
                                     let tab = section.items[index]
 
                                     Button(tab.title) {
-                                        print("Settings")
+                                        switch tab {
+                                        case .profile:
+                                            // TODO: todo
+                                            print("profile")
+//                                            coordinator.pushTo(id: ProfileView.navigationID, destination: {
+//                                                ProfileView()
+//                                            })
+                                        case .clients:
+                                            // TODO: todo
+                                            print("clients")
+//                                            coordinator.pushTo(id: ProfileView.navigationID, destination: {
+//                                                ProfileView()
+//                                            })
+                                        case .services:
+                                            // TODO: todo
+                                            print("services")
+//                                            coordinator.pushTo(id: ProfileView.navigationID, destination: {
+//                                                ProfileView()
+//                                            })
+                                        case .rate:
+                                            requestReview()
+                                        default:
+                                            viewModel.tapOnSettingsButton(type: tab)
+                                        }
                                     }
                                     .buttonStyle(.settings(tab.icon))
                                 }

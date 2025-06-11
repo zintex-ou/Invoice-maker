@@ -7,8 +7,8 @@ enum SettingType: String, CaseIterable {
     case rate
     case share
     case contact
-    case privacy
     case terms
+    case privacy
     case restore
 
     var title: LocalizedStringKey {
@@ -19,8 +19,8 @@ enum SettingType: String, CaseIterable {
         case .rate: "Rate app"
         case .share: "Share app"
         case .contact: "Contact us"
-        case .privacy: "Terms of use"
-        case .terms: "Privacy policy"
+        case .terms: "Terms of use"
+        case .privacy: "Privacy policy"
         case .restore: "Restore purchase"
         }
     }
@@ -33,8 +33,8 @@ enum SettingType: String, CaseIterable {
         case .rate: .property1RateApp
         case .share: .property1Share
         case .contact: .property1ContactUs
-        case .privacy: .property1Policy
         case .terms: .property1TermsOfUse
+        case .privacy: .property1Policy
         case .restore: .property1Restrore
         }
     }
@@ -54,7 +54,7 @@ enum SettingSection: CaseIterable {
     var items: [SettingType] {
         switch self {
         case .business: [.profile, .clients, .services]
-        case .general: [.rate, .share, .contact, .privacy, .terms, .restore]
+        case .general: [.rate, .share, .contact, .terms, .privacy, .restore]
         }
     }
 }
