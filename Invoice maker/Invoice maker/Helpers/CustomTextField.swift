@@ -63,6 +63,7 @@ struct CustomTextField: View {
                 .foregroundStyle(.black)
                 .tint(.black)
                 .keyboardType(keyboardType)
+                .submitLabel(.return)
                 .textContentType(.emailAddress)
                 .submitLabel(.done)
                 .autocapitalization(.none)
