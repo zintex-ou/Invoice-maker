@@ -2,14 +2,15 @@ import SwiftUI
 
 struct PremiumButton: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 4) {
             Image(.crown)
                 .renderingMode(.template)
                 .resizable()
-                .frame(width: 20, height: 20)
+                .frame(width: 24, height: 24)
 
             configuration.label
                 .font(.sans(style: .semiBold, size: 20))
+                .tracking(1)
         }
         .foregroundStyle(configuration.isPressed ? .black.opacity(0.5) : .black)
         .padding(.horizontal, 18)
