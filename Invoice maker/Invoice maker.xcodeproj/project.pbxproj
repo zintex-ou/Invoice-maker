@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		95DFCF0A2DFAB97B0076D2B2 /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 95DFCF092DFAB97B0076D2B2 /* Reachability */; };
+		95DFCF0D2DFAB9880076D2B2 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 95DFCF0C2DFAB9880076D2B2 /* KeychainAccess */; };
+		95DFCF102DFAB9D40076D2B2 /* Adapty in Frameworks */ = {isa = PBXBuildFile; productRef = 95DFCF0F2DFAB9D40076D2B2 /* Adapty */; };
+		95DFCF132DFABA150076D2B2 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 95DFCF122DFABA150076D2B2 /* FirebaseCore */; };
+		95DFCF152DFABA150076D2B2 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 95DFCF142DFABA150076D2B2 /* FirebaseRemoteConfig */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		7C7A6FC62DEEDE2300127AEC /* Invoice maker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Invoice maker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +44,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95DFCF0D2DFAB9880076D2B2 /* KeychainAccess in Frameworks */,
+				95DFCF0A2DFAB97B0076D2B2 /* Reachability in Frameworks */,
+				95DFCF132DFABA150076D2B2 /* FirebaseCore in Frameworks */,
+				95DFCF102DFAB9D40076D2B2 /* Adapty in Frameworks */,
+				95DFCF152DFABA150076D2B2 /* FirebaseRemoteConfig in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +91,11 @@
 			);
 			name = "Invoice maker";
 			packageProductDependencies = (
+				95DFCF092DFAB97B0076D2B2 /* Reachability */,
+				95DFCF0C2DFAB9880076D2B2 /* KeychainAccess */,
+				95DFCF0F2DFAB9D40076D2B2 /* Adapty */,
+				95DFCF122DFABA150076D2B2 /* FirebaseCore */,
+				95DFCF142DFABA150076D2B2 /* FirebaseRemoteConfig */,
 			);
 			productName = "Invoice maker";
 			productReference = 7C7A6FC62DEEDE2300127AEC /* Invoice maker.app */;
@@ -107,6 +125,12 @@
 			);
 			mainGroup = 7C7A6FBD2DEEDE2200127AEC;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				95DFCF082DFAB97B0076D2B2 /* XCRemoteSwiftPackageReference "Reachability" */,
+				95DFCF0B2DFAB9880076D2B2 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				95DFCF0E2DFAB9D40076D2B2 /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */,
+				95DFCF112DFABA150076D2B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7C7A6FC72DEEDE2300127AEC /* Products */;
 			projectDirPath = "";
@@ -356,6 +380,69 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		95DFCF082DFAB97B0076D2B2 /* XCRemoteSwiftPackageReference "Reachability" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ashleymills/Reachability.swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		95DFCF0B2DFAB9880076D2B2 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess?tab=readme-ov-file";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		95DFCF0E2DFAB9D40076D2B2 /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/adaptyteam/AdaptySDK-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.8.0;
+			};
+		};
+		95DFCF112DFABA150076D2B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.14.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		95DFCF092DFAB97B0076D2B2 /* Reachability */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 95DFCF082DFAB97B0076D2B2 /* XCRemoteSwiftPackageReference "Reachability" */;
+			productName = Reachability;
+		};
+		95DFCF0C2DFAB9880076D2B2 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 95DFCF0B2DFAB9880076D2B2 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		95DFCF0F2DFAB9D40076D2B2 /* Adapty */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 95DFCF0E2DFAB9D40076D2B2 /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */;
+			productName = Adapty;
+		};
+		95DFCF122DFABA150076D2B2 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 95DFCF112DFABA150076D2B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		95DFCF142DFABA150076D2B2 /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 95DFCF112DFABA150076D2B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7C7A6FBE2DEEDE2200127AEC /* Project object */;
 }
