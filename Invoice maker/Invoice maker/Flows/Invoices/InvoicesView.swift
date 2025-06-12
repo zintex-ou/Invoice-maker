@@ -8,9 +8,9 @@ struct InvoicesView: View {
         ZStack(alignment: .top) {
             VStack(spacing: 0) {
                 MainHeader(isPremium: $viewModel.isPremium) {
-//                    coordinator.presentFullScreenCover(id: PaywallView.navigationID) {
-//                        PaywallView()
-//                    }
+                    coordinator.presentFullScreenCover(id: PaywallView.navigationID) {
+                        PaywallView()
+                    }
                 }
                 .padding(.top, 12)
 
