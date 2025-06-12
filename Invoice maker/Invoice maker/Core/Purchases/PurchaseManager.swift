@@ -18,20 +18,18 @@ final class PurchaseManager {
     
     private init() {
         let configurationBuilder =
-            AdaptyConfiguration
-                .builder(withAPIKey: EnvironmentValues.getValue().adapty)
-                .with(observerMode: false)
-                .with(customerUserId: userIdKey)
-                .with(idfaCollectionDisabled: false)
-                .with(ipAddressCollectionDisabled: false)
-                .with(logLevel: .verbose)
+        AdaptyConfiguration
+            .builder(withAPIKey: AppConstants.getValue(.adaptyKey))
+            .with(observerMode: false)
+            .with(customerUserId: userIdKey)
+            .with(idfaCollectionDisabled: false)
+            .with(ipAddressCollectionDisabled: false)
+            .with(logLevel: .verbose)
         
         Adapty.activate(with: configurationBuilder.build()) { error in
             print(error?.localizedDescription)
         }
-        
-//        Adapty.activate(EnvironmentValues.getValue().adapty,
-//                        customerUserId: userIdKey)
+
         Adapty.delegate = self
         
         isPremiumSubject.send(self.isActivityPurchases())
