@@ -120,26 +120,32 @@ struct InvoiceCellDemo: View {
     )
 
     var body: some View {
-        ZStack {
-            VStack(spacing: 12) {
-                ForEach(invoicesArray.indices, id: \.self) { idx in
-                    Button("Invoice #\(idx + 1)") { print("tapOnInvoiceCell") }
-                        .buttonStyle(
-                            .invoice(
-                                clientName: "Name of client",
-                                dueDate: Calendar.current.startOfDay(for: .distantFuture),
-                                currency: .USD,
-                                total: "20,00",
-                                id: idx,
-                                namespace: paidPopover,
-                                isPaid: $invoicesArray[idx].isPaid,
-                                isPopoverShown: $isPaidPopShow,
-                                selectedID: $popoverID
+        ZStack(alignment: .top) {
+            ScrollView {
+                VStack(spacing: 12) {
+                    ForEach(invoicesArray.indices, id: \.self) { idx in
+                        Button("") { print("tapOnInvoiceCell") }
+                            .buttonStyle(
+                                .invoice(
+                                    clientName: "Name of client",
+                                    dueDate: Calendar.current.startOfDay(for: .distantFuture),
+                                    currency: .USD,
+                                    total: "20,00",
+                                    id: idx,
+                                    namespace: paidPopover,
+                                    isPaid: $invoicesArray[idx].isPaid,
+                                    isPopoverShown: $isPaidPopShow,
+                                    selectedID: $popoverID
+                                )
                             )
-                        )
+                    }
                 }
-                Spacer()
+                .padding(.top, 24)
+                .padding(.bottom, 72)
             }
+            .scrollIndicators(.hidden)
+
+            ListTopShadow()
 
             if isPaidPopShow {
                 Color.clear
