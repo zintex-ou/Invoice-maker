@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SettingsButton: ButtonStyle {
+struct SettingsCell: ButtonStyle {
     var icon: ImageResource
 
     func makeBody(configuration: Configuration) -> some View {
@@ -30,9 +30,9 @@ struct SettingsButton: ButtonStyle {
     }
 }
 
-extension ButtonStyle where Self == SettingsButton {
+extension ButtonStyle where Self == SettingsCell {
     static func settings(_ icon: ImageResource) -> Self {
-        SettingsButton(icon: icon)
+        SettingsCell(icon: icon)
     }
 }
 
