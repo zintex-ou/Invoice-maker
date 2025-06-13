@@ -47,11 +47,9 @@ struct SettingsView: View {
 //                                                ProfileView()
 //                                            })
                                         case .clients:
-                                            // TODO: todo
-                                            print("clients")
-//                                            coordinator.pushTo(id: ProfileView.navigationID, destination: {
-//                                                ProfileView()
-//                                            })
+                                            coordinator.pushTo(id: ClientsListView.navigationID, destination: {
+                                                ClientsListView()
+                                            })
                                         case .services:
                                             // TODO: todo
                                             print("services")

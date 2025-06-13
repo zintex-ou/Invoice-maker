@@ -21,7 +21,7 @@ final class RemoteConfigManager {
             let config = try await firebaseConfig.fetchAndActivate()
             switch config {
             case .successFetchedFromRemote, .successUsingPreFetchedData:
-                let jsonData = self.firebaseConfig.configValue(forKey: "RemoteConfig").dataValue
+                let jsonData = self.firebaseConfig.configValue(forKey: "remote_config").dataValue
                 do {
                     let decodedConfig = try JSONDecoder().decode(RemoteConfigModel.self, from: jsonData)
                     self.config = decodedConfig

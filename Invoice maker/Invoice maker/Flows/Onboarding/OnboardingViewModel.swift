@@ -28,22 +28,22 @@ final class OnboardingViewModel: ObservableObject {
     init() {
         metaData = [
             .init(
-                image: device == .iPhone ? .crown : .crown,
+                image: .onboard1,
                 title: "Create Invoices\nin Seconds",
                 subtitle: "Generate professional invoices with just\na few taps — fast, simple, and error-free."
             ),
             .init(
-                image: device == .iPhone ? .crown : .crown,
+                image: .onboard2,
                 title: "Manage Clients\nEffortlessly",
                 subtitle: "Keep all your client info in one place\nand track billing with ease."
             ),
             .init(
-                image: device == .iPhone ? .crown : .crown,
+                image: .onboard3,
                 title: "Stay Organized\n& In Control",
                 subtitle: "Track income, monitor status, and\nmanage your business like a pro."
             ),
             .init(
-                image: device == .iPhone ? .crown : .crown,
+                image: .onboard4,
                 title: "Create Invoices\nin Seconds",
                 subtitle: "Generate professional invoices with just a few taps — fast, simple, and error-free."
             )
@@ -233,12 +233,13 @@ final class OnboardingViewModel: ObservableObject {
         
         let price = String(describing: NSDecimalNumber(decimal: product.price).floatValue)
         let currency = product.currencySymbol ?? "$"
-        let newSubtitle: LocalizedStringKey = "Generate professional invoices with just a few taps — fast, simple, and error-free."
+        let newSubtitle: LocalizedStringKey = "Generate professional invoices with just a few taps per week for \(currency)\(price)."
         
+        let subtitle = remoteConfigManager.config.paywallConfig.showPriceTitle ? newSubtitle : "Generate professional invoices with just a few taps — fast, simple, and error-free."
         metaData[3] = OnboardingModel(
-            image: device == .iPhone ? .crown : .crown,
+            image: .onboard4,
             title: metaData[3].title,
-            subtitle: newSubtitle
+            subtitle: subtitle
         )
     }
 }
