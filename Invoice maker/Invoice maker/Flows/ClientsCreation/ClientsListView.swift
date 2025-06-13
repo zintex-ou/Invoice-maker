@@ -3,20 +3,50 @@ import SwiftUI
 struct ClientsListView: View {
     @EnvironmentObject private var coordinator: Coordinator
     
+    @StateObject var viewModel: ClientsListViewModel = .init()
+    
     var body: some View {
         VStack {
             navigationBar
             
-            emptyView
+            if viewModel.clients.isEmpty {
+                emptyView
+            } else {
+                list
+            }
             
             Button("Add new client") {
-                withAnimation {
-                    coordinator.presentFullScreenCover(id: AddNewClientView.navigationID, content: { AddNewClientView() })
-                }
+                coordinator.presentFullScreenCover(id: AddNewClientView.navigationID, content: { AddNewClientView() })
             }
-            .buttonStyle(MainButton())
+            .buttonStyle(.main)
         }
         .padding(.horizontal, 16)
+        .onAppear(perform: {
+            Task { await viewModel.fetchClients() }
+        })
+        .alert("Delete Item",
+               isPresented: $viewModel.isShowDeleteAlert) {
+            Button("Cancel", role: .cancel) {
+                
+            }
+            
+            Button("Delete", role: .destructive) {
+                if let clientToDelete = viewModel.clientToDelete {
+                    Task { await viewModel.deleteClient(clientToDelete) }
+                }
+            }
+
+        } message: {
+            Text("Are you sure you want to delete this item? ")
+        }
+        .alert("Error",
+               isPresented: $viewModel.showErrorAlert) {
+            Button("Cancel", role: .cancel) {
+                
+            }
+        } message: {
+            Text(viewModel.errorAlertSubtitle)
+        }
     }
     
     var navigationBar: some View {
@@ -63,6 +93,40 @@ struct ClientsListView: View {
                 .font(.sans(style: .regular, size: 16))
                 .foregroundStyle(.black767676)
                 .multilineTextAlignment(.center)
+            
+            Spacer()
+        }
+    }
+    
+    var list: some View {
+        ScrollView {
+            VStack(spacing: 12) {
+                ForEach(viewModel.clients, id: \.id) { client in
+                    Button("") {
+                        coordinator.presentFullScreenCover(id: EditClientView.navigationID) {
+                            EditClientView(
+                                viewModel: .init(client: client)
+                            )
+                        }
+                    }
+                    .buttonStyle(
+                        .clientCellWithActions(
+                            clientName: client.clientName ?? "",
+                            clientEmail: client.email ?? "",
+                            editAction: {
+                                coordinator.presentFullScreenCover(id: EditClientView.navigationID) {
+                                    EditClientView(
+                                        viewModel: .init(client: client)
+                                    )
+                                }
+                            },
+                            deleteAction: {
+                                viewModel.showDeleteAlert(for: client)
+                            }
+                        )
+                    )
+                }
+            }
             
             Spacer()
         }

@@ -45,7 +45,7 @@ struct OnboardingView: View {
                     Button(tabSelection == 3 ? viewModel.continueButtonText() : "Continue") {
                         tapOnContinue()
                     }
-                    .buttonStyle(MainButton())
+                    .buttonStyle(.main)
                     .modifier(PulseButton())
                     .padding(.top, 24)
                     

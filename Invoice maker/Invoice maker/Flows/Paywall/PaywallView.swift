@@ -52,7 +52,7 @@ struct PaywallView: View {
                             }
                         }
                     }
-                    .buttonStyle(MainButton())
+                    .buttonStyle(.main)
                     .modifier(PulseButton())
                     .padding(.top, 32)
                     
