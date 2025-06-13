@@ -27,35 +27,45 @@ struct InvoiceCell: ButtonStyle {
 
                     Text("Due date: " + dueDateDateFormatter.string(from: dueDate))
                         .font(.sans(style: .regular, size: 12))
-                        .foregroundStyle(configuration.isPressed ? .black767676.opacity(0.5) : .black767676)
+                        .foregroundStyle(.black767676)
                         .multilineTextAlignment(.leading)
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                 }
+                .opacity(configuration.isPressed ? 0.5 : 1)
             }
 
             Spacer()
 
-            Button(action: {
-                withAnimation {
-                    selectedID = id
-                    isPopoverShown.toggle()
+            VStack(alignment: .trailing, spacing: 4) {
+                Text("USD20,00")
+                    .font(.sans(style: .semiBold, size: 16))
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .foregroundStyle(.black)
+
+                Button(action: {
+                    withAnimation {
+                        selectedID = id
+                        isPopoverShown.toggle()
+                    }
+                }) {
+                    Text(isPaid ? "Paid" : "Unpaid")
                 }
-            }) {
-                Text(isPaid ? "Paid" : "Unpaid")
+                .buttonStyle(.paid(isPaid: $isPaid,
+                                   isPopoverShown: isPopoverShown && selectedID == id))
+                .matchedGeometryEffect(
+                    id: id,
+                    in: namespace,
+                    anchor: .init(x: 1, y: 1)
+                )
             }
-            .buttonStyle(.paid(isPaid: $isPaid,
-                               isPopoverShown: isPopoverShown && selectedID == id))
-            .matchedGeometryEffect(
-                id: id,
-                in: namespace,
-                anchor: .init(x: 1, y: 1)
-            )
         }
-        .frame(maxWidth: .infinity, minHeight: 72, maxHeight: 72)
+        .frame(maxWidth: .infinity, minHeight: 85, maxHeight: 85)
         .padding(.horizontal, 16)
         .background(.grayF5F5F5)
-        .clipShape(RoundedRectangle(cornerRadius: 32))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
         .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
     }
 
