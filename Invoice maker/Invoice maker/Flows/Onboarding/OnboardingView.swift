@@ -20,74 +20,81 @@ struct OnboardingView: View {
             VStack(spacing: .zero) {
                 Spacer()
                 
-                HStack(spacing: 8) {
-                    ForEach(0...viewModel.metaData.count, id: \.self) { index in
-                        let isSelected = index == tabSelection
-                        
-                        Circle()
-                            .fill(isSelected ? .violet4663FF : .black767676.opacity(0.4))
-                            .frame(width: isSelected ? 12 : 8, height:  isSelected ? 12 : 8)
-                    }
-                }
-                .padding(.vertical, 8)
-                
-                Text(viewModel.metaData[tabSelection].title)
-                    .foregroundStyle(.black)
-                    .font(.sans(style: .semiBold, size: 26))
-                    .padding(.top, 16)
-                
-                Text(viewModel.metaData[tabSelection].subtitle)
-                    .foregroundStyle(.black)
-                    .font(.sans(style: .regular, size: 16))
-                    .padding(.top, 8)
-                
-                Button(tabSelection == 4 ? viewModel.continueButtonText() : "Continue") {
-                    tapOnContinue()
-                }
-                .buttonStyle(MainButton())
-                .modifier(PulseButton())
-                .padding(.top, 24)
-                
-                HStack {
-                    Text("by continuining, you agree to:")
-                    
-                    Spacer()
-                    
-                    Button {
-                        UIApplication.shared.openPrivacy()
-                    } label: {
-                        Text("Privacy")
-                            .underline()
-                    }
-                    
-                    Spacer()
-                    
-                    Button {
-                        viewModel.tapOnRestore {
-                            closeAction()
+                VStack(spacing: 0) {
+                    HStack(spacing: 8) {
+                        ForEach(0...viewModel.metaData.count, id: \.self) { index in
+                            let isSelected = index == tabSelection
+                            
+                            Circle()
+                                .fill(isSelected ? .violet4663FF : .black767676.opacity(0.4))
+                                .frame(width: isSelected ? 12 : 8, height:  isSelected ? 12 : 8)
                         }
-                    } label: {
-                        Text("Restore")
-                            .underline()
                     }
+                    .padding(.vertical, 8)
                     
-                    Spacer()
+                    Text(viewModel.metaData[tabSelection].title)
+                        .foregroundStyle(.black)
+                        .font(.sans(style: .semiBold, size: 26))
+                        .padding(.top, 16)
                     
-                    Button {
-                        UIApplication.shared.openTerms()
-                    } label: {
-                        Text("Terms")
-                            .underline()
+                    Text(viewModel.metaData[tabSelection].subtitle)
+                        .foregroundStyle(.black767676)
+                        .font(.sans(style: .regular, size: 16))
+                        .padding(.top, 8)
+                    
+                    Button(tabSelection == 3 ? viewModel.continueButtonText() : "Continue") {
+                        tapOnContinue()
                     }
+                    .buttonStyle(MainButton())
+                    .modifier(PulseButton())
+                    .padding(.top, 24)
+                    
+                    HStack {
+                        Text("by continuining, you agree to:")
+                        
+                        Spacer()
+                        
+                        Button {
+                            UIApplication.shared.openPrivacy()
+                        } label: {
+                            Text("Privacy")
+                                .underline()
+                        }
+                        
+                        Spacer()
+                        
+                        Button {
+                            viewModel.tapOnRestore {
+                                closeAction()
+                            }
+                        } label: {
+                            Text("Restore")
+                                .underline()
+                        }
+                        
+                        Spacer()
+                        
+                        Button {
+                            UIApplication.shared.openTerms()
+                        } label: {
+                            Text("Terms")
+                                .underline()
+                        }
+                    }
+                    .font(.sans(style: .regular, size: 12))
+                    .foregroundStyle(.black767676)
+                    .padding(.top, 14)
+                    .opacity(tabSelection == 3 ? 1 : 0)
                 }
-                .font(.sans(style: .regular, size: 12))
-                .foregroundStyle(.black)
-                .padding(.top, 14)
-                .opacity(tabSelection == 3 ? 1 : 0)
+                .padding(.top, 26)
+                .padding(.horizontal, 16)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .background {
+                    RoundedRectangle(cornerRadius: 32)
+                        .fill(.white)
+                }
             }
-            .padding(.horizontal, 16)
-            .multilineTextAlignment(.center)
-            .frame(maxWidth: .infinity)
             
             VStack {
                 HStack {

@@ -9,5 +9,6 @@ struct InvoiceInput {
     let discount: Double
     let tax: Double
     let isPaid: Bool
+    let total: Double
     let itemOrServices: [ItemServiceInput]
 }

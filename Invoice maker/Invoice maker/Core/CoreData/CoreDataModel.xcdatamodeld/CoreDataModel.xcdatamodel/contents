@@ -34,6 +34,7 @@
         <attribute name="invoiceNumber" optional="YES" attributeType="String"/>
         <attribute name="isPaid" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="tax" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="total" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="client" maxCount="1" deletionRule="Nullify" destinationEntity="ClientEntity" inverseName="invoice" inverseEntity="ClientEntity"/>
         <relationship name="itemService" toMany="YES" deletionRule="Nullify" destinationEntity="ItemServiceEntity" inverseName="invoice" inverseEntity="ItemServiceEntity"/>
     </entity>

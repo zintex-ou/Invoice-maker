@@ -11,34 +11,30 @@ struct PaywallView: View {
             VStack(spacing: .zero) {
                 Spacer()
                 
-                Image(.property1)
-                
-                Spacer()
-                
                 VStack(spacing: .zero) {
                     VStack(spacing: 8) {
                         Text("Unlock\nall features now")
+                            .font(.sans(style: .bold, size: 34))
                             .foregroundStyle(.black)
-                            .font(.sans(style: .bold, size: 32))
                     }
                     .multilineTextAlignment(.center)
                     
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(FeaturesContent.allCases, id: \.self) { item in
-                            HStack(spacing: 10) {
+                            HStack(spacing: 17) {
                                 Image(item.icon)
                                 
                                 Text(item.title)
                                     .foregroundStyle(.black)
-                                    .font(.sans(style: .regular, size: 14))
+                                    .font(.sans(style: .regular, size: 16))
                                 
                                 Spacer()
                             }
                         }
                     }
-                    .padding(.top, 24)
+                    .padding(.top, 26)
                     
-                    VStack(spacing: 8) {
+                    VStack(spacing: 10) {
                         ForEach(viewModel.products, id: \.productId) { product in
                             cell(product)
                                 .onTapGesture {
@@ -95,7 +91,7 @@ struct PaywallView: View {
                         }
                     }
                     .font(.sans(style: .regular, size: 12))
-                    .foregroundStyle(.black)
+                    .foregroundStyle(.black767676)
                     .padding(.top, 16)
                 }
                 .frame(maxWidth: device == .iPhone ? .infinity : 390)
@@ -176,14 +172,14 @@ struct PaywallView: View {
                         VStack(alignment: .leading) {
                             Text(model.nameProduct)
                                 .foregroundStyle(.black)
-                                .font(.sans(style: .bold, size: 14))
+                                .font(.sans(style: .regular, size: 16))
                         }
                         
                         Spacer()
                         
                         Text("\(model.currency)\(model.price, specifier: "%.2f")/\(model.period)")
-                            .foregroundStyle(.black)
-                            .font(.sans(style: .regular, size: 14))
+                            .foregroundStyle(.black767676)
+                            .font(.sans(style: .regular, size: 16))
                     }
                     .padding(.horizontal, 16)
                 }

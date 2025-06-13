@@ -192,6 +192,7 @@ extension CoreDataManager {
             invoice.tax = input.tax
             invoice.isPaid = input.isPaid
             invoice.client = client
+            invoice.total = input.total
             
             for itemInput in input.itemOrServices {
                 let item = ItemServiceEntity(context: self.viewContext)
@@ -222,6 +223,7 @@ extension CoreDataManager {
             invoice.discount = input.discount
             invoice.tax = input.tax
             invoice.isPaid = input.isPaid
+            invoice.total = input.total
             
             let client = try self.viewContext.existingObject(with: input.client.objectID) as! ClientEntity
             invoice.client        = client
