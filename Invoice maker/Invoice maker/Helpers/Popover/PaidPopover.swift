@@ -5,6 +5,7 @@ struct PaidPopover: View {
     @Binding var isPopoverShown: Bool
     @Binding var selectedID: Int?
     let namespace: Namespace.ID
+    let action: () -> Void
 
     var body: some View {
         if isPopoverShown {
@@ -15,6 +16,8 @@ struct PaidPopover: View {
                             isPaid = false
                             self.isPopoverShown = false
                         }
+
+                        action()
                     }
                     .buttonStyle(.popupButton(isChosen: !isPaid))
 
@@ -23,6 +26,8 @@ struct PaidPopover: View {
                             isPaid = true
                             isPopoverShown = false
                         }
+
+                        action()
                     }
                     .buttonStyle(.popupButton(isChosen: isPaid))
                 }
@@ -92,8 +97,15 @@ struct PopoverDemo: View {
 
             /// show popover
             if let selectedID = popoverID {
-                PaidPopover(isPaid: $invoicesArray[selectedID].isPaid, isPopoverShown: $isPaidPopShow, selectedID: $popoverID, namespace: paidPopover)
-                    .transition(.opacity.combined(with: .scale).animation(.bouncy(duration: 0.25, extraBounce: 0.2)))
+                PaidPopover(
+                    isPaid: $invoicesArray[selectedID].isPaid,
+                    isPopoverShown: $isPaidPopShow,
+                    selectedID: $popoverID,
+                    namespace: paidPopover
+                ) {
+                    print("Action to update CoreData isPaid State")
+                }
+                .transition(.opacity.combined(with: .scale).animation(.bouncy(duration: 0.25, extraBounce: 0.2)))
             }
         }
         .onTapGesture {

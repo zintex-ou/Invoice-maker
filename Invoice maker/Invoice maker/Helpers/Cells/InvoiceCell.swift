@@ -3,6 +3,8 @@ import SwiftUI
 struct InvoiceCell: ButtonStyle {
     let clientName: String
     let dueDate: Date
+    let currency: Currency
+    let total: String
     let id: Int
     let namespace: Namespace.ID
 
@@ -11,6 +13,10 @@ struct InvoiceCell: ButtonStyle {
     @Binding var selectedID: Int?
 
     func makeBody(configuration: Configuration) -> some View {
+        let startOfToday = Calendar.current.startOfDay(for: .now)
+        let startOfDue = Calendar.current.startOfDay(for: dueDate)
+        let isDueOrOverdue = startOfDue >= startOfToday
+
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(clientName)
@@ -21,13 +27,13 @@ struct InvoiceCell: ButtonStyle {
                     .foregroundStyle(configuration.isPressed ? .black.opacity(0.5) : .black)
 
                 HStack(spacing: 2) {
-                    Image(.dueDateTimeIcon)
+                    Image(isDueOrOverdue && !isPaid ? .expiredDueDateTimeIcon : .dueDateTimeIcon)
                         .resizable()
                         .frame(width: 12, height: 12)
 
                     Text("Due date: " + dueDateDateFormatter.string(from: dueDate))
                         .font(.sans(style: .regular, size: 12))
-                        .foregroundStyle(.black767676)
+                        .foregroundStyle(isDueOrOverdue && !isPaid ? .orangeFF6F00 : .black767676)
                         .multilineTextAlignment(.leading)
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
@@ -38,7 +44,7 @@ struct InvoiceCell: ButtonStyle {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 4) {
-                Text("USD20,00")
+                Text(currency.rawValue + total)
                     .font(.sans(style: .semiBold, size: 16))
                     .multilineTextAlignment(.leading)
                     .lineLimit(1)
@@ -80,6 +86,8 @@ extension ButtonStyle where Self == InvoiceCell {
     static func invoice(
         clientName: String,
         dueDate: Date,
+        currency: Currency,
+        total: String,
         id: Int,
         namespace: Namespace.ID,
         isPaid: Binding<Bool>,
@@ -90,6 +98,8 @@ extension ButtonStyle where Self == InvoiceCell {
         InvoiceCell(
             clientName: clientName,
             dueDate: dueDate,
+            currency: currency,
+            total: total,
             id: id,
             namespace: namespace,
             isPaid: isPaid,
@@ -113,11 +123,13 @@ struct InvoiceCellDemo: View {
         ZStack {
             VStack(spacing: 12) {
                 ForEach(invoicesArray.indices, id: \.self) { idx in
-                    Button("Invoice #\(idx + 1)") {}
+                    Button("Invoice #\(idx + 1)") { print("tapOnInvoiceCell") }
                         .buttonStyle(
                             .invoice(
                                 clientName: "Name of client",
-                                dueDate: .now,
+                                dueDate: Calendar.current.startOfDay(for: .distantFuture),
+                                currency: .USD,
+                                total: "20,00",
                                 id: idx,
                                 namespace: paidPopover,
                                 isPaid: $invoicesArray[idx].isPaid,
@@ -128,6 +140,7 @@ struct InvoiceCellDemo: View {
                 }
                 Spacer()
             }
+
             if isPaidPopShow {
                 Color.clear
                     .contentShape(Rectangle())
@@ -136,29 +149,26 @@ struct InvoiceCellDemo: View {
                         withAnimation { isPaidPopShow = false }
                     }
             }
+
             if let selectedID = popoverID {
                 PaidPopover(
                     isPaid: $invoicesArray[selectedID].isPaid,
                     isPopoverShown: $isPaidPopShow,
                     selectedID: $popoverID,
                     namespace: paidPopover
-                )
-                .transition(
-                    .opacity
-                        .combined(with: .scale)
-                        .animation(.bouncy(duration: 0.25, extraBounce: 0.2))
-                )
+                ) {
+                    print("Action to update CoreData isPaid State")
+                }
+                .transition(.opacity.combined(with: .scale).animation(.bouncy(duration: 0.25, extraBounce: 0.2)))
             }
         }
+        .padding(16)
         .onTapGesture {
             isPaidPopShow = false
         }
     }
 }
 
-struct InvoiceCellDemo_Previews: PreviewProvider {
-    static var previews: some View {
-        InvoiceCellDemo()
-            .padding()
-    }
+#Preview {
+    InvoiceCellDemo()
 }
