@@ -1,4 +1,4 @@
-import SwiftUICore
+import SwiftUI
 
 enum SegmentInvoiceType: CaseIterable, SegmentedItemProtocol {
     case all

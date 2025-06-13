@@ -53,14 +53,14 @@ struct PaidPopover: View {
 }
 
 #Preview {
-    PopoverDemo()
+    PaidPopoverDemo()
 }
 
 struct TestInvoiceModel {
     var isPaid: Bool
 }
 
-struct PopoverDemo: View {
+struct PaidPopoverDemo: View {
     @Namespace var paidPopover
 
     @State var isPaidPopShow = false
