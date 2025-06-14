@@ -18,7 +18,7 @@ struct DiscountPopover: View {
 
                         action()
                     }
-                    .buttonStyle(.popupButton(isChosen: discountType == .none))
+                    .buttonStyle(.popoverButton(isChosen: discountType == .none))
 
                     Button("Percentage") {
                         withAnimation {
@@ -28,7 +28,7 @@ struct DiscountPopover: View {
 
                         action()
                     }
-                    .buttonStyle(.popupButton(isChosen: discountType == .percentage))
+                    .buttonStyle(.popoverButton(isChosen: discountType == .percentage))
 
                     Button("Percentage") {
                         withAnimation {
@@ -38,7 +38,7 @@ struct DiscountPopover: View {
 
                         action()
                     }
-                    .buttonStyle(.popupButton(isChosen: discountType == .flatAmount))
+                    .buttonStyle(.popoverButton(isChosen: discountType == .flatAmount))
                 }
                 .frame(width: 176)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -63,15 +63,12 @@ struct DiscountPopover: View {
                     isSource: false
                 )
             }
+            .transition(.opacity.combined(with: .scale).animation(.bouncy(duration: 0.25, extraBounce: 0.2)))
         }
     }
 }
 
-#Preview {
-    DiscountPopoverDemo()
-}
-
-struct DiscountPopoverDemo: View {
+private struct DiscountPopoverDemo: View {
     @Namespace var discoundPopover
 
     @State var isDiscountPopShow = false
@@ -102,11 +99,14 @@ struct DiscountPopoverDemo: View {
             ) {
                 print("Action to update Discount type")
             }
-            .transition(.opacity.combined(with: .scale).animation(.bouncy(duration: 0.25, extraBounce: 0.2)))
         }
         .onTapGesture {
             /// hide popover on Screen Tap (optional)
             isDiscountPopShow = false
         }
     }
+}
+
+#Preview {
+    DiscountPopoverDemo()
 }

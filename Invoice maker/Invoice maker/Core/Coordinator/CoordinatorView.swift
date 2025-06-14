@@ -12,7 +12,7 @@ struct CoordinatorView: View {
         NavigationStack(path: $coordinator.path) {
             SplashScreenView()
                 .navigationDestination(for: NavigationPathItem.self) { destination in
-                        destination.destination()
+                    destination.destination()
                         .navigationBarBackButtonHidden(true)
                 }
                 .fullScreenCover(item: $coordinator.fullScreenCover) { item in
@@ -22,7 +22,8 @@ struct CoordinatorView: View {
                 .onChange(of: scenePhase, perform: { newPhase in
                     if newPhase == .active,
                        isOnboardingCompleted,
-                       !purchaseManager.isActivityPurchases() {
+                       !purchaseManager.isActivityPurchases()
+                    {
                         Task {
                             try await fetchConfig()
                             

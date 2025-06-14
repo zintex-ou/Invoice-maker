@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PopupButtonStyle: ButtonStyle {
+struct PooverButtonStyle: ButtonStyle {
     var isChosen: Bool
 
     func makeBody(configuration: Configuration) -> some View {
@@ -25,28 +25,28 @@ struct PopupButtonStyle: ButtonStyle {
     }
 }
 
-extension ButtonStyle where Self == PopupButtonStyle {
-    static func popupButton(isChosen: Bool) -> Self {
-        PopupButtonStyle(isChosen: isChosen)
+extension ButtonStyle where Self == PooverButtonStyle {
+    static func popoverButton(isChosen: Bool) -> Self {
+        PooverButtonStyle(isChosen: isChosen)
     }
 }
 
 #Preview {
     VStack {
         Button("Paid") {}
-            .buttonStyle(.popupButton(isChosen: true))
+            .buttonStyle(.popoverButton(isChosen: true))
 
         Button("Unpaid") {}
-            .buttonStyle(.popupButton(isChosen: false))
+            .buttonStyle(.popoverButton(isChosen: false))
 
         Button("None") {}
-            .buttonStyle(.popupButton(isChosen: true))
+            .buttonStyle(.popoverButton(isChosen: true))
 
         Button("Percentage") {}
-            .buttonStyle(.popupButton(isChosen: false))
+            .buttonStyle(.popoverButton(isChosen: false))
 
         Button("Flat amount") {}
-            .buttonStyle(.popupButton(isChosen: false))
+            .buttonStyle(.popoverButton(isChosen: false))
     }
     .frame(width: 176)
 }

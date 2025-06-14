@@ -13,7 +13,6 @@ struct ClientCell: ButtonStyle {
                     .font(.sans(style: .semiBold, size: 16))
                     .multilineTextAlignment(.leading)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
                     .foregroundStyle(configuration.isPressed ? .black.opacity(0.5) : .black)
 
                 Text(clientEmail)
@@ -21,7 +20,6 @@ struct ClientCell: ButtonStyle {
                     .foregroundStyle(configuration.isPressed ? .black767676.opacity(0.5) : .black767676)
                     .multilineTextAlignment(.leading)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
             }
 
             Spacer()
@@ -54,7 +52,6 @@ struct ClientCell: ButtonStyle {
         .padding(.horizontal, 16)
         .background(.grayF5F5F5)
         .clipShape(RoundedRectangle(cornerRadius: 32))
-        .minimumScaleFactor(0.8)
         .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
     }
 }

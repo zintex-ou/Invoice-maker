@@ -19,7 +19,7 @@ struct PaidPopover: View {
 
                         action()
                     }
-                    .buttonStyle(.popupButton(isChosen: !isPaid))
+                    .buttonStyle(.popoverButton(isChosen: !isPaid))
 
                     Button("Paid") {
                         withAnimation {
@@ -29,7 +29,7 @@ struct PaidPopover: View {
 
                         action()
                     }
-                    .buttonStyle(.popupButton(isChosen: isPaid))
+                    .buttonStyle(.popoverButton(isChosen: isPaid))
                 }
                 .frame(width: 176)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -48,6 +48,7 @@ struct PaidPopover: View {
                     isSource: false
                 )
             }
+            .transition(.opacity.combined(with: .scale).animation(.bouncy(duration: 0.25, extraBounce: 0.2)))
         }
     }
 }
@@ -105,7 +106,6 @@ struct PaidPopoverDemo: View {
                 ) {
                     print("Action to update CoreData isPaid State")
                 }
-                .transition(.opacity.combined(with: .scale).animation(.bouncy(duration: 0.25, extraBounce: 0.2)))
             }
         }
         .onTapGesture {

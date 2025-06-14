@@ -11,7 +11,6 @@ struct DisclosureButton: ButtonStyle {
                     .font(.sans(style: .regular, size: 12))
                     .foregroundStyle(.black767676)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
                     .padding(.leading, 16)
 
                 if isRequired {
@@ -26,7 +25,6 @@ struct DisclosureButton: ButtonStyle {
                     .font(.sans(style: .regular, size: 16))
                     .foregroundStyle(configuration.isPressed ? .black.opacity(0.5) : .black)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
 
                 Spacer()
 

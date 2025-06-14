@@ -10,7 +10,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
-        guard let shortcut = connectionOptions.shortcutItem else  { return }
+        guard let shortcut = connectionOptions.shortcutItem else { return }
         shortcutItem = shortcut
     }
     
@@ -28,15 +28,13 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //        }
 //    }
     
-    func sceneWillResignActive(_ scene: UIScene) {
-    }
+    func sceneWillResignActive(_ scene: UIScene) {}
     
     func windowScene(
         _ windowScene: UIWindowScene,
         performActionFor shortcutItem: UIApplicationShortcutItem,
         completionHandler: @escaping (Bool) -> Void
     ) {
-        
         let handled = handle(shortcutItem: shortcutItem)
         completionHandler(handled)
     }

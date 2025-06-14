@@ -23,7 +23,6 @@ struct InvoiceCell: ButtonStyle {
                     .font(.sans(style: .semiBold, size: 16))
                     .multilineTextAlignment(.leading)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
                     .foregroundStyle(configuration.isPressed ? .black.opacity(0.5) : .black)
 
                 HStack(spacing: 2) {
@@ -31,12 +30,11 @@ struct InvoiceCell: ButtonStyle {
                         .resizable()
                         .frame(width: 12, height: 12)
 
-                    Text("Due date: " + dueDateDateFormatter.string(from: dueDate))
+                    Text("Due date: " + dueDate.formatedDateString)
                         .font(.sans(style: .regular, size: 12))
                         .foregroundStyle(isDueOrOverdue && !isPaid ? .orangeFF6F00 : .black767676)
                         .multilineTextAlignment(.leading)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.8)
                 }
                 .opacity(configuration.isPressed ? 0.5 : 1)
             }
@@ -48,7 +46,6 @@ struct InvoiceCell: ButtonStyle {
                     .font(.sans(style: .semiBold, size: 16))
                     .multilineTextAlignment(.leading)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
                     .foregroundStyle(.black)
 
                 Button(action: {
@@ -74,12 +71,6 @@ struct InvoiceCell: ButtonStyle {
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
     }
-
-    private let dueDateDateFormatter: DateFormatter = {
-        let df = DateFormatter()
-        df.dateFormat = "d MMM, yyyy"
-        return df
-    }()
 }
 
 extension ButtonStyle where Self == InvoiceCell {
@@ -109,7 +100,7 @@ extension ButtonStyle where Self == InvoiceCell {
     }
 }
 
-struct InvoiceCellDemo: View {
+private struct InvoiceCellDemo: View {
     @Namespace private var paidPopover
 
     @State private var isPaidPopShow = false
