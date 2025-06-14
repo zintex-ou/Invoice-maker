@@ -3,6 +3,7 @@ import SwiftUI
 struct DiscountPopover: View {
     @Binding var discountType: DiscountType
     @Binding var isPopoverShown: Bool
+    
     let namespace: Namespace.ID
     let action: () -> Void
 

@@ -2,11 +2,11 @@ import Lottie
 import SwiftUI
 
 struct PopupView: View {
+    @State private var isVisible: Bool = false
+
     let message: String
     let lottie: String
     let onTap: () -> Void
-
-    @State private var isVisible: Bool = false
 
     var body: some View {
         ZStack {

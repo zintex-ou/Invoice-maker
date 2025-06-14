@@ -4,6 +4,7 @@ struct PaidPopover: View {
     @Binding var isPaid: Bool
     @Binding var isPopoverShown: Bool
     @Binding var selectedID: Int?
+    
     let namespace: Namespace.ID
     let action: () -> Void
 
