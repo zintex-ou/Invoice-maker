@@ -174,8 +174,14 @@ private struct PaidPopoverDemo: View {
                     popoverID = id
                     isPaidPopShow.toggle()
                 }
-                .buttonStyle(.paid(isPaid: $invoicesArray[id].isPaid, isPopoverShown: isPaidPopShow && popoverID == id))
-                .matchedGeometryEffect(id: id, in: paidPopover, anchor: .init(x: 1, y: 1))
+                .buttonStyle(
+                    .paid(
+                        isPaid: $invoicesArray[id].isPaid,
+                        isPopoverShown: isPaidPopShow && popoverID == id,
+                        namespace: paidPopover,
+                        id: id
+                    )
+                )
             }
         }
         .paidPopover(

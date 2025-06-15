@@ -82,12 +82,7 @@ struct InvoiceDetailsView: View {
                     Text(isPaid ? "Paid" : "Unpaid")
                 }
                 .buttonStyle(
-                    .paid(isPaid: $isPaid, isPopoverShown: isPopoverShown && selectedID == id)
-                )
-                .matchedGeometryEffect(
-                    id: id,
-                    in: namespace,
-                    anchor: .init(x: 1, y: 1)
+                    .paid(isPaid: $isPaid, isPopoverShown: isPopoverShown && selectedID == id, namespace: namespace, id: id)
                 )
             }
         }
@@ -111,6 +106,7 @@ private struct InvoiceDetailsViewDemo: View {
                 isPopoverShown: $isPaidPopShow
             )
         }
+        .padding(.horizontal, 16)
         .paidPopover(
             isPaid: $isPaid,
             isPresented: $isPaidPopShow,

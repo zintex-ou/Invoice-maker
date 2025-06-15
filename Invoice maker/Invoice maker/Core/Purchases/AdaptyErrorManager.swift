@@ -1,8 +1,7 @@
-import Foundation
 import Adapty
+import Foundation
 
 struct AdaptyErrorManager {
-    
     var error: PurchaisesError?
     var adaptyErrorCode: AdaptyError.ErrorCode = .unknown
     

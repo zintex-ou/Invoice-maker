@@ -2,6 +2,8 @@ import SwiftUI
 
 struct DiscountButton: ButtonStyle {
     var isPopoverShown: Bool
+    let namespace: Namespace.ID
+    let id: Int
 
     func makeBody(configuration: Configuration) -> some View {
         VStack(alignment: .leading, spacing: 2) {
@@ -40,26 +42,31 @@ struct DiscountButton: ButtonStyle {
             }
             .contentShape(Capsule())
             .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .matchedGeometryEffect(id: id, in: namespace, anchor: .init(x: 1, y: 1))
         }
     }
 }
 
 extension ButtonStyle where Self == DiscountButton {
-    static func discount(isPopoverShown: Bool) -> Self {
-        DiscountButton(isPopoverShown: isPopoverShown)
+    static func discount(
+        isPopoverShown: Bool,
+        namespace: Namespace.ID,
+        id: Int = 1
+    ) -> DiscountButton {
+        DiscountButton(isPopoverShown: isPopoverShown, namespace: namespace, id: id)
     }
 }
 
 #Preview {
     VStack(spacing: 12) {
         Button("None") { print("Discount action") }
-            .buttonStyle(.discount(isPopoverShown: true))
+            .buttonStyle(.discount(isPopoverShown: true, namespace: Namespace().wrappedValue))
 
         Button("Percentage") { print("Discount action") }
-            .buttonStyle(.discount(isPopoverShown: false))
+            .buttonStyle(.discount(isPopoverShown: false, namespace: Namespace().wrappedValue))
 
         Button("Flat amount") { print("Discount action") }
-            .buttonStyle(.discount(isPopoverShown: false))
+            .buttonStyle(.discount(isPopoverShown: false, namespace: Namespace().wrappedValue))
     }
     .padding(16)
 }

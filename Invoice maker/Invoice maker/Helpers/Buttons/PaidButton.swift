@@ -3,6 +3,8 @@ import SwiftUI
 struct PaidButton: ButtonStyle {
     @Binding var isPaid: Bool
     var isPopoverShown: Bool
+    let namespace: Namespace.ID
+    let id: Int
 
     func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 2) {
@@ -30,21 +32,46 @@ struct PaidButton: ButtonStyle {
                 .transition(.scale)
         )
         .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+        .matchedGeometryEffect(id: id, in: namespace, anchor: .init(x: 1, y: 1))
     }
 }
 
 extension ButtonStyle where Self == PaidButton {
-    static func paid(isPaid: Binding<Bool>, isPopoverShown: Bool) -> Self {
-        PaidButton(isPaid: isPaid, isPopoverShown: isPopoverShown)
+    static func paid(
+        isPaid: Binding<Bool>,
+        isPopoverShown: Bool,
+        namespace: Namespace.ID,
+        id: Int = 1
+    ) -> Self {
+        PaidButton(
+            isPaid: isPaid,
+            isPopoverShown: isPopoverShown,
+            namespace: namespace,
+            id: id
+        )
     }
 }
 
 #Preview {
     VStack {
         Button("Paid") {}
-            .buttonStyle(PaidButton(isPaid: .constant(true), isPopoverShown: false))
+            .buttonStyle(
+                PaidButton(
+                    isPaid: .constant(true),
+                    isPopoverShown: false,
+                    namespace: Namespace().wrappedValue,
+                    id: 1
+                )
+            )
 
         Button("Unpaid") {}
-            .buttonStyle(PaidButton(isPaid: .constant(false), isPopoverShown: false))
+            .buttonStyle(
+                PaidButton(
+                    isPaid: .constant(false),
+                    isPopoverShown: false,
+                    namespace: Namespace().wrappedValue,
+                    id: 1
+                )
+            )
     }
 }

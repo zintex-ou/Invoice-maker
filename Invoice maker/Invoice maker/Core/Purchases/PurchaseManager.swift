@@ -1,38 +1,36 @@
-import UIKit
 import Adapty
 @preconcurrency import Combine
+import UIKit
 
 final class PurchaseManager {
     static let shared = PurchaseManager()
     
     private let isPremiumSubject = CurrentValueSubject<Bool, Never>(false)
     
-    lazy var isPremium: AnyPublisher<Bool, Never> = {
-        isPremiumSubject
-            .removeDuplicates()
-            .receive(on: RunLoop.main)
-            .eraseToAnyPublisher()
-    }()
+    lazy var isPremium: AnyPublisher<Bool, Never> = isPremiumSubject
+        .removeDuplicates()
+        .receive(on: RunLoop.main)
+        .eraseToAnyPublisher()
     
     private let keychainManager: KeychainManager = .init()
     
     private init() {
         let configurationBuilder =
-        AdaptyConfiguration
-            .builder(withAPIKey: AppConstants.getValue(.adaptyKey))
-            .with(observerMode: false)
-            .with(customerUserId: userIdKey)
-            .with(idfaCollectionDisabled: false)
-            .with(ipAddressCollectionDisabled: false)
-            .with(logLevel: .verbose)
+            AdaptyConfiguration
+                .builder(withAPIKey: AppConstants.getValue(.adaptyKey))
+                .with(observerMode: false)
+                .with(customerUserId: userIdKey)
+                .with(idfaCollectionDisabled: false)
+                .with(ipAddressCollectionDisabled: false)
+                .with(logLevel: .verbose)
         
         Adapty.activate(with: configurationBuilder.build()) { error in
-            print(error?.localizedDescription)
+            print(error?.localizedDescription as Any)
         }
 
         Adapty.delegate = self
         
-        isPremiumSubject.send(self.isActivityPurchases())
+        isPremiumSubject.send(isActivityPurchases())
         
         Task {
             await fetchProfile()
@@ -70,7 +68,7 @@ final class PurchaseManager {
     }
     
     func isActivityPurchases() -> Bool {
-        guard let expiresAt = self.keychainManager.purchasesExpiresAt else { return false }
+        guard let expiresAt = keychainManager.purchasesExpiresAt else { return false }
         return Date() < expiresAt
     }
 }
@@ -79,19 +77,19 @@ extension PurchaseManager: AdaptyDelegate {
     func didLoadLatestProfile(_ profile: AdaptyProfile) {
         saveExpiresPurchasesToStorage(profile: profile)
         let isPremium = profile.accessLevels.contains(where: { $0.value.isActive })
-        self.isPremiumSubject.send(isPremium)
+        isPremiumSubject.send(isPremium)
         
         if !isPremium {
             UIApplication.shared.shortcutItems = []
         } else {
-            self.configureShortCut()
+            configureShortCut()
         }
     }
 }
 
 extension PurchaseManager {
     private var userIdKey: String {
-        if let userIdKey = self.keychainManager.userIdKey {
+        if let userIdKey = keychainManager.userIdKey {
             return userIdKey
         } else {
             let userIdKey = UUID().uuidString
@@ -99,7 +97,6 @@ extension PurchaseManager {
             return userIdKey
         }
     }
-    
     
     private func fetchProfile() async {
         do {

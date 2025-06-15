@@ -128,8 +128,7 @@ private struct DiscountPopoverDemo: View {
     var body: some View {
         ZStack {
             Button(discountType.rawValue) { isDiscountPopShow.toggle() }
-                .buttonStyle(.discount(isPopoverShown: isDiscountPopShow))
-                .matchedGeometryEffect(id: 1, in: discoundPopover, anchor: .init(x: 1, y: 1))
+                .buttonStyle(.discount(isPopoverShown: isDiscountPopShow, namespace: discoundPopover))
                 .padding(16)
         }
         .showDiscountPopover(
