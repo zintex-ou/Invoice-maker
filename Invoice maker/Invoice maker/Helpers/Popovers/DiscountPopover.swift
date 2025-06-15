@@ -3,18 +3,25 @@ import SwiftUI
 struct DiscountPopover: View {
     @Binding var discountType: DiscountType
     @Binding var isPopoverShown: Bool
-    
+
     let namespace: Namespace.ID
     let action: () -> Void
 
     var body: some View {
         if isPopoverShown {
             ZStack {
+                Color.clear
+                    .ignoresSafeArea()
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        isPopoverShown = false
+                    }
+
                 VStack(spacing: 0) {
                     Button("None") {
                         withAnimation {
                             discountType = .none
-                            self.isPopoverShown = false
+                            isPopoverShown = false
                         }
 
                         action()
@@ -69,6 +76,49 @@ struct DiscountPopover: View {
     }
 }
 
+private struct DiscountPopoverPresenter: ViewModifier {
+    @Binding var discountType: DiscountType
+    @Binding var isPresented: Bool
+
+    let namespace: Namespace.ID
+    let action: () -> Void
+
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+
+            if isPresented {
+                DiscountPopover(
+                    discountType: $discountType,
+                    isPopoverShown: $isPresented,
+                    namespace: namespace,
+                    action: action
+                )
+                .transition(.opacity.combined(with: .scale))
+                .zIndex(1)
+            }
+        }
+    }
+}
+
+extension View {
+    func showDiscountPopover(
+        discountType: Binding<DiscountType>,
+        isPresented: Binding<Bool>,
+        namespace: Namespace.ID,
+        action: @escaping () -> Void
+    ) -> some View {
+        modifier(
+            DiscountPopoverPresenter(
+                discountType: discountType,
+                isPresented: isPresented,
+                namespace: namespace,
+                action: action
+            )
+        )
+    }
+}
+
 private struct DiscountPopoverDemo: View {
     @Namespace var discoundPopover
 
@@ -81,29 +131,13 @@ private struct DiscountPopoverDemo: View {
                 .buttonStyle(.discount(isPopoverShown: isDiscountPopShow))
                 .matchedGeometryEffect(id: 1, in: discoundPopover, anchor: .init(x: 1, y: 1))
                 .padding(16)
-
-            /// hide popover on Screen Tap (optional)
-            if isDiscountPopShow {
-                Color.clear
-                    .contentShape(Rectangle())
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        withAnimation { isDiscountPopShow = false }
-                    }
-            }
-
-            /// show popover
-            DiscountPopover(
-                discountType: $discountType,
-                isPopoverShown: $isDiscountPopShow,
-                namespace: discoundPopover
-            ) {
-                print("Action to update Discount type")
-            }
         }
-        .onTapGesture {
-            /// hide popover on Screen Tap (optional)
-            isDiscountPopShow = false
+        .showDiscountPopover(
+            discountType: $discountType,
+            isPresented: $isDiscountPopShow,
+            namespace: discoundPopover
+        ) {
+            print("Action to update Discount type")
         }
     }
 }

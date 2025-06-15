@@ -13,58 +13,18 @@ struct InvoiceCell: ButtonStyle {
     @Binding var selectedID: Int?
 
     func makeBody(configuration: Configuration) -> some View {
-        let startOfToday = Calendar.current.startOfDay(for: .now)
-        let startOfDue = Calendar.current.startOfDay(for: dueDate)
-        let isDueOrOverdue = startOfDue >= startOfToday
-
-        HStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(clientName)
-                    .font(.sans(style: .semiBold, size: 16))
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(1)
-                    .foregroundStyle(configuration.isPressed ? .black.opacity(0.5) : .black)
-
-                HStack(spacing: 2) {
-                    Image(isDueOrOverdue && !isPaid ? .expiredDueDateTimeIcon : .dueDateTimeIcon)
-                        .resizable()
-                        .frame(width: 12, height: 12)
-
-                    Text("Due date: " + dueDate.formatedDateString)
-                        .font(.sans(style: .regular, size: 12))
-                        .foregroundStyle(isDueOrOverdue && !isPaid ? .orangeFF6F00 : .black767676)
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(1)
-                }
-                .opacity(configuration.isPressed ? 0.5 : 1)
-            }
-
-            Spacer()
-
-            VStack(alignment: .trailing, spacing: 4) {
-                Text(currency.rawValue + total)
-                    .font(.sans(style: .semiBold, size: 16))
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(1)
-                    .foregroundStyle(.black)
-
-                Button(action: {
-                    withAnimation {
-                        selectedID = id
-                        isPopoverShown.toggle()
-                    }
-                }) {
-                    Text(isPaid ? "Paid" : "Unpaid")
-                }
-                .buttonStyle(.paid(isPaid: $isPaid,
-                                   isPopoverShown: isPopoverShown && selectedID == id))
-                .matchedGeometryEffect(
-                    id: id,
-                    in: namespace,
-                    anchor: .init(x: 1, y: 1)
-                )
-            }
-        }
+        InvoiceDetailsView(
+            clientName: clientName,
+            dueDate: dueDate,
+            currency: currency,
+            total: total,
+            id: id,
+            namespace: namespace,
+            isPaid: $isPaid,
+            isPopoverShown: $isPopoverShown,
+            selectedID: $selectedID,
+            isPressed: configuration.isPressed
+        )
         .frame(maxWidth: .infinity, minHeight: 85, maxHeight: 85)
         .padding(.horizontal, 16)
         .background(.grayF5F5F5)
@@ -137,31 +97,15 @@ private struct InvoiceCellDemo: View {
             .scrollIndicators(.hidden)
 
             ListTopShadow()
-
-            if isPaidPopShow {
-                Color.clear
-                    .contentShape(Rectangle())
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        withAnimation { isPaidPopShow = false }
-                    }
-            }
-
-            if let selectedID = popoverID {
-                PaidPopover(
-                    isPaid: $invoicesArray[selectedID].isPaid,
-                    isPopoverShown: $isPaidPopShow,
-                    selectedID: $popoverID,
-                    namespace: paidPopover
-                ) {
-                    print("Action to update CoreData isPaid State")
-                }
-                .transition(.opacity.combined(with: .scale).animation(.bouncy(duration: 0.25, extraBounce: 0.2)))
-            }
         }
         .padding(16)
-        .onTapGesture {
-            isPaidPopShow = false
+        .paidPopover(
+            isPaid: $invoicesArray[popoverID ?? 0].isPaid,
+            isPresented: $isPaidPopShow,
+            selectedID: $popoverID,
+            namespace: paidPopover
+        ) {
+            print("Action to update CoreData isPaid State")
         }
     }
 }
