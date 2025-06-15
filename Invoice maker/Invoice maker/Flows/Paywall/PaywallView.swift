@@ -117,10 +117,6 @@ struct PaywallView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, device == .iPhone ? 0 : 24)
             }
-            
-            if viewModel.isLoading {
-                LoadingView()
-            }
         }
         .task {
             await viewModel.fetchPayWall()
@@ -132,29 +128,27 @@ struct PaywallView: View {
         .animation(.default, value: viewModel.selectedProduct)
         .alert(
             viewModel.title,
-            isPresented: $viewModel.shouldShowAlert) {
-                
-            } message: {
-                Text(viewModel.subTitle)
+            isPresented: $viewModel.shouldShowAlert) {} message: {
+            Text(viewModel.subTitle)
+        }
+        .alert(
+            viewModel.title,
+            isPresented: $viewModel.shouldShowTryAgainAlert)
+        {
+            Button("Cancel", role: .cancel) {}
+                    
+            Button {
+                viewModel.tapOnContinue(completion: {
+                    dismiss()
+                })
+            } label: {
+                Text("Try again")
             }
-            .alert(
-                viewModel.title,
-                isPresented: $viewModel.shouldShowTryAgainAlert) {
-                    Button("Cancel", role: .cancel) {
-                        
-                    }
                     
-                    Button {
-                        viewModel.tapOnContinue(completion: {
-                            dismiss()
-                        })
-                    } label: {
-                        Text("Try again")
-                    }
-                    
-                } message: {
-                    Text(viewModel.subTitle)
-                }
+        } message: {
+            Text(viewModel.subTitle)
+        }
+        .loading(isPresented: $viewModel.isLoading)
     }
     
     @ViewBuilder
@@ -201,7 +195,6 @@ struct PaywallView: View {
                     .padding(.trailing, 12)
             }
         }
-        
     }
 }
 

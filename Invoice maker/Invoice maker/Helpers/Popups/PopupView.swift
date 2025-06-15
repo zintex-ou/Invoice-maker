@@ -95,7 +95,7 @@ struct PopupPresenter: ViewModifier {
 }
 
 extension View {
-    func showPopup(
+    func popup(
         isPresented: Binding<Bool>,
         message: String,
         lottie: String
@@ -125,12 +125,12 @@ private struct DemoPopupView: View {
             .buttonStyle(.main)
         }
         .padding(16)
-        .showPopup(
+        .popup(
             isPresented: $showDonePopup,
             message: "Payment confirmed!",
             lottie: "DoneLottie"
         )
-        .showPopup(
+        .popup(
             isPresented: $showSentPopup,
             message: "Invoice is send!",
             lottie: "PlaneLottie"

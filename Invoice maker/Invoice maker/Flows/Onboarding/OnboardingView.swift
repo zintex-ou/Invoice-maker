@@ -1,5 +1,5 @@
-import SwiftUI
 import StoreKit
+import SwiftUI
 
 struct OnboardingView: View {
     @StateObject private var viewModel = OnboardingViewModel()
@@ -22,12 +22,12 @@ struct OnboardingView: View {
                 
                 VStack(spacing: 0) {
                     HStack(spacing: 8) {
-                        ForEach(0...viewModel.metaData.count, id: \.self) { index in
+                        ForEach(0 ... viewModel.metaData.count, id: \.self) { index in
                             let isSelected = index == tabSelection
                             
                             Circle()
                                 .fill(isSelected ? .violet4663FF : .black767676.opacity(0.4))
-                                .frame(width: isSelected ? 12 : 8, height:  isSelected ? 12 : 8)
+                                .frame(width: isSelected ? 12 : 8, height: isSelected ? 12 : 8)
                         }
                     }
                     .padding(.vertical, 8)
@@ -115,10 +115,6 @@ struct OnboardingView: View {
             }
             .padding(.horizontal, 16)
             .opacity(tabSelection == 3 ? 1 : 0)
-            
-            if viewModel.isLoading {
-                LoadingView()
-            }
         }
         .onChange(of: tabSelection) { tabSelection in
             if tabSelection == 1 {
@@ -134,31 +130,29 @@ struct OnboardingView: View {
         }
         .alert(
             viewModel.title,
-            isPresented: $viewModel.shouldShowAlert) {
-                
-            } message: {
-                Text(viewModel.subTitle)
-            }
-            .alert(
-                viewModel.title,
-                isPresented: $viewModel.shouldShowTryAgainAlert) {
-                    Button("Cancel", role: .cancel) {
-                        
-                    }
+            isPresented: $viewModel.shouldShowAlert) {} message: {
+            Text(viewModel.subTitle)
+        }
+        .alert(
+            viewModel.title,
+            isPresented: $viewModel.shouldShowTryAgainAlert)
+        {
+            Button("Cancel", role: .cancel) {}
                     
-                    Button {
-                        Task {
-                            await viewModel.makePurchase(completion: {
-                                closeAction()
-                            })
-                        }
-                    } label: {
-                        Text("Try again")
-                    }
-                    
-                } message: {
-                    Text(viewModel.subTitle)
+            Button {
+                Task {
+                    await viewModel.makePurchase(completion: {
+                        closeAction()
+                    })
                 }
+            } label: {
+                Text("Try again")
+            }
+                    
+        } message: {
+            Text(viewModel.subTitle)
+        }
+        .loading(isPresented: $viewModel.isLoading)
     }
 }
 
