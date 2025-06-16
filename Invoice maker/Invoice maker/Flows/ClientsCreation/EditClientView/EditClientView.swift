@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct AddNewClientView: View {
+struct EditClientView: View {
     @EnvironmentObject private var coordinator: Coordinator
     
-    @StateObject var viewModel: AddNewClientViewModel = .init()
+    @StateObject var viewModel: EditClientViewModel
     
     var body: some View {
         VStack(spacing: 0) {
@@ -17,7 +17,7 @@ struct AddNewClientView: View {
                 isExpanded: $viewModel.isExpanded
             )
             
-            Button("Add new client") {
+            Button("Save") {
                 viewModel.onSaveTapped {
                     coordinator.dismissFullScreenCover()
                 }
@@ -26,6 +26,20 @@ struct AddNewClientView: View {
             .padding(.vertical, 8)
         }
         .padding(.horizontal, 16)
+        .alert("Delete Item",
+               isPresented: $viewModel.isShowDeleteAlert) {
+            Button("Cancel", role: .cancel) {
+                
+            }
+            
+            Button("Delete", role: .destructive) {
+                viewModel.deleteClient()
+                coordinator.dismissFullScreenCover()
+            }
+            
+        } message: {
+            Text("Are you sure you want to delete this item? ")
+        }
         .alert("Save before leaving?",
                isPresented: $viewModel.showLeaveWithoutSavingAlert) {
             Button("Leave", role: .cancel) {
@@ -47,23 +61,24 @@ struct AddNewClientView: View {
         ZStack {
             HStack {
                 Button("") {
-                    viewModel.onCloseTapped {
+                    viewModel.onCloseTapped() {
                         coordinator.dismissFullScreenCover()
                     }
                 }
                 .buttonStyle(.circle(.property1Cross))
                 
                 Spacer()
-            }
-            
-            HStack {
-                Spacer()
                 
-                Text("Add new client")
+                Text("Edit client")
                     .font(.sans(style: .semiBold, size: 20))
                     .foregroundStyle(.black)
                 
                 Spacer()
+                
+                Button("") {
+                    viewModel.showDeleteAlert()
+                }
+                .buttonStyle(.distructiveCircle(.property1Trash))
             }
         }
     }

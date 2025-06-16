@@ -1,8 +1,10 @@
 import CoreData
 
-final class CoreDataManager {
+final class CoreDataManager: ObservableObject {
     static let shared = CoreDataManager()
     private let container: NSPersistentContainer
+    
+    @Published var updateClients: Bool = false
     
     private init() {
         container = NSPersistentContainer(name: "CoreDataModel")
@@ -89,6 +91,7 @@ extension CoreDataManager {
             client.apartment = input.apartment
             client.postalCode = input.postalCode
             try self.viewContext.save()
+            self.updateClients = true
             return client
         }
     }
@@ -116,6 +119,7 @@ extension CoreDataManager {
             let toDelete = try self.viewContext.existingObject(with: client.objectID)
             self.viewContext.delete(toDelete)
             try self.viewContext.save()
+            self.updateClients = true
         }
     }
 }
