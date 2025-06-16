@@ -51,11 +51,9 @@ struct SettingsView: View {
                                                 ClientsListView()
                                             })
                                         case .services:
-                                            // TODO: todo
-                                            print("services")
-//                                            coordinator.pushTo(id: ProfileView.navigationID, destination: {
-//                                                ProfileView()
-//                                            })
+                                            coordinator.pushTo(id: ItemsServicesListView.navigationID, destination: {
+                                                ItemsServicesListView()
+                                            })
                                         case .rate:
                                             requestReview()
                                         default:

@@ -14,6 +14,7 @@ final class ClientsListViewModel: ObservableObject {
         setSubscription()
     }
     
+    @MainActor
     func fetchClients() async {
         do {
             let fetched = try await CoreDataManager.shared.fetchClients()

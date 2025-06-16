@@ -38,7 +38,7 @@ struct DiscountPopover: View {
                     }
                     .buttonStyle(.popoverButton(isChosen: discountType == .percentage))
 
-                    Button("Percentage") {
+                    Button("Flat amount") {
                         withAnimation {
                             discountType = .flatAmount
                             isPopoverShown = false

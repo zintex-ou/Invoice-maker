@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ItemCell: ButtonStyle {
     var itemName: String
+    var discountType: DiscountType
     var discont: String
     var tax: String
     var total: String
@@ -17,14 +18,14 @@ struct ItemCell: ButtonStyle {
                     .multilineTextAlignment(.leading)
                     .lineLimit(1)
                     .foregroundStyle(configuration.isPressed ? .black.opacity(0.5) : .black)
-
+                
                 HStack(spacing: 0) {
-                    Text("Dis: \(discont)%, Tax: \(tax)% - ")
+                    Text("\(discountText()) \(taxText())")
                         .font(.sans(style: .regular, size: 12))
                         .foregroundStyle(configuration.isPressed ? .black767676.opacity(0.5) : .black767676)
                         .multilineTextAlignment(.leading)
                         .lineLimit(1)
-
+                    
                     Text(currency.rawValue + " " + total)
                         .font(.sans(style: .semiBold, size: 12))
                         .foregroundStyle(configuration.isPressed ? .black.opacity(0.5) : .black)
@@ -61,11 +62,20 @@ struct ItemCell: ButtonStyle {
         .clipShape(RoundedRectangle(cornerRadius: 32))
         .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
     }
+    
+    private func discountText() -> String {
+        "Dis: \(discont.isEmpty ? "0" : discont)\(discountType != .flatAmount ? "%" : " \(currency.rawValue)"),"
+    }
+    
+    private func taxText() -> String {
+        "Tax: \(tax.isEmpty ? "0" : tax)% - "
+    }
 }
 
 extension ButtonStyle where Self == ItemCell {
     static func itemCell(
         itemName: String,
+        discountType: DiscountType,
         discont: String,
         tax: String,
         total: String,
@@ -75,6 +85,7 @@ extension ButtonStyle where Self == ItemCell {
     ) -> Self {
         ItemCell(
             itemName: itemName,
+            discountType: discountType,
             discont: discont,
             tax: tax,
             total: total,
@@ -90,6 +101,7 @@ extension ButtonStyle where Self == ItemCell {
         .buttonStyle(
             .itemCell(
                 itemName: "Name of item",
+                discountType: .percentage,
                 discont: "20",
                 tax: "20",
                 total: "20 000,00",

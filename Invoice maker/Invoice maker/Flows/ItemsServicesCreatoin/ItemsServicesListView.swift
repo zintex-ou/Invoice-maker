@@ -1,43 +1,49 @@
 import SwiftUI
 
-struct ClientsListView: View {
+struct ItemsServicesListView: View {
     @EnvironmentObject private var coordinator: Coordinator
     
-    @StateObject var viewModel: ClientsListViewModel = .init()
+    @StateObject var viewModel: ItemsServicesListViewModel = .init()
     
     var body: some View {
         VStack {
             navigationBar
             
-            if viewModel.clients.isEmpty {
+            SegmentedControl(
+                selection: $viewModel.offerSelection,
+                segments: SegmentOfferType.allCases
+            )
+            
+            if (viewModel.items.isEmpty && viewModel.offerSelection == .items) || (viewModel.services.isEmpty && viewModel.offerSelection == .services) {
                 emptyView
             } else {
                 list
             }
             
-            Button("Add new client") {
-                coordinator.presentFullScreenCover(id: AddNewClientView.navigationID, content: { AddNewClientView() })
+            Button(viewModel.buttonTitle()) {
+                coordinator.presentFullScreenCover(id: AddNewItemServiceView.navigationID,
+                                                   content: { AddNewItemServiceView(viewModel: .init(offerType: viewModel.offerSelection)) })
             }
             .buttonStyle(.main)
         }
         .padding(.horizontal, 16)
         .onAppear(perform: {
-            Task { await viewModel.fetchClients() }
+            Task { await viewModel.fetchItemsServices() }
         })
-        .alert("Delete Client",
+        .alert(viewModel.alertDeleteTitle(),
                isPresented: $viewModel.isShowDeleteAlert) {
             Button("Cancel", role: .cancel) {
                 
             }
             
             Button("Delete", role: .destructive) {
-                if let clientToDelete = viewModel.clientToDelete {
-                    Task { await viewModel.deleteClient(clientToDelete) }
+                if let itemToDelete = viewModel.itemToDelete {
+                    Task { await viewModel.deleteItemService(itemToDelete) }
                 }
             }
 
         } message: {
-            Text("Are you sure you want to delete this client? ")
+            Text(viewModel.alertDeleteMessage())
         }
         .alert("Error",
                isPresented: $viewModel.showErrorAlert) {
@@ -63,7 +69,7 @@ struct ClientsListView: View {
             HStack {
                 Spacer()
                 
-                Text("Clients")
+                Text("Items&services")
                     .font(.sans(style: .semiBold, size: 20))
                     .foregroundStyle(.black)
                 
@@ -76,7 +82,7 @@ struct ClientsListView: View {
         VStack {
             Spacer()
             
-            Image(.property1Client)
+            Image(viewModel.offerSelection == .items ? .property1Item : .property1Service2)
                 .resizable()
                 .frame(width: 32, height: 32)
                 .padding(12)
@@ -85,11 +91,11 @@ struct ClientsListView: View {
                         .fill(.grayF5F5F5)
                 }
             
-            Text("Clients")
+            Text(viewModel.offerSelection == .items ? "Items" : "Services")
                 .font(.sans(style: .semiBold, size: 26))
                 .foregroundStyle(.black)
         
-            Text("Add client details once and create\ninvoices in just a few clicks.")
+            Text("Add \(viewModel.offerSelection == .items ? "item" : "service") details once and create invoices in just a few clicks.")
                 .font(.sans(style: .regular, size: 16))
                 .foregroundStyle(.black767676)
                 .multilineTextAlignment(.center)
@@ -101,27 +107,31 @@ struct ClientsListView: View {
     var list: some View {
         ScrollView {
             VStack(spacing: 12) {
-                ForEach(viewModel.clients, id: \.id) { client in
+                ForEach(viewModel.offerSelection == .items ? viewModel.items : viewModel.services, id: \.id) { item in
                     Button("") {
-                        coordinator.presentFullScreenCover(id: EditClientView.navigationID) {
-                            EditClientView(
-                                viewModel: .init(client: client)
+                        coordinator.presentFullScreenCover(id: EditItemServiceView.navigationID) {
+                            EditItemServiceView(
+                                viewModel: .init(itemService: item)
                             )
                         }
                     }
                     .buttonStyle(
-                        .clientCellWithActions(
-                            clientName: client.clientName ?? "",
-                            clientEmail: client.email ?? "",
+                        .itemCell(
+                            itemName: item.name ?? "",
+                            discountType: DiscountType(rawValue: item.discountType ?? "") ?? .none,
+                            discont: "\(item.discount ?? "")",
+                            tax: "\(item.tax ?? "")",
+                            total: item.price ?? "",
+                            currency: .USD,
                             editAction: {
-                                coordinator.presentFullScreenCover(id: EditClientView.navigationID) {
-                                    EditClientView(
-                                        viewModel: .init(client: client)
+                                coordinator.presentFullScreenCover(id: EditItemServiceView.navigationID) {
+                                    EditItemServiceView(
+                                        viewModel: .init(itemService: item)
                                     )
                                 }
                             },
                             deleteAction: {
-                                viewModel.showDeleteAlert(for: client)
+                                viewModel.showDeleteAlert(for: item)
                             }
                         )
                     )
@@ -134,5 +144,5 @@ struct ClientsListView: View {
 }
 
 #Preview {
-    ClientsListView()
+    ItemsServicesListView()
 }
