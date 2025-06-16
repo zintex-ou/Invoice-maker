@@ -5,6 +5,7 @@ struct AddNewItemServiceView: View {
     
     @StateObject var viewModel: AddNewItemServiceViewModel
     
+#warning("Change curency dinamically")
     var body: some View {
         VStack(spacing: 0) {
             navigationBar
@@ -15,7 +16,9 @@ struct AddNewItemServiceView: View {
                 priceError: $viewModel.priceError,
                 itemService: $viewModel.itemServiceInput,
                 name: viewModel.nameFieldTitle,
-                currency: .USD
+                currency: .USD,
+                title: viewModel.subtitle1,
+                subtitle: viewModel.subtitle2
             )
             
             Button(viewModel.titleButtonTitle) {

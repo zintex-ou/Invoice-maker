@@ -12,6 +12,8 @@ final class AddNewItemServiceViewModel: ObservableObject {
     let nameFieldTitle: String
     let titleButtonTitle: String
     let alertLeavewithoutSavingMessage: String
+    let subtitle1: String
+    let subtitle2: String
     let coreDataManager: CoreDataManager
     
     init(coreDataManager: CoreDataManager = .shared, offerType: SegmentOfferType) {
@@ -19,6 +21,8 @@ final class AddNewItemServiceViewModel: ObservableObject {
         self.nameFieldTitle = offerType == .items ? "Item name" : "Service name"
         self.titleButtonTitle = offerType == .items ? "Add new item" : "Add new service"
         self.alertLeavewithoutSavingMessage =  "If you close this \(offerType == .items ? "item" : "service"), all changes will be lost."
+        self.subtitle1 = offerType == .items ? "Item info" : "Service info"
+        self.subtitle2 = offerType == .items ? "Item price" : "Service price"
         self.itemServiceInput = .init(
             isItem: offerType == .items,
             name: "",

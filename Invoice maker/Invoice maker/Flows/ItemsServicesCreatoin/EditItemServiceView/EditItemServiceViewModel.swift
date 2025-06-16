@@ -19,6 +19,8 @@ final class EditItemServiceViewModel: ObservableObject {
     let alertLeavewithoutSavingMessage: String
     let deleteAlertTitle: String
     let deleteAlertMassage: String
+    let subtitle1: String
+    let subtitle2: String
     
     init(itemService: ItemServiceEntity,
          coreDataManager: CoreDataManager = .shared) {
@@ -28,6 +30,8 @@ final class EditItemServiceViewModel: ObservableObject {
         self.alertLeavewithoutSavingMessage =  "If you close this \(itemService.isItem ? "item" : "service"), all changes will be lost."
         self.deleteAlertTitle = "Delete \(itemService.isItem ? "item" : "service")"
         self.deleteAlertMassage = "Are you sure you want to delete this \(itemService.isItem ? "item" : "service")?"
+        self.subtitle1 = itemService.isItem ? "Item info" : "Service info"
+        self.subtitle2 = itemService.isItem ? "Item price" : "Service price"
         self.itemServiceInput = .init(
             isItem: itemService.isItem,
             name: itemService.name ?? "",

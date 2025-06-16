@@ -10,10 +10,17 @@ struct AddItemServiceView: View {
     
     var name: String
     var currency: Currency
+    var title: String
+    var subtitle: String
     
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(title)
+                    .font(.sans(style: .semiBold, size: 26))
+                    .foregroundStyle(.black)
+                    .padding(.bottom, 4)
+                
                 CustomTextField(
                     title: name,
                     placeholder: "",
@@ -22,6 +29,11 @@ struct AddItemServiceView: View {
                     text: $itemService.name,
                     callError: $nameError
                 )
+                
+                Text(subtitle)
+                    .font(.sans(style: .semiBold, size: 26))
+                    .foregroundStyle(.black)
+                    .padding(.bottom, 4)
                 
                 CustomTextField(
                     title: "Price per unit (\(currency.rawValue))",

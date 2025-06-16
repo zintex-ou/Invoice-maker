@@ -104,6 +104,7 @@ struct ItemsServicesListView: View {
         }
     }
     
+#warning("Change curency dinamically")
     var list: some View {
         ScrollView {
             VStack(spacing: 12) {
