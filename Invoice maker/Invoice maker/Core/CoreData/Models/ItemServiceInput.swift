@@ -1,10 +1,11 @@
 import Foundation
 
 struct ItemServiceInput {
-    let isItem: Bool
-    let name: String
-    let description: String
-    let price: Double
-    let quantity: Int16
-    let tax: Double
+    var isItem: Bool
+    var name: String
+    var price: String
+    var quantity: String
+    var discountType: DiscountType
+    var discount: String
+    var tax: String
 }

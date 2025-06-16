@@ -5,6 +5,7 @@ final class CoreDataManager: ObservableObject {
     private let container: NSPersistentContainer
     
     @Published var updateClients: Bool = false
+    @Published var updateItemsServices: Bool = false
     
     private init() {
         container = NSPersistentContainer(name: "CoreDataModel")
@@ -139,11 +140,12 @@ extension CoreDataManager {
             item.id = UUID()
             item.isItem = input.isItem
             item.name = input.name
-            item.itemDescription = input.description
             item.price = input.price
             item.quantity = input.quantity
+            item.discountType = input.discountType.rawValue
+            item.discount = input.discount
             item.tax = input.tax
-            
+            self.updateItemsServices = true
             try self.viewContext.save()
             return item
         }
@@ -155,9 +157,10 @@ extension CoreDataManager {
             let item = try self.viewContext.existingObject(with: item.objectID) as! ItemServiceEntity
             item.isItem = input.isItem
             item.name = input.name
-            item.itemDescription = input.description
             item.price = input.price
             item.quantity = input.quantity
+            item.discountType = input.discountType.rawValue
+            item.discount = input.discount
             item.tax = input.tax
             try self.viewContext.save()
             return item
@@ -169,6 +172,7 @@ extension CoreDataManager {
             let toDelete = try self.viewContext.existingObject(with: item.objectID)
             self.viewContext.delete(toDelete)
             try self.viewContext.save()
+            self.updateItemsServices = true
         }
     }
 }
@@ -203,9 +207,10 @@ extension CoreDataManager {
                 item.id = UUID()
                 item.isItem = itemInput.isItem
                 item.name = itemInput.name
-                item.itemDescription = itemInput.description
                 item.price = itemInput.price
                 item.quantity = itemInput.quantity
+                item.discountType = itemInput.discountType.rawValue
+                item.discount = itemInput.discount
                 item.tax = itemInput.tax
                 
                 invoice.addToItemService(item)
@@ -237,9 +242,10 @@ extension CoreDataManager {
                 item.id = UUID()
                 item.isItem = itemInput.isItem
                 item.name = itemInput.name
-                item.itemDescription = itemInput.description
                 item.price = itemInput.price
                 item.quantity = itemInput.quantity
+                item.discountType = itemInput.discountType.rawValue
+                item.discount = itemInput.discount
                 item.tax = itemInput.tax
                 
                 invoice.addToItemService(item)
