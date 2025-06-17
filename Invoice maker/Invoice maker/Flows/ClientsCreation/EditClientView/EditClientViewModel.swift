@@ -11,6 +11,9 @@ final class EditClientViewModel: ObservableObject {
     @Published var isShowDeleteAlert: Bool = false
     @Published var showLeaveWithoutSavingAlert: Bool = false
     
+    @Published var showErrorAlert = false
+    @Published var errorAlertSubtitle = ""
+    
     private var client: ClientEntity
     
     let coreDataManager: CoreDataManager
@@ -65,9 +68,14 @@ final class EditClientViewModel: ObservableObject {
     
     func updateClient() {
         Task {
-            try await coreDataManager.updateClient(client,
-                                                   input: clientInput
-            )
+            do {
+                try await coreDataManager.updateClient(client,
+                                                       input: clientInput
+                )
+            } catch let error {
+                showErrorAlert = true
+                errorAlertSubtitle = error.localizedDescription
+            }
         }
     }
     
@@ -92,7 +100,14 @@ final class EditClientViewModel: ObservableObject {
     
     func deleteClient() {
         Task {
-            try await coreDataManager.deleteClient(client)
+            do {
+                let id = client.id
+                try await coreDataManager.deleteClient(client)
+                NotificationService.shared.post(event: .updateClients, object: id)
+            } catch let error {
+                showErrorAlert = true
+                errorAlertSubtitle = error.localizedDescription
+            }
         }
     }
 }

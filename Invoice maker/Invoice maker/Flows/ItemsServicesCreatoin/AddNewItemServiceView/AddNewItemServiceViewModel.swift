@@ -9,6 +9,9 @@ final class AddNewItemServiceViewModel: ObservableObject {
     @Published var isExpanded: Bool = false
     @Published var showLeaveWithoutSavingAlert = false
     
+    @Published var showErrorAlert = false
+    @Published var errorAlertSubtitle = ""
+    
     let nameFieldTitle: String
     let titleButtonTitle: String
     let alertLeavewithoutSavingMessage: String
@@ -46,9 +49,16 @@ final class AddNewItemServiceViewModel: ObservableObject {
     
     func saveClient() {
         Task {
-            try await coreDataManager.createItemOrService(
-                input: itemServiceInput
-            )
+            do {
+                let item = try await coreDataManager.createItemOrService(
+                    input: itemServiceInput
+                )
+                
+                NotificationService.shared.post(event: .updateItemsServices, object: item)
+            } catch let error {
+                showErrorAlert = true
+                errorAlertSubtitle = error.localizedDescription
+            }
         }
     }
     
@@ -58,12 +68,12 @@ final class AddNewItemServiceViewModel: ObservableObject {
             completion()
         }
     }
- 
+    
     func onCloseTapped(completion: @escaping (() -> Void)) {
         if hasChanges {
             showLeaveWithoutSavingAlert = true
         } else {
-          completion()
+            completion()
         }
     }
 }

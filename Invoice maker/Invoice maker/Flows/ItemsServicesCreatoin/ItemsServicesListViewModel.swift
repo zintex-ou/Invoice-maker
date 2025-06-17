@@ -33,7 +33,7 @@ final class ItemsServicesListViewModel: ObservableObject {
         do {
             try await CoreDataManager.shared.deleteItemOrService(item)
             await fetchItemsServices()
-        } catch {
+        } catch let error {
             showErrorAlert = true
             errorAlertSubtitle = error.localizedDescription
         }
@@ -57,14 +57,18 @@ final class ItemsServicesListViewModel: ObservableObject {
     }
     
     private func setSubscription() {
-        CoreDataManager.shared.$updateItemsServices
-            .filter { $0 }
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
+        NotificationService.shared.observe(event: .updateItemsServices) { [weak self] object in
+            if let object = object as? ItemServiceEntity {
+                if object.isItem {
+                    self?.items.append(object)
+                } else {
+                    self?.services.append(object)
+                }
+            } else {
                 Task {
                     await self?.fetchItemsServices()
                 }
             }
-            .store(in: &cancellables)
+        }
     }
 }

@@ -59,6 +59,14 @@ struct EditItemServiceView: View {
         } message: {
             Text(viewModel.alertLeavewithoutSavingMessage)
         }
+        .alert("Error",
+               isPresented: $viewModel.showErrorAlert) {
+            Button("Cancel", role: .cancel) {
+                
+            }
+        } message: {
+            Text(viewModel.errorAlertSubtitle)
+        }
     }
     
     var navigationBar: some View {

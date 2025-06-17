@@ -41,14 +41,14 @@ final class ClientsListViewModel: ObservableObject {
     }
     
     private func setSubscription() {
-        CoreDataManager.shared.$updateClients
-            .filter { $0 }
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
+        NotificationService.shared.observe(event: .updateClients) { [weak self] object in
+            if let object = object as? ClientEntity {
+                self?.clients.append(object)
+            } else {
                 Task {
                     await self?.fetchClients()
                 }
             }
-            .store(in: &cancellables)
+        }
     }
 }

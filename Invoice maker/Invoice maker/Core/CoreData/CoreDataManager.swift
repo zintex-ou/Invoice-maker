@@ -4,9 +4,6 @@ final class CoreDataManager: ObservableObject {
     static let shared = CoreDataManager()
     private let container: NSPersistentContainer
     
-    @Published var updateClients: Bool = false
-    @Published var updateItemsServices: Bool = false
-    
     private init() {
         container = NSPersistentContainer(name: "CoreDataModel")
         container.viewContext.automaticallyMergesChangesFromParent = true
@@ -78,6 +75,7 @@ extension CoreDataManager {
         }
     }
     
+    @discardableResult
     func createClient(input: ClientInput) async throws -> ClientEntity {
         try await viewContext.perform {
             let client = ClientEntity(context: self.viewContext)
@@ -92,11 +90,11 @@ extension CoreDataManager {
             client.apartment = input.apartment
             client.postalCode = input.postalCode
             try self.viewContext.save()
-            self.updateClients = true
             return client
         }
     }
     
+    @discardableResult
     func updateClient(_ client: ClientEntity,
                       input: ClientInput) async throws -> ClientEntity {
         try await viewContext.perform {
@@ -120,7 +118,6 @@ extension CoreDataManager {
             let toDelete = try self.viewContext.existingObject(with: client.objectID)
             self.viewContext.delete(toDelete)
             try self.viewContext.save()
-            self.updateClients = true
         }
     }
 }
@@ -134,6 +131,7 @@ extension CoreDataManager {
         }
     }
     
+    @discardableResult
     func createItemOrService(input: ItemServiceInput) async throws -> ItemServiceEntity {
         try await viewContext.perform {
             let item = ItemServiceEntity(context: self.viewContext)
@@ -145,12 +143,12 @@ extension CoreDataManager {
             item.discountType = input.discountType.rawValue
             item.discount = input.discount
             item.tax = input.tax
-            self.updateItemsServices = true
             try self.viewContext.save()
             return item
         }
     }
     
+    @discardableResult
     func updateItemOrService(_ item: ItemServiceEntity,
                              input: ItemServiceInput) async throws -> ItemServiceEntity {
         try await viewContext.perform {
@@ -172,7 +170,6 @@ extension CoreDataManager {
             let toDelete = try self.viewContext.existingObject(with: item.objectID)
             self.viewContext.delete(toDelete)
             try self.viewContext.save()
-            self.updateItemsServices = true
         }
     }
 }

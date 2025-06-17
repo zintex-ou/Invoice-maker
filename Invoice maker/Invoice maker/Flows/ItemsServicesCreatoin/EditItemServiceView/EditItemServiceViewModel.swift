@@ -11,6 +11,9 @@ final class EditItemServiceViewModel: ObservableObject {
     @Published var isShowDeleteAlert: Bool = false
     @Published var showLeaveWithoutSavingAlert: Bool = false
     
+    @Published var showErrorAlert = false
+    @Published var errorAlertSubtitle = ""
+    
     private var itemService: ItemServiceEntity
     
     let coreDataManager: CoreDataManager
@@ -71,9 +74,14 @@ final class EditItemServiceViewModel: ObservableObject {
     
     func updateItemService() {
         Task {
-            try await coreDataManager.updateItemOrService(itemService,
-                                                          input: itemServiceInput
-            )
+            do {
+                try await coreDataManager.updateItemOrService(itemService,
+                                                              input: itemServiceInput
+                )
+            } catch let error {
+                showErrorAlert = true
+                errorAlertSubtitle = error.localizedDescription
+            }
         }
     }
     
@@ -98,7 +106,14 @@ final class EditItemServiceViewModel: ObservableObject {
     
     func deleteItemService() {
         Task {
-            try await coreDataManager.deleteItemOrService(itemService)
+            do {
+                try await coreDataManager.deleteItemOrService(itemService)
+                
+                NotificationService.shared.post(event: .updateItemsServices, object: nil)
+            } catch let error {
+                showErrorAlert = true
+                errorAlertSubtitle = error.localizedDescription
+            }
         }
     }
 }

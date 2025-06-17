@@ -8,6 +8,8 @@ final class AddNewClientViewModel: ObservableObject {
     
     @Published var isExpanded: Bool = false
     @Published var showLeaveWithoutSavingAlert = false
+    @Published var showErrorAlert = false
+    @Published var errorAlertSubtitle = ""
     
     let coreDataManager: CoreDataManager
     
@@ -38,9 +40,16 @@ final class AddNewClientViewModel: ObservableObject {
     
     func saveClient() {
         Task {
-            try await coreDataManager.createClient(
-                input: clientInput
-            )
+            do {
+                let client = try await coreDataManager.createClient(
+                    input: clientInput
+                )
+                
+                NotificationService.shared.post(event: .updateClients, object: client)
+            } catch let error {
+                showErrorAlert = true
+                errorAlertSubtitle = error.localizedDescription
+            }
         }
     }
     

@@ -55,6 +55,14 @@ struct EditClientView: View {
         } message: {
             Text("If you close this client, all changes will be lost.")
         }
+        .alert("Error",
+               isPresented: $viewModel.showErrorAlert) {
+            Button("Cancel", role: .cancel) {
+                
+            }
+        } message: {
+            Text(viewModel.errorAlertSubtitle)
+        }
     }
     
     var navigationBar: some View {
