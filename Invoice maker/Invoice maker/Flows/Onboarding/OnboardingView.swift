@@ -178,8 +178,9 @@ extension OnboardingView {
     private func closeAction() {
         isOnboardingCompleted = true
         
-        coordinator.pushTo(id: TabBarView.navigationID) {
-            TabBarView()
+        coordinator.pushTo(id: BusinessProfileView.navigationID) {
+            let viewModel = BusinessProfileViewModel(stateView: .createing)
+            return BusinessProfileView(viewModel: viewModel)
         }
     }
 }
