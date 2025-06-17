@@ -24,9 +24,23 @@ final class BusinessProfileViewModel: ObservableObject {
     }
     @Published var selectedImageData: Data?
     @Published var shouldShowCropView: Bool = false
+    @Published var sholdShowCurrencyPicker: Bool = false
+    @Published var shouldShowFullList: Bool = false
+    @Published var shouldShowErrorTextField: Bool = false
+    
+    @Published var ownerName: String = ""
+    @Published var mail: String = ""
+    @Published var phoneNumber: String = ""
+    @Published var country: String = ""
+    @Published var city: String = ""
+    @Published var street: String = ""
+    @Published var apartment: String = ""
+    @Published var postcode: String = ""
+    @Published var currency: Currency = .USD
     
     private var isFromGallerySelection = false
     private let stateView: StateView
+    private let dataBaseManager: CoreDataManager = .shared
     
     init(stateView: StateView) {
         self.stateView = stateView
@@ -55,5 +69,39 @@ final class BusinessProfileViewModel: ObservableObject {
     
     func getGallerySelectionFlag() -> Bool {
         isFromGallerySelection
+    }
+    
+    func tapOnCurrencyButton() {
+        sholdShowCurrencyPicker = true
+    }
+    
+    func tapOnMoreDetails() {
+        shouldShowFullList.toggle()
+    }
+    
+    func tapOnSaveButton(completion: @escaping () -> Void) {
+        if !shouldShowErrorTextField {
+            Task {
+                let input = BusinessProfileInput(
+                    ownerName: ownerName,
+                    email: mail,
+                    phoneNumber: phoneNumber,
+                    currency: currency.rawValue,
+                    country: country,
+                    city: city,
+                    street: street,
+                    apartment: apartment,
+                    postalCode: postcode,
+                    imageData: selectedImageData
+                )
+                
+                do {
+                  let result = try await dataBaseManager.createBusinessProfile(input: input)
+                    completion()
+                } catch {
+                    
+                }
+            }
+        }
     }
 }

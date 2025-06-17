@@ -3,6 +3,7 @@ import SwiftUI
 struct BusinessProfileView: View {
     @StateObject private var viewModel: BusinessProfileViewModel
     @EnvironmentObject private var coordinator: Coordinator
+    @AppStorage(Constants.isCreatedBusinessProfile) var isCreatedBusinessProfile: Bool = false
     
     init(viewModel: BusinessProfileViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -31,6 +32,10 @@ struct BusinessProfileView: View {
                 }
             }
         })
+        .sheet(isPresented: $viewModel.sholdShowCurrencyPicker) {
+            CurrencyPickerView(currency: $viewModel.currency)
+                .presentationDetents([.large])
+        }
     }
     
     private var topView: some View {
@@ -38,14 +43,13 @@ struct BusinessProfileView: View {
             Spacer()
             
             Button {
-                
+                showHomeScreen()
             } label: {
                 Text("Skip")
                     .foregroundStyle(.violet4663FF)
                     .font(.sans(style: .regular, size: 16))
                     .underline(true, pattern: .solid)
             }
-            
         }
     }
     
@@ -55,11 +59,13 @@ struct BusinessProfileView: View {
                 Text("Complete your business profile to continue.")
                     .font(.sans(style: .bold, size: 20))
                     .foregroundStyle(.black)
+                    .multilineTextAlignment(.center)
                 
                 Text("This data is required\nto finalize the invoice.")
                     .font(.sans(style: .regular, size: 16))
                     .foregroundStyle(.black767676)
                     .padding(.top, 4)
+                    .multilineTextAlignment(.center)
                 
                 Circle()
                     .fill(.grayF5F5F5)
@@ -96,25 +102,131 @@ struct BusinessProfileView: View {
                     }
                     .padding(.top, 24)
                 
-                Spacer()
+                VStack(spacing: 12) {
+                    CustomTextField(
+                        title: "Owner name",
+                        placeholder: "",
+                        isRequired: true,
+                        keyboardType: .default,
+                        text: $viewModel.ownerName,
+                        callError: $viewModel.shouldShowErrorTextField
+                    )
+                    
+                    CustomTextField(
+                        title: "E-mail",
+                        placeholder: "",
+                        isRequired: true,
+                        keyboardType: .emailAddress,
+                        text: $viewModel.mail,
+                        callError: $viewModel.shouldShowErrorTextField
+                    )
+                    
+                    CustomTextField(
+                        title: "Phone number",
+                        placeholder: "",
+                        isRequired: true,
+                        keyboardType: .phonePad,
+                        text: $viewModel.phoneNumber,
+                        callError: $viewModel.shouldShowErrorTextField
+                    )
+                    
+                    HStack {
+                        Spacer()
+                        
+                        Button {
+                            withAnimation {
+                                viewModel.tapOnMoreDetails()
+                            }
+                        } label: {
+                            Text(viewModel.shouldShowFullList ? "Hide details" : "More details")
+                                .foregroundStyle(.violet4663FF)
+                                .font(.sans(style: .regular, size: 16))
+                                .underline(true, pattern: .solid)
+                        }
+                        .padding(.vertical, 12)
+                    }
+                    
+                    if viewModel.shouldShowFullList {
+                        CustomTextField(
+                            title: "Country",
+                            placeholder: "",
+                            isRequired: false,
+                            keyboardType: .default,
+                            text: $viewModel.country,
+                            callError: .constant(false)
+                        )
+                        
+                        CustomTextField(
+                            title: "City",
+                            placeholder: "",
+                            isRequired: false,
+                            keyboardType: .default,
+                            text: $viewModel.city,
+                            callError: .constant(false)
+                        )
+                        
+                        CustomTextField(
+                            title: "Street",
+                            placeholder: "",
+                            isRequired: false,
+                            keyboardType: .default,
+                            text: $viewModel.street,
+                            callError: .constant(false)
+                        )
+                        
+                        CustomTextField(
+                            title: "Apartment",
+                            placeholder: "",
+                            isRequired: false,
+                            keyboardType: .default,
+                            text: $viewModel.apartment,
+                            callError: .constant(false)
+                        )
+                        
+                        CustomTextField(
+                            title: "Postal code",
+                            placeholder: "",
+                            isRequired: false,
+                            keyboardType: .decimalPad,
+                            text: $viewModel.postcode,
+                            callError: .constant(false)
+                        )
+                    }
+                    
+                    Button(viewModel.currency.rawValue) {
+                        viewModel.tapOnCurrencyButton()
+                    }
+                    .buttonStyle(.disclosure(title: "Currency"))
+                }
+                .padding(.top, 12)
+                .padding(.horizontal, -12)
             }
             .padding(.top, 42)
             .padding(.horizontal, 16)
-            .multilineTextAlignment(.center)
         }
         .scrollIndicators(.hidden)
+        .scrollDismissesKeyboard(.interactively)
     }
     
     private var bottomView: some View {
         HStack {
             Button("Continue") {
-                
+                viewModel.tapOnSaveButton {
+                    showHomeScreen()
+                }
             }
             .buttonStyle(.main)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .background(.white)
+    }
+    
+    private func showHomeScreen() {
+        isCreatedBusinessProfile = true
+        coordinator.pushTo(id: TabBarView.navigationID) {
+            TabBarView()
+        }
     }
 }
 
