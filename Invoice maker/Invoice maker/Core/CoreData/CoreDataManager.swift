@@ -47,10 +47,20 @@ extension CoreDataManager {
         }
     }
     
-    func updateBusinessProfile(_ profile: BusinessProfileEntity,
-                               input: BusinessProfileInput) async throws -> BusinessProfileEntity {
+    func updateBusinessProfile(input: BusinessProfileInput) async throws {
+        guard let profile = try await fetchBusinessProfile() else {
+            throw NSError(domain: "BusinessProfileError", code: 404, userInfo: [
+                NSLocalizedDescriptionKey: "Business profile not found."
+            ])
+        }
+        
         try await viewContext.perform {
-            let businessProfile = try self.viewContext.existingObject(with: profile.objectID) as! BusinessProfileEntity
+            guard let businessProfile = try? self.viewContext.existingObject(with: profile.objectID) as? BusinessProfileEntity else {
+                throw NSError(domain: "BusinessProfileError", code: 500, userInfo: [
+                    NSLocalizedDescriptionKey: "Failed to retrieve existing BusinessProfileEntity."
+                ])
+            }
+            
             businessProfile.ownerName = input.ownerName
             businessProfile.email = input.email
             businessProfile.phoneNumber = input.phoneNumber
@@ -61,10 +71,11 @@ extension CoreDataManager {
             businessProfile.apartment = input.apartment
             businessProfile.postalCode = input.postalCode
             businessProfile.image = input.imageData
+            
             try self.viewContext.save()
-            return businessProfile
         }
     }
+
 }
 
 // MARK: - Client

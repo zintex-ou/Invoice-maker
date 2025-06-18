@@ -43,22 +43,31 @@ struct BusinessProfileView: View {
             } message: {
                 Text(viewModel.alert.subtitle)
             }
-
     }
     
     private var topView: some View {
         HStack {
+            if viewModel.stateView == .editing {
+                Button {
+                    coordinator.popToBack()
+                } label: { }
+                    .buttonStyle(.circle(.property1Arrow))
+            }
+            
             Spacer()
             
-            Button {
-                showHomeScreen()
-            } label: {
-                Text("Skip")
-                    .foregroundStyle(.violet4663FF)
-                    .font(.sans(style: .regular, size: 16))
-                    .underline(true, pattern: .solid)
+            if viewModel.stateView == .createing {
+                Button {
+                    showHomeScreen()
+                } label: {
+                    Text("Skip")
+                        .foregroundStyle(.violet4663FF)
+                        .font(.sans(style: .regular, size: 16))
+                        .underline(true, pattern: .solid)
+                }
             }
         }
+        .padding(.bottom, 8)
     }
     
     private var middleView: some View {
@@ -219,10 +228,14 @@ struct BusinessProfileView: View {
     
     private var bottomView: some View {
         HStack {
-            Button("Continue") {
+            Button(viewModel.getButtonTitle()) {
                 withAnimation {
                     viewModel.tapOnSaveButton {
-                        showHomeScreen()
+                        if viewModel.stateView == .createing {
+                            showHomeScreen()
+                        } else {
+                            coordinator.popToBack()
+                        }
                     }
                 }
             }

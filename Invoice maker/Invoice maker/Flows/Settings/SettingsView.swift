@@ -41,11 +41,9 @@ struct SettingsView: View {
                                     Button(tab.title) {
                                         switch tab {
                                         case .profile:
-                                            // TODO: todo
-                                            print("profile")
-//                                            coordinator.pushTo(id: ProfileView.navigationID, destination: {
-//                                                ProfileView()
-//                                            })
+                                            coordinator.pushTo(id: BusinessProfileView.navigationID, destination: {
+                                                BusinessProfileView(viewModel: .init(stateView: .editing))
+                                            })
                                         case .clients:
                                             coordinator.pushTo(id: ClientsListView.navigationID, destination: {
                                                 ClientsListView()

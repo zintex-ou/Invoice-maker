@@ -2,6 +2,7 @@ import Foundation
 import PhotosUI
 import SwiftUI
 
+@MainActor
 final class BusinessProfileViewModel: ObservableObject {
     enum StateView {
         case createing
@@ -44,13 +45,17 @@ final class BusinessProfileViewModel: ObservableObject {
     @Published var shouldShowError: Bool = false
     
     private var isFromGallerySelection = false
-    private let stateView: StateView
     private let dataBaseManager: CoreDataManager = .shared
     
+    let stateView: StateView
     var alert: AlertModel = .init(title: "", subtitle: "")
     
     init(stateView: StateView) {
         self.stateView = stateView
+        
+        if stateView == .editing {
+            fetchBussinessProfile()
+        }
     }
     
     func tapOnPhoto() {
@@ -86,7 +91,10 @@ final class BusinessProfileViewModel: ObservableObject {
         shouldShowFullList.toggle()
     }
     
-    @MainActor
+    func getButtonTitle() -> String {
+        stateView == .createing ? "Continue" : "Save"
+    }
+    
     func tapOnSaveButton(completion: @escaping () -> Void) {
         guard !ownerName.isEmpty else {
             shouldShowOwnerNameError = true
@@ -118,12 +126,39 @@ final class BusinessProfileViewModel: ObservableObject {
             )
             
             do {
-                try await dataBaseManager.createBusinessProfile(input: input)
+                if stateView == .editing {
+                    try await dataBaseManager.updateBusinessProfile(input: input)
+                } else {
+                    try await dataBaseManager.createBusinessProfile(input: input)
+                }
                 completion()
             } catch {
                 self.alert = .init(
                     title: "Failed to Save Profile",
                     subtitle: "An error occurred while saving your business profile. Please try again later."
+                )
+                shouldShowError = true
+            }
+        }
+    }
+    
+    private func fetchBussinessProfile() {
+        Task {
+            do {
+                guard let result = try await dataBaseManager.fetchBusinessProfile() else { return }
+                self.ownerName = result.ownerName ?? ""
+                self.mail = result.email ?? ""
+                self.phoneNumber = result.phoneNumber ?? ""
+                self.currency = Currency(rawValue: result.currency ?? "USD") ?? .USD
+                self.country = result.country ?? ""
+                self.city = result.city ?? ""
+                self.selectedImageData = result.image
+                self.postcode = result.postalCode ?? ""
+                self.street = result.street ?? ""
+            } catch {
+                self.alert = .init(
+                    title: "Failed to Fetch Profile",
+                    subtitle: "An error occurred while fetching your business profile. Please try again later."
                 )
                 shouldShowError = true
             }
