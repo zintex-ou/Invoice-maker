@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SplashScreenView: View {
     @AppStorage(Constants.isOnboardingCompleted) var isOnboardingCompleted: Bool = false
+    @AppStorage(Constants.isCreatedBusinessProfile) var isCreatedBusinessProfile: Bool = false
     @EnvironmentObject private var coordinator: Coordinator
     @StateObject var viewModel = SplashScreenViewModel()
     
@@ -19,9 +20,16 @@ struct SplashScreenView: View {
                 
                 await  MainActor.run {
                     if isOnboardingCompleted {
-                        viewModel.changeViewControllres(count: 2)
-                        coordinator.pushTo(id: TabBarView.navigationID) {
-                            TabBarView()
+                        if isCreatedBusinessProfile {
+                            viewModel.changeViewControllres(count: 2)
+                            coordinator.pushTo(id: TabBarView.navigationID) {
+                                TabBarView()
+                            }
+                        } else {
+                            coordinator.pushTo(id: BusinessProfileView.navigationID) {
+                                let viewModel = BusinessProfileViewModel(stateView: .createing)
+                                return BusinessProfileView(viewModel: viewModel)
+                            }
                         }
                     } else {
                         viewModel.changeViewControllres(count: 3)

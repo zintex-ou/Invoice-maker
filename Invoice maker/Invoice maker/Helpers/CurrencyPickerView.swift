@@ -46,8 +46,10 @@ struct CurrencyPickerView: View {
             ScrollView {
                 VStack(spacing: 12) {
                     ForEach(items, id: \.self) { option in
-                        Button(option.rawValue) { currency = option }
-                            .buttonStyle(.radioButton(isSelected: option == currency))
+                        Button(option.rawValue) {
+                            currency = option
+                        }
+                        .buttonStyle(.radioButton(isSelected: option == currency))
                     }
                 }
                 .padding(.top, 16)

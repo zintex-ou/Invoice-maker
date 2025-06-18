@@ -5,7 +5,7 @@ struct MainButton: ButtonStyle {
         configuration.label
             .font(.sans(style: .semiBold, size: 16))
             .foregroundStyle(configuration.isPressed ? .white.opacity(0.5) : .white)
-            .frame(maxWidth: .infinity, maxHeight: 48)
+            .frame(maxWidth: .infinity, minHeight: 48, maxHeight: 48)
             .background(.violet4663FF)
             .clipShape(Capsule())
             .minimumScaleFactor(0.8)

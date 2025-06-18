@@ -28,6 +28,7 @@ extension CoreDataManager {
         }
     }
     
+    @discardableResult
     func createBusinessProfile(input: BusinessProfileInput) async throws -> BusinessProfileEntity {
         try await viewContext.perform {
             let businessProfile = BusinessProfileEntity(context: self.viewContext)
