@@ -36,6 +36,14 @@ struct BusinessProfileView: View {
             CurrencyPickerView(currency: $viewModel.currency)
                 .presentationDetents([.large])
         }
+        .alert(
+            viewModel.error.title,
+            isPresented: $viewModel.shouldShowError) {
+                
+            } message: {
+                Text(viewModel.error.subtitle)
+            }
+
     }
     
     private var topView: some View {

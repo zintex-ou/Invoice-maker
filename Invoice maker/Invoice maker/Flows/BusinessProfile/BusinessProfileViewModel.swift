@@ -1,5 +1,6 @@
 import Foundation
 import _PhotosUI_SwiftUI
+import SwiftUI
 
 final class BusinessProfileViewModel: ObservableObject {
     enum StateView {
@@ -40,10 +41,13 @@ final class BusinessProfileViewModel: ObservableObject {
     @Published var shouldShowOwnerNameError: Bool = false
     @Published var shouldShowMailError: Bool = false
     @Published var shouldShowPhoneNumberError: Bool = false
+    @Published var shouldShowError: Bool = false
     
     private var isFromGallerySelection = false
     private let stateView: StateView
     private let dataBaseManager: CoreDataManager = .shared
+    
+    var alert: AlertModel = .init(title: "", subtitle: "")
     
     init(stateView: StateView) {
         self.stateView = stateView
@@ -117,7 +121,11 @@ final class BusinessProfileViewModel: ObservableObject {
                 try await dataBaseManager.createBusinessProfile(input: input)
                 completion()
             } catch {
-                
+                self.alert = .init(
+                    title: "Failed to Save Profile",
+                    subtitle: "An error occurred while saving your business profile. Please try again later."
+                )
+                shouldShowError = true
             }
         }
     }
