@@ -26,7 +26,6 @@ final class BusinessProfileViewModel: ObservableObject {
     @Published var shouldShowCropView: Bool = false
     @Published var sholdShowCurrencyPicker: Bool = false
     @Published var shouldShowFullList: Bool = false
-    @Published var shouldShowErrorTextField: Bool = false
     
     @Published var ownerName: String = ""
     @Published var mail: String = ""
@@ -37,6 +36,10 @@ final class BusinessProfileViewModel: ObservableObject {
     @Published var apartment: String = ""
     @Published var postcode: String = ""
     @Published var currency: Currency = .USD
+    
+    @Published var shouldShowOwnerNameError: Bool = false
+    @Published var shouldShowMailError: Bool = false
+    @Published var shouldShowPhoneNumberError: Bool = false
     
     private var isFromGallerySelection = false
     private let stateView: StateView
@@ -79,28 +82,42 @@ final class BusinessProfileViewModel: ObservableObject {
         shouldShowFullList.toggle()
     }
     
+    @MainActor
     func tapOnSaveButton(completion: @escaping () -> Void) {
-        if !shouldShowErrorTextField {
-            Task {
-                let input = BusinessProfileInput(
-                    ownerName: ownerName,
-                    email: mail,
-                    phoneNumber: phoneNumber,
-                    currency: currency.rawValue,
-                    country: country,
-                    city: city,
-                    street: street,
-                    apartment: apartment,
-                    postalCode: postcode,
-                    imageData: selectedImageData
-                )
+        guard !ownerName.isEmpty else {
+            shouldShowOwnerNameError = true
+            return
+        }
+        
+        guard !mail.isEmpty else {
+            shouldShowMailError = true
+            return
+        }
+        
+        guard !phoneNumber.isEmpty else {
+            shouldShowPhoneNumberError = true
+            return
+        }
+        
+        Task {
+            let input = BusinessProfileInput(
+                ownerName: ownerName,
+                email: mail,
+                phoneNumber: phoneNumber,
+                currency: currency.rawValue,
+                country: country,
+                city: city,
+                street: street,
+                apartment: apartment,
+                postalCode: postcode,
+                imageData: selectedImageData
+            )
+            
+            do {
+                try await dataBaseManager.createBusinessProfile(input: input)
+                completion()
+            } catch {
                 
-                do {
-                  let result = try await dataBaseManager.createBusinessProfile(input: input)
-                    completion()
-                } catch {
-                    
-                }
             }
         }
     }

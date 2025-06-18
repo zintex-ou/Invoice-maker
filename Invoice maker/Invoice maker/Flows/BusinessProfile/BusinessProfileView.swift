@@ -109,7 +109,7 @@ struct BusinessProfileView: View {
                         isRequired: true,
                         keyboardType: .default,
                         text: $viewModel.ownerName,
-                        callError: $viewModel.shouldShowErrorTextField
+                        callError: $viewModel.shouldShowOwnerNameError
                     )
                     
                     CustomTextField(
@@ -118,7 +118,7 @@ struct BusinessProfileView: View {
                         isRequired: true,
                         keyboardType: .emailAddress,
                         text: $viewModel.mail,
-                        callError: $viewModel.shouldShowErrorTextField
+                        callError: $viewModel.shouldShowMailError
                     )
                     
                     CustomTextField(
@@ -127,7 +127,7 @@ struct BusinessProfileView: View {
                         isRequired: true,
                         keyboardType: .phonePad,
                         text: $viewModel.phoneNumber,
-                        callError: $viewModel.shouldShowErrorTextField
+                        callError: $viewModel.shouldShowPhoneNumberError
                     )
                     
                     HStack {
@@ -203,6 +203,7 @@ struct BusinessProfileView: View {
             }
             .padding(.top, 42)
             .padding(.horizontal, 16)
+            .transition(.move(edge: .bottom))
         }
         .scrollIndicators(.hidden)
         .scrollDismissesKeyboard(.interactively)
@@ -211,8 +212,10 @@ struct BusinessProfileView: View {
     private var bottomView: some View {
         HStack {
             Button("Continue") {
-                viewModel.tapOnSaveButton {
-                    showHomeScreen()
+                withAnimation {
+                    viewModel.tapOnSaveButton {
+                        showHomeScreen()
+                    }
                 }
             }
             .buttonStyle(.main)
