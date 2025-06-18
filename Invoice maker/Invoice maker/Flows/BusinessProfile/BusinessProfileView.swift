@@ -25,7 +25,7 @@ struct BusinessProfileView: View {
             photoLibrary: .shared()
         )
         .onReceive(viewModel.$selectedImageData, perform: { newValue in
-            if newValue != nil,viewModel.getGallerySelectionFlag() {
+            if newValue != nil, viewModel.getGallerySelectionFlag() {
                 viewModel.resetGallerySelectionFlag()
                 coordinator.pushTo(id: EditPhotoView.navigationID) {
                     EditPhotoView(viewModel: viewModel)
@@ -37,11 +37,11 @@ struct BusinessProfileView: View {
                 .presentationDetents([.large])
         }
         .alert(
-            viewModel.error.title,
+            viewModel.alert.title,
             isPresented: $viewModel.shouldShowError) {
                 
             } message: {
-                Text(viewModel.error.subtitle)
+                Text(viewModel.alert.subtitle)
             }
 
     }
