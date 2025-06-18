@@ -11,6 +11,10 @@ final class AddNewClientViewModel: ObservableObject {
     @Published var showErrorAlert = false
     @Published var errorAlertSubtitle = ""
     
+    private var hasChanges: Bool {
+        !clientInput.clientName.isEmpty && !clientInput.email.isEmpty
+    }
+    
     let coreDataManager: CoreDataManager
     
     init(coreDataManager: CoreDataManager = .shared) {
@@ -26,10 +30,6 @@ final class AddNewClientViewModel: ObservableObject {
             apartment: "",
             postalCode: ""
         )
-    }
-    
-    var hasChanges: Bool {
-        !clientInput.clientName.isEmpty && !clientInput.email.isEmpty
     }
     
     func validateFields() -> Bool {

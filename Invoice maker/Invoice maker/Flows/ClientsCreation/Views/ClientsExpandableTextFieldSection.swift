@@ -132,5 +132,6 @@ private struct ClientsExpandableTextFieldSection: View {
                 }
             }
         }
+        .scrollDismissesKeyboard(.interactively)
     }
 }

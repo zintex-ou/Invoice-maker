@@ -15,12 +15,6 @@ struct InvoicesView: View {
                 .padding(.top, 12)
 
                 Spacer()
-
-                Text("Invoices")
-                    .font(.sans(style: .semiBold, size: 20))
-                    .foregroundStyle(.black)
-
-                Spacer()
             }
         }
         .padding(.horizontal, 16)
