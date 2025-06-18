@@ -1,5 +1,5 @@
 import Foundation
-import _PhotosUI_SwiftUI
+import PhotosUI
 import SwiftUI
 
 final class BusinessProfileViewModel: ObservableObject {
