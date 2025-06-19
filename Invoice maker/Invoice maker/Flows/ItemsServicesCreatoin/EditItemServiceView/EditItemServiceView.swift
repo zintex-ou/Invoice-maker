@@ -23,7 +23,7 @@ struct EditItemServiceView: View {
             
             Button("Save") {
                 viewModel.onSaveTapped {
-                    coordinator.dismissFullScreenCover()
+                    coordinator.popToBack()
                 }
             }
             .buttonStyle(.main)
@@ -38,7 +38,7 @@ struct EditItemServiceView: View {
             
             Button("Delete", role: .destructive) {
                 viewModel.deleteItemService()
-                coordinator.dismissFullScreenCover()
+                coordinator.popToBack()
             }
             
         } message: {
@@ -47,12 +47,12 @@ struct EditItemServiceView: View {
         .alert("Save before leaving?",
                isPresented: $viewModel.showLeaveWithoutSavingAlert) {
             Button("Leave", role: .cancel) {
-                coordinator.dismissFullScreenCover()
+                coordinator.popToBack()
             }
             
             Button("Save", role: .destructive) {
                 viewModel.onSaveTapped {
-                    coordinator.dismissFullScreenCover()
+                    coordinator.popToBack()
                 }
             }
             
@@ -74,7 +74,7 @@ struct EditItemServiceView: View {
             HStack {
                 Button("") {
                     viewModel.onCloseTapped() {
-                        coordinator.dismissFullScreenCover()
+                        coordinator.popToBack()
                     }
                 }
                 .buttonStyle(.circle(.property1Cross))

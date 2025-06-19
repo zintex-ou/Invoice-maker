@@ -19,7 +19,7 @@ struct AddNewClientView: View {
             
             Button("Add new client") {
                 viewModel.onSaveTapped {
-                    coordinator.dismissFullScreenCover()
+                    coordinator.popToBack()
                 }
             }
             .buttonStyle(.main)
@@ -29,12 +29,12 @@ struct AddNewClientView: View {
         .alert("Save before leaving?",
                isPresented: $viewModel.showLeaveWithoutSavingAlert) {
             Button("Leave", role: .cancel) {
-                coordinator.dismissFullScreenCover()
+                coordinator.popToBack()
             }
             
             Button("Save", role: .destructive) {
                 viewModel.onSaveTapped {
-                    coordinator.dismissFullScreenCover()
+                    coordinator.popToBack()
                 }
             }
             
@@ -56,7 +56,7 @@ struct AddNewClientView: View {
             HStack {
                 Button("") {
                     viewModel.onCloseTapped {
-                        coordinator.dismissFullScreenCover()
+                        coordinator.popToBack()
                     }
                 }
                 .buttonStyle(.circle(.property1Cross))

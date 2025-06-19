@@ -1,18 +1,19 @@
 import SwiftUI
 
-struct CustomTextField: View {
-    @FocusState private var isFocused: Bool
+struct CustomTextField<Value: Hashable>: View {
+    @FocusState.Binding var focused: Value?
+    let equals: Value
     
     let title: String
     let placeholder: String
     let isRequired: Bool
     let keyboardType: UIKeyboardType
-   
+    
     @Binding var text: String
     @Binding var callError: Bool
     
     private var borderColor: Color {
-        if isFocused {
+        if focused == equals {
             return .violet4663FF
         } else if callError && isRequired {
             return .redDF0101
@@ -63,12 +64,11 @@ struct CustomTextField: View {
                 .foregroundStyle(.black)
                 .tint(.black)
                 .keyboardType(keyboardType)
-                .submitLabel(.return)
                 .textContentType(.emailAddress)
                 .submitLabel(.done)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-                .focused($isFocused)
+                .focused($focused, equals: equals)
                 .overlay(alignment: .trailing) {
                     Button {
                         text = ""
@@ -83,13 +83,24 @@ struct CustomTextField: View {
                                     .foregroundStyle(.violet4663FF)
                                     .frame(width: 20, height: 20)
                             }
-                            .opacity(isFocused && !text.isEmpty ? 1 : 0)
+                            .opacity(focused == equals && !text.isEmpty ? 1 : 0)
                             .animation(.linear(duration: 0.1), value: !text.isEmpty)
+                            .animation(.linear(duration: 0.1), value: focused == equals)
+                    }
+                }
+                .toolbar {
+                    if focused == equals {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button("Done") {
+                                focused = nil
+                            }
+                        }
                     }
                 }
                 .padding(.horizontal, 16)
         }
-        .animation(.linear(duration: 0.1), value: isFocused)
+        .animation(.linear(duration: 0.1), value: equals)
         .onChange(of: text) { _ in
             callError = false
         }
@@ -117,9 +128,17 @@ struct CustomTextField_Previews: PreviewProvider {
         @State private var phone = ""
         @State private var phoneError = false
         
+        @FocusState private var focusedField: FocusedField?
+        
+        enum FocusedField {
+            case name, phone
+        }
+        
         var body: some View {
             VStack(spacing: 12) {
                 CustomTextField(
+                    focused: $focusedField,
+                    equals: .name,
                     title: "Owner name",
                     placeholder: "",
                     isRequired: true,
@@ -129,6 +148,8 @@ struct CustomTextField_Previews: PreviewProvider {
                 )
                 
                 CustomTextField(
+                    focused: $focusedField,
+                    equals: .phone,
                     title: "Phone number",
                     placeholder: "",
                     isRequired: false,

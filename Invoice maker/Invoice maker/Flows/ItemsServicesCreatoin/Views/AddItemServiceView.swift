@@ -8,6 +8,12 @@ struct AddItemServiceView: View {
     
     @State var isDiscountPopShow = false
     
+    @FocusState private var focusedField: FocusedItemServiceField?
+    
+    enum FocusedItemServiceField {
+        case name, price, quantity, discount, tax
+    }
+    
     var name: String
     var currency: Currency
     var title: String
@@ -22,6 +28,8 @@ struct AddItemServiceView: View {
                     .padding(.bottom, 4)
                 
                 CustomTextField(
+                    focused: $focusedField,
+                    equals: .name,
                     title: name,
                     placeholder: "",
                     isRequired: true,
@@ -36,6 +44,8 @@ struct AddItemServiceView: View {
                     .padding(.bottom, 4)
                 
                 CustomTextField(
+                    focused: $focusedField,
+                    equals: .price,
                     title: "Price per unit (\(currency.rawValue))",
                     placeholder: "",
                     isRequired: true,
@@ -45,6 +55,8 @@ struct AddItemServiceView: View {
                 )
                 
                 CustomTextField(
+                    focused: $focusedField,
+                    equals: .quantity,
                     title: "Quantity of unit",
                     placeholder: "",
                     isRequired: false,
@@ -73,6 +85,8 @@ struct AddItemServiceView: View {
                 
                 if itemService.discountType != .none {
                     CustomTextField(
+                        focused: $focusedField,
+                        equals: .discount,
                         title: "Discount \(itemService.discountType == .percentage ? "(%)" : "(\(currency.rawValue))")",
                         placeholder: "",
                         isRequired: false,
@@ -83,6 +97,8 @@ struct AddItemServiceView: View {
                 }
                 
                 CustomTextField(
+                    focused: $focusedField,
+                    equals: .tax,
                     title: "Tax (%)",
                     placeholder: "",
                     isRequired: false,
