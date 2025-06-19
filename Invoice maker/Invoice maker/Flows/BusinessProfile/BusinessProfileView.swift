@@ -5,6 +5,12 @@ struct BusinessProfileView: View {
     @EnvironmentObject private var coordinator: Coordinator
     @AppStorage(Constants.isCreatedBusinessProfile) var isCreatedBusinessProfile: Bool = false
     
+    @FocusState private var focusedField: FocusedField?
+    
+    enum FocusedField {
+        case ownerName, mail, phoneNumber, contry, city, street, apatment, postalCode
+    }
+    
     init(viewModel: BusinessProfileViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -121,6 +127,8 @@ struct BusinessProfileView: View {
                 
                 VStack(spacing: 12) {
                     CustomTextField(
+                        focused: $focusedField,
+                        equals: .ownerName,
                         title: "Owner name",
                         placeholder: "",
                         isRequired: true,
@@ -130,6 +138,8 @@ struct BusinessProfileView: View {
                     )
                     
                     CustomTextField(
+                        focused: $focusedField,
+                        equals: .mail,
                         title: "E-mail",
                         placeholder: "",
                         isRequired: true,
@@ -139,6 +149,8 @@ struct BusinessProfileView: View {
                     )
                     
                     CustomTextField(
+                        focused: $focusedField,
+                        equals: .phoneNumber,
                         title: "Phone number",
                         placeholder: "",
                         isRequired: true,
@@ -165,6 +177,8 @@ struct BusinessProfileView: View {
                     
                     if viewModel.shouldShowFullList {
                         CustomTextField(
+                            focused: $focusedField,
+                            equals: .contry,
                             title: "Country",
                             placeholder: "",
                             isRequired: false,
@@ -174,6 +188,8 @@ struct BusinessProfileView: View {
                         )
                         
                         CustomTextField(
+                            focused: $focusedField,
+                            equals: .city,
                             title: "City",
                             placeholder: "",
                             isRequired: false,
@@ -183,6 +199,8 @@ struct BusinessProfileView: View {
                         )
                         
                         CustomTextField(
+                            focused: $focusedField,
+                            equals: .street,
                             title: "Street",
                             placeholder: "",
                             isRequired: false,
@@ -192,6 +210,8 @@ struct BusinessProfileView: View {
                         )
                         
                         CustomTextField(
+                            focused: $focusedField,
+                            equals: .apatment,
                             title: "Apartment",
                             placeholder: "",
                             isRequired: false,
@@ -201,6 +221,8 @@ struct BusinessProfileView: View {
                         )
                         
                         CustomTextField(
+                            focused: $focusedField,
+                            equals: .postalCode,
                             title: "Postal code",
                             placeholder: "",
                             isRequired: false,
@@ -223,7 +245,6 @@ struct BusinessProfileView: View {
             .transition(.move(edge: .bottom))
         }
         .scrollIndicators(.hidden)
-        .scrollDismissesKeyboard(.interactively)
     }
     
     private var bottomView: some View {

@@ -1,5 +1,5 @@
 import SwiftUI
-
+#warning("add focused state")
 struct AddItemServiceView: View {
     @Namespace var discoundPopover
     @Binding var nameError: Bool
@@ -21,37 +21,37 @@ struct AddItemServiceView: View {
                     .foregroundStyle(.black)
                     .padding(.bottom, 4)
                 
-                CustomTextField(
-                    title: name,
-                    placeholder: "",
-                    isRequired: true,
-                    keyboardType: .default,
-                    text: $itemService.name,
-                    callError: $nameError
-                )
+//                CustomTextField(
+//                    title: name,
+//                    placeholder: "",
+//                    isRequired: true,
+//                    keyboardType: .default,
+//                    text: $itemService.name,
+//                    callError: $nameError
+//                )
                 
                 Text(subtitle)
                     .font(.sans(style: .semiBold, size: 26))
                     .foregroundStyle(.black)
                     .padding(.bottom, 4)
                 
-                CustomTextField(
-                    title: "Price per unit (\(currency.rawValue))",
-                    placeholder: "",
-                    isRequired: true,
-                    keyboardType: .decimalPad,
-                    text: $itemService.price,
-                    callError: $priceError
-                )
-                
-                CustomTextField(
-                    title: "Quantity of unit",
-                    placeholder: "",
-                    isRequired: false,
-                    keyboardType: .decimalPad,
-                    text: $itemService.quantity,
-                    callError: .constant(false)
-                )
+//                CustomTextField(
+//                    title: "Price per unit (\(currency.rawValue))",
+//                    placeholder: "",
+//                    isRequired: true,
+//                    keyboardType: .decimalPad,
+//                    text: $itemService.price,
+//                    callError: $priceError
+//                )
+//                
+//                CustomTextField(
+//                    title: "Quantity of unit",
+//                    placeholder: "",
+//                    isRequired: false,
+//                    keyboardType: .decimalPad,
+//                    text: $itemService.quantity,
+//                    callError: .constant(false)
+//                )
                 
                 ZStack {
                     Button(itemService.discountType.rawValue) { isDiscountPopShow.toggle() }
@@ -72,24 +72,24 @@ struct AddItemServiceView: View {
                 }
                 
                 if itemService.discountType != .none {
-                    CustomTextField(
-                        title: "Discount \(itemService.discountType == .percentage ? "(%)" : "(\(currency.rawValue))")",
-                        placeholder: "",
-                        isRequired: false,
-                        keyboardType: .decimalPad,
-                        text: $itemService.discount,
-                        callError: .constant(false)
-                    )
+//                    CustomTextField(
+//                        title: "Discount \(itemService.discountType == .percentage ? "(%)" : "(\(currency.rawValue))")",
+//                        placeholder: "",
+//                        isRequired: false,
+//                        keyboardType: .decimalPad,
+//                        text: $itemService.discount,
+//                        callError: .constant(false)
+//                    )
                 }
                 
-                CustomTextField(
-                    title: "Tax (%)",
-                    placeholder: "",
-                    isRequired: false,
-                    keyboardType: .decimalPad,
-                    text: $itemService.tax,
-                    callError: .constant(false)
-                )
+//                CustomTextField(
+//                    title: "Tax (%)",
+//                    placeholder: "",
+//                    isRequired: false,
+//                    keyboardType: .decimalPad,
+//                    text: $itemService.tax,
+//                    callError: .constant(false)
+//                )
                 
                 Spacer()
             }

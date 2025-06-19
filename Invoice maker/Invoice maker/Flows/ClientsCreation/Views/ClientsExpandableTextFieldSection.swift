@@ -6,7 +6,13 @@ struct AddClientView: View {
     @Binding var client: ClientInput
     
     @Binding var isExpanded: Bool
+
+    @FocusState private var focusedField: FocusedField?
     
+    enum FocusedField {
+        case clientName, mail, phoneNumber, fax, contry, city, street, postalCode, appartment
+    }
+
     var body: some View {
         VStack {
             ClientsExpandableTextFieldSection(
@@ -17,7 +23,8 @@ struct AddClientView: View {
                         isRequired: true,
                         keyboardType: .default,
                         text: $client.clientName,
-                        showError: $nameError
+                        showError: $nameError,
+                        equals: FocusedField.clientName
                     ),
                     FormFieldSettings(
                         title: "E-mail",
@@ -25,7 +32,8 @@ struct AddClientView: View {
                         isRequired: true,
                         keyboardType: .emailAddress,
                         text: $client.email,
-                        showError: $eMailError
+                        showError: $eMailError,
+                        equals: FocusedField.mail
                     ),
                     FormFieldSettings(
                         title: "Phone number",
@@ -33,7 +41,8 @@ struct AddClientView: View {
                         isRequired: false,
                         keyboardType: .phonePad,
                         text: $client.phoneNumber,
-                        showError: .constant(false)
+                        showError: .constant(false),
+                        equals: FocusedField.phoneNumber
                     ),
                     FormFieldSettings(
                         title: "Fax",
@@ -41,7 +50,8 @@ struct AddClientView: View {
                         isRequired: false,
                         keyboardType: .default,
                         text: $client.fax,
-                        showError: .constant(false)
+                        showError: .constant(false),
+                        equals: FocusedField.fax
                     )
                 ],
                 extraFields: [
@@ -51,7 +61,8 @@ struct AddClientView: View {
                         isRequired: false,
                         keyboardType: .default,
                         text: $client.country,
-                        showError: .constant(false)
+                        showError: .constant(false),
+                        equals: FocusedField.contry
                     ),
                     FormFieldSettings(
                         title: "City",
@@ -59,7 +70,8 @@ struct AddClientView: View {
                         isRequired: false,
                         keyboardType: .default,
                         text: $client.city,
-                        showError: .constant(false)
+                        showError: .constant(false),
+                        equals: FocusedField.city
                     ),
                     
                     FormFieldSettings(
@@ -68,7 +80,8 @@ struct AddClientView: View {
                         isRequired: false,
                         keyboardType: .default,
                         text: $client.street,
-                        showError: .constant(false)
+                        showError: .constant(false),
+                        equals: FocusedField.street
                     ),
                     
                     FormFieldSettings(
@@ -77,7 +90,8 @@ struct AddClientView: View {
                         isRequired: false,
                         keyboardType: .default,
                         text: $client.apartment,
-                        showError: .constant(false)
+                        showError: .constant(false),
+                        equals: FocusedField.appartment
                     ),
                     
                     FormFieldSettings(
@@ -86,19 +100,23 @@ struct AddClientView: View {
                         isRequired: false,
                         keyboardType: .default,
                         text: $client.postalCode,
-                        showError: .constant(false)
+                        showError: .constant(false),
+                        equals: FocusedField.postalCode
                     )
                 ],
-                isExpanded: $isExpanded
+                isExpanded: $isExpanded,
+                focused: $focusedField
             )
         }
     }
 }
 
-private struct ClientsExpandableTextFieldSection: View {
-    let mainFields: [FormFieldSettings]
-    let extraFields: [FormFieldSettings]
+private struct ClientsExpandableTextFieldSection<Value: Hashable>: View {
+    let mainFields: [FormFieldSettings<Value>]
+    let extraFields: [FormFieldSettings<Value>]
     @Binding var isExpanded: Bool
+    
+    @FocusState.Binding var focused: Value?
     
     var body: some View {
         ScrollView {
@@ -106,6 +124,8 @@ private struct ClientsExpandableTextFieldSection: View {
                 ForEach(mainFields.indices, id: \.self) { index in
                     let field = mainFields[index]
                     CustomTextField(
+                        focused: $focused,
+                        equals: field.equals,
                         title: field.title,
                         placeholder: field.placeholder,
                         isRequired: field.isRequired,
@@ -121,6 +141,8 @@ private struct ClientsExpandableTextFieldSection: View {
                     ForEach(extraFields.indices, id: \.self) { index in
                         let field = extraFields[index]
                         CustomTextField(
+                            focused: $focused,
+                            equals: field.equals,
                             title: field.title,
                             placeholder: field.placeholder,
                             isRequired: field.isRequired,
