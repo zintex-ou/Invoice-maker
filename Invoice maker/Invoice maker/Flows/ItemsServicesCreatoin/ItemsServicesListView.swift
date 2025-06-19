@@ -21,8 +21,7 @@ struct ItemsServicesListView: View {
             }
             
             Button(viewModel.buttonTitle()) {
-                coordinator.presentFullScreenCover(id: AddNewItemServiceView.navigationID,
-                                                   content: { AddNewItemServiceView(viewModel: .init(offerType: viewModel.offerSelection)) })
+                coordinator.pushTo(id: AddNewItemServiceView.navigationID, destination: { AddNewItemServiceView(viewModel: .init(offerType: viewModel.offerSelection)) })
             }
             .buttonStyle(.main)
         }
@@ -110,11 +109,11 @@ struct ItemsServicesListView: View {
             VStack(spacing: 12) {
                 ForEach(viewModel.offerSelection == .items ? viewModel.items : viewModel.services, id: \.id) { item in
                     Button("") {
-                        coordinator.presentFullScreenCover(id: EditItemServiceView.navigationID) {
+                        coordinator.pushTo(id: EditItemServiceView.navigationID, destination: {
                             EditItemServiceView(
                                 viewModel: .init(itemService: item)
                             )
-                        }
+                        })
                     }
                     .buttonStyle(
                         .itemCell(
@@ -125,11 +124,11 @@ struct ItemsServicesListView: View {
                             total: item.price ?? "",
                             currency: .USD,
                             editAction: {
-                                coordinator.presentFullScreenCover(id: EditItemServiceView.navigationID) {
+                                coordinator.pushTo(id: EditItemServiceView.navigationID, destination: {
                                     EditItemServiceView(
                                         viewModel: .init(itemService: item)
                                     )
-                                }
+                                })
                             },
                             deleteAction: {
                                 viewModel.showDeleteAlert(for: item)

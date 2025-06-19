@@ -16,7 +16,7 @@ struct ClientsListView: View {
             }
             
             Button("Add new client") {
-                coordinator.presentFullScreenCover(id: AddNewClientView.navigationID, content: { AddNewClientView() })
+                coordinator.pushTo(id: AddNewClientView.navigationID, destination: { AddNewClientView() })
             }
             .buttonStyle(.main)
         }
@@ -103,22 +103,22 @@ struct ClientsListView: View {
             VStack(spacing: 12) {
                 ForEach(viewModel.clients, id: \.id) { client in
                     Button("") {
-                        coordinator.presentFullScreenCover(id: EditClientView.navigationID) {
+                        coordinator.pushTo(id: EditClientView.navigationID, destination: {
                             EditClientView(
                                 viewModel: .init(client: client)
                             )
-                        }
+                        })
                     }
                     .buttonStyle(
                         .clientCellWithActions(
                             clientName: client.clientName ?? "",
                             clientEmail: client.email ?? "",
                             editAction: {
-                                coordinator.presentFullScreenCover(id: EditClientView.navigationID) {
+                                coordinator.pushTo(id: EditClientView.navigationID, destination: {
                                     EditClientView(
                                         viewModel: .init(client: client)
                                     )
-                                }
+                                })
                             },
                             deleteAction: {
                                 viewModel.showDeleteAlert(for: client)

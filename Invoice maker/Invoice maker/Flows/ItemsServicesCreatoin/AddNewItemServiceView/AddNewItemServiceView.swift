@@ -23,7 +23,7 @@ struct AddNewItemServiceView: View {
             
             Button(viewModel.titleButtonTitle) {
                 viewModel.onSaveTapped {
-                    coordinator.dismissFullScreenCover()
+                    coordinator.popToBack()
                 }
             }
             .buttonStyle(.main)
@@ -33,12 +33,12 @@ struct AddNewItemServiceView: View {
         .alert("Save before leaving?",
                isPresented: $viewModel.showLeaveWithoutSavingAlert) {
             Button("Leave", role: .cancel) {
-                coordinator.dismissFullScreenCover()
+                coordinator.popToBack()
             }
             
             Button("Save", role: .destructive) {
                 viewModel.onSaveTapped {
-                    coordinator.dismissFullScreenCover()
+                    coordinator.popToBack()
                 }
             }
             

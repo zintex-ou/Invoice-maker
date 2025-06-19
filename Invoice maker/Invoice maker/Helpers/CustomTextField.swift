@@ -1,10 +1,6 @@
 import SwiftUI
 
 struct CustomTextField<Value: Hashable>: View {
-    enum FocusedField {
-        case ownerName
-    }
-    
     @FocusState.Binding var focused: Value?
     let equals: Value
     
@@ -68,7 +64,6 @@ struct CustomTextField<Value: Hashable>: View {
                 .foregroundStyle(.black)
                 .tint(.black)
                 .keyboardType(keyboardType)
-                .submitLabel(.return)
                 .textContentType(.emailAddress)
                 .submitLabel(.done)
                 .autocapitalization(.none)
