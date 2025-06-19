@@ -154,5 +154,6 @@ private struct ClientsExpandableTextFieldSection<Value: Hashable>: View {
                 }
             }
         }
+        .scrollDismissesKeyboard(.interactively)
     }
 }

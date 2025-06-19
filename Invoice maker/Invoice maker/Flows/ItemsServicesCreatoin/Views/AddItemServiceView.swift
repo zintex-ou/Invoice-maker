@@ -110,5 +110,6 @@ struct AddItemServiceView: View {
                 Spacer()
             }
         }
+        .scrollDismissesKeyboard(.interactively)
     }
 }
