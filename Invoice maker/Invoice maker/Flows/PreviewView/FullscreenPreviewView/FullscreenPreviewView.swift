@@ -9,9 +9,11 @@ struct FullscreenPreviewView: View {
         ZStack(alignment: .bottom) {
             Color.grayF5F5F5
             
-            TemplateView(
-                type: type,
-                templateModel: model
+            GeneralTemplateView(
+                viewModel: .init(
+                    templateModel: model,
+                    type: type
+                )
             )
             
             VStack {

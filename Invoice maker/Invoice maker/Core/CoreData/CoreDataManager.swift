@@ -280,7 +280,7 @@ extension CoreDataManager {
     func deleteInvoice(byID id: UUID) async throws {
         try await viewContext.perform {
             let req: NSFetchRequest<InvoiceEntity> = InvoiceEntity.fetchRequest()
-            req.predicate  = NSPredicate(format: "id == %@", id as CVarArg)
+            req.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             req.fetchLimit = 1
 
             if let toDelete = try self.viewContext.fetch(req).first {

@@ -8,10 +8,13 @@ struct PreviewView: View {
         ZStack(alignment: .bottom) {
             Color.grayF5F5F5
             
-            TemplateView(
-                type: viewModel.type,
-                templateModel: viewModel.invoice
+            GeneralTemplateView(
+                viewModel: .init(
+                    templateModel: viewModel.invoice,
+                    type: viewModel.type
+                )
             )
+            .scrollDisabled(true)
             
             VStack {
                 navigationBar
