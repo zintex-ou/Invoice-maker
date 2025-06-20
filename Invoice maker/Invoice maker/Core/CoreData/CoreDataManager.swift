@@ -210,6 +210,8 @@ extension CoreDataManager {
             invoice.isPaid = input.isPaid
             invoice.client = client
             invoice.total = input.total
+            invoice.pdfFilePath = input.pdfFilePath
+            invoice.type = input.type.rawValue
             
             for itemInput in input.itemOrServices {
                 let item = ItemServiceEntity(context: self.viewContext)
@@ -242,9 +244,11 @@ extension CoreDataManager {
             invoice.tax = input.tax
             invoice.isPaid = input.isPaid
             invoice.total = input.total
+            invoice.pdfFilePath = input.pdfFilePath
+            invoice.type = input.type.rawValue
             
             let client = try self.viewContext.existingObject(with: input.client.objectID) as! ClientEntity
-            invoice.client        = client
+            invoice.client = client
             
             for itemInput in input.itemOrServices {
                 let item = ItemServiceEntity(context: self.viewContext)
@@ -270,6 +274,19 @@ extension CoreDataManager {
             let toDelete = try self.viewContext.existingObject(with: invoice.objectID)
             self.viewContext.delete(toDelete)
             try self.viewContext.save()
+        }
+    }
+    
+    func deleteInvoice(byID id: UUID) async throws {
+        try await viewContext.perform {
+            let req: NSFetchRequest<InvoiceEntity> = InvoiceEntity.fetchRequest()
+            req.predicate  = NSPredicate(format: "id == %@", id as CVarArg)
+            req.fetchLimit = 1
+
+            if let toDelete = try self.viewContext.fetch(req).first {
+                self.viewContext.delete(toDelete)
+                try self.viewContext.save()
+            }
         }
     }
 }

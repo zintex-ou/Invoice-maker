@@ -1,4 +1,4 @@
-enum TemplateType: CaseIterable {
+enum TemplateType: String, CaseIterable {
     case topDark
     case cleanWhite
     case minimal

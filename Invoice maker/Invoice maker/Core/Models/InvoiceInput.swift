@@ -11,4 +11,6 @@ struct InvoiceInput {
     let isPaid: Bool
     let total: Double
     let itemOrServices: [ItemServiceInput]
+    let pdfFilePath: String
+    let type: TemplateType
 }

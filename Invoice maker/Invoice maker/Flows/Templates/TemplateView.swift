@@ -27,20 +27,14 @@ struct TemplateView: View {
             let a4Size = CGSize(width: 595, height: 842)
             let scale = min(screenSize.width / a4Size.width,
                             screenSize.height / a4Size.height) * 0.9
-            
-            ZStack {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(.white)
-                    .shadow(color: .black.opacity(0.15),
-                            radius: 12, x: 0, y: 8)
-                
+            let topPadding = (screenSize.height / scale - a4Size.height) / 2
+            ScrollView {
                 content()
                     .frame(width: a4Size.width, height: a4Size.height)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .padding(.vertical, topPadding)
+                    .scaleEffect(scale)
             }
-            .scaleEffect(scale)
             .frame(width: screenSize.width, height: screenSize.height)
-            .background(Color.gray.ignoresSafeArea())
         }
     }
     
@@ -49,7 +43,7 @@ struct TemplateView: View {
         switch type {
         case .topDark:
             TopDarkTemplateView(viewModel: topDarkTemplateViewModel)
-            
+
         case .cleanWhite:
             СleanWhiteTemplateView(viewModel: cleanWhiteTemplateViewModel)
             
