@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct СleanWhiteTemplateView: View {
-    @StateObject var viewModel: СleanWhiteTemplateViewModel
-    
+struct MinimalTemplateView: View {
+    @StateObject var viewModel: GeneralTemplateViewModel
+ 
     private let a4Size = CGSize(width: 595, height: 842)
     
     var body: some View {
@@ -27,7 +27,7 @@ struct СleanWhiteTemplateView: View {
     @ViewBuilder
     private func page(at index: Int) -> some View {
         if index == 0 {
-            СleanWhiteTemplateFirstPageView(
+            MinimalTemplateFirstPageView(
                 templateModel: .init(
                     id: viewModel.templateModel.id,
                     header:  viewModel.templateModel.header,
@@ -38,7 +38,7 @@ struct СleanWhiteTemplateView: View {
                 isWithSummary: viewModel.pages.1
             )
         } else if index == viewModel.pages.0.count - 1 {
-            СleanWhiteTemplateLastPageView(
+            MinimalTemplateLastPageView(
                 templateModel: .init(
                     id: viewModel.templateModel.id,
                     header:  viewModel.templateModel.header,
@@ -49,7 +49,7 @@ struct СleanWhiteTemplateView: View {
                 startIndex: viewModel.startIndices[viewModel.currentPage]
             )
         } else {
-            СleanWhiteTemplateContinuationPageView(
+            MinimalTemplateContinuationView(
                 items: viewModel.pages.0[viewModel.currentPage],
                 startIndex: viewModel.startIndices[viewModel.currentPage],
                 customColor: .constant(viewModel.customColor),

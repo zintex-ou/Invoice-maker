@@ -30,31 +30,31 @@ final class PDFSaveService {
     ) throws -> (pageCount: Int, pageRenderer: (Int) -> AnyView) {
         switch type {
         case .topDark:
-            let vm = TopDarkTemplateViewModel(templateModel: model)
+            let vm = GeneralTemplateViewModel(templateModel: model, type: .topDark)
             return (
                 vm.pages.0.count,
                 makeTopDarkRenderer(vm: vm, color: customColor)
             )
         case .cleanWhite:
-            let vm = СleanWhiteTemplateViewModel(templateModel: model)
+            let vm = GeneralTemplateViewModel(templateModel: model, type: .cleanWhite)
             return (
                 vm.pages.0.count,
                 makeCleanWhiteRenderer(vm: vm, color: customColor)
             )
         case .minimal:
-            let vm = MinimalTemplateViewModel(templateModel: model)
+            let vm = GeneralTemplateViewModel(templateModel: model, type: .minimal)
             return (
                 vm.pages.0.count,
                 makeMinimalRenderer(vm: vm, color: customColor)
             )
         case .classic:
-            let vm = ClassicTemplateViewModel(templateModel: model)
+            let vm = GeneralTemplateViewModel(templateModel: model, type: .classic)
             return (
                 vm.pages.0.count,
                 makeClassicRenderer(vm: vm, color: customColor)
             )
         case .corporate:
-            let vm = CorporateTemplateViewModel(templateModel: model)
+            let vm = GeneralTemplateViewModel(templateModel: model, type: .corporate)
             return (
                 vm.pages.0.count,
                 makeCorporateRenderer(vm: vm, color: customColor)
@@ -63,7 +63,7 @@ final class PDFSaveService {
     }
     
     private func makeTopDarkRenderer(
-        vm: TopDarkTemplateViewModel,
+        vm: GeneralTemplateViewModel,
         color: Color
     ) -> (Int) -> AnyView {
         return { idx in
@@ -100,7 +100,7 @@ final class PDFSaveService {
     }
     
     private func makeCleanWhiteRenderer(
-        vm: СleanWhiteTemplateViewModel,
+        vm: GeneralTemplateViewModel,
         color: Color
     ) -> (Int) -> AnyView {
         return { idx in
@@ -137,7 +137,7 @@ final class PDFSaveService {
     }
     
     private func makeMinimalRenderer(
-        vm: MinimalTemplateViewModel,
+        vm: GeneralTemplateViewModel,
         color: Color
     ) -> (Int) -> AnyView {
         return { idx in
@@ -174,7 +174,7 @@ final class PDFSaveService {
     }
     
     private func makeClassicRenderer(
-        vm: ClassicTemplateViewModel,
+        vm: GeneralTemplateViewModel,
         color: Color
     ) -> (Int) -> AnyView {
         return { idx in
@@ -211,7 +211,7 @@ final class PDFSaveService {
     }
     
     private func makeCorporateRenderer(
-        vm: CorporateTemplateViewModel,
+        vm: GeneralTemplateViewModel,
         color: Color
     ) -> (Int) -> AnyView {
         return { idx in

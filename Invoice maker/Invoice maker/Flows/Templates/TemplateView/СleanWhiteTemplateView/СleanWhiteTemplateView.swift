@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct TopDarkTemplateView: View {
-    @StateObject var viewModel: TopDarkTemplateViewModel
-
+struct СleanWhiteTemplateView: View {
+    @StateObject var viewModel: GeneralTemplateViewModel
+    
     private let a4Size = CGSize(width: 595, height: 842)
-
+    
     var body: some View {
         LazyVStack(spacing: 24) {
             ForEach(viewModel.pages.0.indices, id: \.self) { index in
@@ -23,11 +23,11 @@ struct TopDarkTemplateView: View {
             }
         }
     }
-
+    
     @ViewBuilder
     private func page(at index: Int) -> some View {
         if index == 0 {
-            TopDarkTemplateFirstPageView(
+            СleanWhiteTemplateFirstPageView(
                 templateModel: .init(
                     id: viewModel.templateModel.id,
                     header:  viewModel.templateModel.header,
@@ -38,7 +38,7 @@ struct TopDarkTemplateView: View {
                 isWithSummary: viewModel.pages.1
             )
         } else if index == viewModel.pages.0.count - 1 {
-            TopDarkTemplateLastPageView(
+            СleanWhiteTemplateLastPageView(
                 templateModel: .init(
                     id: viewModel.templateModel.id,
                     header:  viewModel.templateModel.header,
@@ -46,13 +46,13 @@ struct TopDarkTemplateView: View {
                     items:   viewModel.pages.0[index]
                 ),
                 customColor: .constant(viewModel.customColor),
-                startIndex: viewModel.startIndices[index]
+                startIndex: viewModel.startIndices[viewModel.currentPage]
             )
         } else {
-            TopDarkTemplateContinuationPageView(
-                items: viewModel.pages.0[index],
-                startIndex:  viewModel.startIndices[index],
-                customColor: .constant(viewModel.customColor)
+            СleanWhiteTemplateContinuationPageView(
+                items: viewModel.pages.0[viewModel.currentPage],
+                startIndex: viewModel.startIndices[viewModel.currentPage],
+                customColor: .constant(viewModel.customColor),
             )
         }
     }

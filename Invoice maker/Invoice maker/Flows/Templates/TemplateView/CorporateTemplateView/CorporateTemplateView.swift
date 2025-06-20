@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct ClassicTemplateView: View {
-    @StateObject var viewModel: ClassicTemplateViewModel
+struct CorporateTemplateView: View {
+    @StateObject var viewModel: GeneralTemplateViewModel
     
     private let a4Size = CGSize(width: 595, height: 842)
     
@@ -27,7 +27,7 @@ struct ClassicTemplateView: View {
     @ViewBuilder
     private func page(at index: Int) -> some View {
         if index == 0 {
-            ClassicTemplateFirstPageView(
+            CorporateTemplateFirstPageView(
                 templateModel: .init(
                     id: viewModel.templateModel.id,
                     header:  viewModel.templateModel.header,
@@ -38,7 +38,7 @@ struct ClassicTemplateView: View {
                 isWithSummary: viewModel.pages.1
             )
         } else if index == viewModel.pages.0.count - 1 {
-            ClassicTemplateLastPageView(
+            CorporateTemplateLastPageView(
                 templateModel: .init(
                     id: viewModel.templateModel.id,
                     header:  viewModel.templateModel.header,
@@ -49,7 +49,7 @@ struct ClassicTemplateView: View {
                 startIndex: viewModel.startIndices[viewModel.currentPage]
             )
         } else {
-            ClassicTemplateContinuationView(
+            CorporateTemplateContinuationView(
                 items: viewModel.pages.0[viewModel.currentPage],
                 startIndex: viewModel.startIndices[viewModel.currentPage],
                 customColor: .constant(viewModel.customColor),

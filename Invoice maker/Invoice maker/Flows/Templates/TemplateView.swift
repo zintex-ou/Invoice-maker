@@ -3,22 +3,10 @@ import SwiftUI
 struct TemplateView: View {
     let type: TemplateType
     let templateModel: InvoiceTemplateModel
-    
-    @StateObject private var topDarkTemplateViewModel: TopDarkTemplateViewModel
-    @StateObject private var cleanWhiteTemplateViewModel: СleanWhiteTemplateViewModel
-    @StateObject private var minimalTemplateViewModel: MinimalTemplateViewModel
-    @StateObject private var corporateTemplateViewModel: CorporateTemplateViewModel
-    @StateObject private var classicTemplateViewModel: ClassicTemplateViewModel
 
     init(type: TemplateType, templateModel: InvoiceTemplateModel) {
         self.type = type
         self.templateModel = templateModel
-
-        _topDarkTemplateViewModel = StateObject(wrappedValue: TopDarkTemplateViewModel(templateModel: templateModel))
-        _cleanWhiteTemplateViewModel = StateObject(wrappedValue: СleanWhiteTemplateViewModel(templateModel: templateModel))
-        _minimalTemplateViewModel = StateObject(wrappedValue: MinimalTemplateViewModel(templateModel: templateModel))
-        _corporateTemplateViewModel = StateObject(wrappedValue: CorporateTemplateViewModel(templateModel: templateModel))
-        _classicTemplateViewModel = StateObject(wrappedValue: ClassicTemplateViewModel(templateModel: templateModel))
     }
     
     var body: some View {
@@ -42,19 +30,19 @@ struct TemplateView: View {
     private func content() -> some View {
         switch type {
         case .topDark:
-            TopDarkTemplateView(viewModel: topDarkTemplateViewModel)
+            TopDarkTemplateView(viewModel: .init(templateModel: templateModel, type: .topDark))
 
         case .cleanWhite:
-            СleanWhiteTemplateView(viewModel: cleanWhiteTemplateViewModel)
+            СleanWhiteTemplateView(viewModel: .init(templateModel: templateModel, type: .cleanWhite))
             
         case .minimal:
-            MinimalTemplateView(viewModel: minimalTemplateViewModel)
+            MinimalTemplateView(viewModel: .init(templateModel: templateModel, type: .minimal))
             
         case .classic:
-            ClassicTemplateView(viewModel: classicTemplateViewModel)
+            ClassicTemplateView(viewModel: .init(templateModel: templateModel, type: .classic))
             
         case .corporate:
-            CorporateTemplateView(viewModel: corporateTemplateViewModel)
+            CorporateTemplateView(viewModel: .init(templateModel: templateModel, type: .corporate))
         }
     }
 }
