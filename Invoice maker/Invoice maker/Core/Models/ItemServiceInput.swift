@@ -1,6 +1,7 @@
 import Foundation
 
 struct ItemServiceInput {
+    let id: UUID
     var isItem: Bool
     var name: String
     var price: String

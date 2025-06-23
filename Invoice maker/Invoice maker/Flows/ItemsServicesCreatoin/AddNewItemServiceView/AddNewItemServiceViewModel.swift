@@ -27,6 +27,7 @@ final class AddNewItemServiceViewModel: ObservableObject {
         self.subtitle1 = offerType == .items ? "Item info" : "Service info"
         self.subtitle2 = offerType == .items ? "Item price" : "Service price"
         self.itemServiceInput = .init(
+            id: .init(),
             isItem: offerType == .items,
             name: "",
             price: "",

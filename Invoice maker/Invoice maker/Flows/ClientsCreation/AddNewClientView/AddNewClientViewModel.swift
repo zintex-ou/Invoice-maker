@@ -20,6 +20,7 @@ final class AddNewClientViewModel: ObservableObject {
     init(coreDataManager: CoreDataManager = .shared) {
         self.coreDataManager = coreDataManager
         self.clientInput = .init(
+            id: .init(),
             clientName: "",
             email: "",
             phoneNumber: "",

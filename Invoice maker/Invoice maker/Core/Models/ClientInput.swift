@@ -1,6 +1,7 @@
 import Foundation
 
 struct ClientInput {
+    let id: UUID
     var clientName: String
     var email: String
     var phoneNumber: String

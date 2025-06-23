@@ -91,7 +91,7 @@ extension CoreDataManager {
     func createClient(input: ClientInput) async throws -> ClientEntity {
         try await viewContext.perform {
             let client = ClientEntity(context: self.viewContext)
-            client.id = UUID()
+            client.id = input.id
             client.clientName = input.clientName
             client.email = input.email
             client.phoneNumber = input.phoneNumber
@@ -147,7 +147,7 @@ extension CoreDataManager {
     func createItemOrService(input: ItemServiceInput) async throws -> ItemServiceEntity {
         try await viewContext.perform {
             let item = ItemServiceEntity(context: self.viewContext)
-            item.id = UUID()
+            item.id = input.id
             item.isItem = input.isItem
             item.name = input.name
             item.price = input.price
@@ -198,9 +198,19 @@ extension CoreDataManager {
     
     func createInvoice(input: InvoiceInput) async throws -> InvoiceEntity {
         try await viewContext.perform {
-            let client = try self.viewContext.existingObject(with: input.client.objectID) as! ClientEntity
+            let request: NSFetchRequest<ClientEntity> = ClientEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", input.id as CVarArg)
+            request.fetchLimit = 1
+            
+            guard let client = try self.viewContext.fetch(request).first else {
+                throw NSError(
+                    domain: "AppErrorDomain",
+                    code: 404,
+                    userInfo: [NSLocalizedDescriptionKey: "Client with id \(input.id) not found"]
+                )
+            }
             let invoice = InvoiceEntity(context: self.viewContext)
-            invoice.id = UUID()
+            invoice.id = input.id
             invoice.invoiceNumber = input.number
             invoice.invoiceDate = input.invoiceDate
             invoice.dueDate = input.dueDate
@@ -210,10 +220,12 @@ extension CoreDataManager {
             invoice.isPaid = input.isPaid
             invoice.client = client
             invoice.total = input.total
+            invoice.pdfFilePath = input.pdfFilePath
+            invoice.type = input.type.rawValue
             
             for itemInput in input.itemOrServices {
                 let item = ItemServiceEntity(context: self.viewContext)
-                item.id = UUID()
+                item.id = itemInput.id
                 item.isItem = itemInput.isItem
                 item.name = itemInput.name
                 item.price = itemInput.price
@@ -230,6 +242,7 @@ extension CoreDataManager {
         }
     }
     
+    @discardableResult
     func updateInvoice(_ invoice: InvoiceEntity,
                        input: InvoiceInput) async throws -> InvoiceEntity {
         try await viewContext.perform {
@@ -242,13 +255,25 @@ extension CoreDataManager {
             invoice.tax = input.tax
             invoice.isPaid = input.isPaid
             invoice.total = input.total
+            invoice.pdfFilePath = input.pdfFilePath
+            invoice.type = input.type.rawValue
             
-            let client = try self.viewContext.existingObject(with: input.client.objectID) as! ClientEntity
-            invoice.client        = client
+            let request: NSFetchRequest<ClientEntity> = ClientEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", input.id as CVarArg)
+            request.fetchLimit = 1
+            
+            guard let client = try self.viewContext.fetch(request).first else {
+                throw NSError(
+                    domain: "AppErrorDomain",
+                    code: 404,
+                    userInfo: [NSLocalizedDescriptionKey: "Client with id \(input.id) not found"]
+                )
+            }
+            invoice.client = client
             
             for itemInput in input.itemOrServices {
                 let item = ItemServiceEntity(context: self.viewContext)
-                item.id = UUID()
+                item.id = itemInput.id
                 item.isItem = itemInput.isItem
                 item.name = itemInput.name
                 item.price = itemInput.price
@@ -270,6 +295,19 @@ extension CoreDataManager {
             let toDelete = try self.viewContext.existingObject(with: invoice.objectID)
             self.viewContext.delete(toDelete)
             try self.viewContext.save()
+        }
+    }
+    
+    func deleteInvoice(byID id: UUID) async throws {
+        try await viewContext.perform {
+            let req: NSFetchRequest<InvoiceEntity> = InvoiceEntity.fetchRequest()
+            req.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            req.fetchLimit = 1
+
+            if let toDelete = try self.viewContext.fetch(req).first {
+                self.viewContext.delete(toDelete)
+                try self.viewContext.save()
+            }
         }
     }
 }

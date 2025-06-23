@@ -36,6 +36,7 @@ final class EditItemServiceViewModel: ObservableObject {
         self.subtitle1 = itemService.isItem ? "Item info" : "Service info"
         self.subtitle2 = itemService.isItem ? "Item price" : "Service price"
         self.itemServiceInput = .init(
+            id: .init(),
             isItem: itemService.isItem,
             name: itemService.name ?? "",
             price: itemService.price ?? "",

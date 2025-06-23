@@ -3,16 +3,17 @@ import SwiftUI
 
 final class ContactSheet: NSObject, MFMailComposeViewControllerDelegate {
     static let shared = ContactSheet()
-
+    
     var closeAction: (() -> Void)?
     private var isContactsShown = false
     private let application: UIApplication = .shared
+    private var pdfAttachment: (data: Data, fileName: String)?
 
     override private init() {}
 
     func presentContactSheet() {
         guard !isContactsShown else { return }
-
+        
         if !MFMailComposeViewController.canSendMail() {
             presentAlert(
                 title: "Mail not available",
@@ -23,14 +24,14 @@ final class ContactSheet: NSObject, MFMailComposeViewControllerDelegate {
             return
         }
         isContactsShown = true
-
+        
         let picker = MFMailComposeViewController()
         picker.setToRecipients([AppConstants.getValue(.mailAppUrl)])
         picker.setSubject(application.appName)
         picker.mailComposeDelegate = self
         UIApplication.shared.topViewController?.present(picker, animated: true)
     }
-
+    
     func mailComposeController(
         _ controller: MFMailComposeViewController,
         didFinishWith result: MFMailComposeResult,
@@ -39,6 +40,45 @@ final class ContactSheet: NSObject, MFMailComposeViewControllerDelegate {
         controller.dismiss(animated: true)
         isContactsShown = false
         closeAction?()
+    }
+    
+    func presentContactSheetWithPdf(
+        pdfData: Data? = nil,
+        fileName: String = ""
+    ) {
+        guard !isContactsShown else { return }
+        
+        if !MFMailComposeViewController.canSendMail() {
+            presentAlert(
+                title: "Mail not available",
+                message: "Your default Mail account is not set up on this iPhone. You can set up your Mail account or send an email manually to \(AppConstants.getValue(.email))",
+                primaryAction: .CinfigureMail,
+                secondaryAction: .Cancel
+            )
+            return
+        }
+        isContactsShown = true
+        
+        if let data = pdfData {
+            pdfAttachment = (data: data, fileName: fileName)
+        } else {
+            pdfAttachment = nil
+        }
+        
+        let picker = MFMailComposeViewController()
+        picker.setToRecipients([AppConstants.getValue(.mailAppUrl)])
+        picker.setSubject(application.appName)
+        picker.mailComposeDelegate = self
+        
+        if let attachment = pdfAttachment {
+            picker.addAttachmentData(
+                attachment.data,
+                mimeType: "application/pdf",
+                fileName: attachment.fileName
+            )
+        }
+        
+        UIApplication.shared.topViewController?.present(picker, animated: true)
     }
 }
 
