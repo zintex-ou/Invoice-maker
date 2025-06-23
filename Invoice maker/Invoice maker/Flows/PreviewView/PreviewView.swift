@@ -3,6 +3,7 @@ import SwiftUI
 struct PreviewView: View {
     @EnvironmentObject private var coordinator: Coordinator
     @StateObject var viewModel: PreviewViewModel
+    @Namespace var paidPopover
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -11,7 +12,7 @@ struct PreviewView: View {
             GeneralTemplateView(
                 viewModel: .init(
                     templateModel: viewModel.invoice,
-                    type: viewModel.type
+                    type: viewModel.invoiceInput.type
                 )
             )
             .scrollDisabled(true)
@@ -45,7 +46,7 @@ struct PreviewView: View {
                 Spacer()
                 
                 Button {
-                    coordinator.pushTo(id: FullscreenPreviewView.navigationID, destination: { FullscreenPreviewView(model: viewModel.invoice, type: viewModel.type) })
+                    coordinator.pushTo(id: FullscreenPreviewView.navigationID, destination: { FullscreenPreviewView(model: viewModel.invoice, type: viewModel.invoiceInput.type) })
                 } label: {
                     Text("Preview")
                         .font(.sans(style: .regular, size: 16))
@@ -85,9 +86,41 @@ struct PreviewView: View {
                 
                 Spacer()
                 
-                Text("\(viewModel.invoice.summary.currency.rawValue) \(viewModel.invoice.summary.total)")
-                    .font(.sans(style: .semiBold, size: 16))
-                    .foregroundStyle(.black)
+                VStack(spacing: 4) {
+                    Text("\(viewModel.invoice.summary.currency.rawValue) \(viewModel.invoice.summary.total)")
+                        .font(.sans(style: .semiBold, size: 16))
+                        .foregroundStyle(.black)
+                    
+                    Menu {
+                        Button("Unpaid") {
+                            viewModel.isPaid = false
+                            viewModel.isPaidPopShow  = false
+                            Task {
+                                await viewModel.updateInvoice()
+                            }
+                        }
+                        
+                        Button("Paid") {
+                            viewModel.isPaid = true
+                            viewModel.isPaidPopShow  = false
+                            Task {
+                                await viewModel.updateInvoice()
+                            }
+                        }
+                    } label: {
+                        Button(viewModel.isPaid ? "Paid" : "Unpaid") {
+                            viewModel.isPaidPopShow = true
+                        }
+                        .buttonStyle(
+                            .paid(
+                                isPaid: $viewModel.isPaid,
+                                isPopoverShown: viewModel.isPaidPopShow,
+                                namespace: paidPopover,
+                                id: viewModel.popoverID
+                            )
+                        )
+                    }
+                }
             }
             
             Button("Send invoice") {

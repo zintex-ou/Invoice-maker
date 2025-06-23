@@ -3,20 +3,47 @@ import SwiftUI
 final class PreviewViewModel: ObservableObject {
     var invoice: InvoiceTemplateModel
     var pdfFilePath: URL
-    var type: TemplateType
     var alert: AlertModel = .init(title: "", subtitle: "")
+    var invoiceInput: InvoiceInput
+    private var invoiceEntity: InvoiceEntity
     
     @Published var shouldShowError: Bool = false
+    @Published var isPaid: Bool = false
+    @Published var isPaidPopShow = false
+    @Published var popoverID: Int = 1
     
-    init(invoice: InvoiceTemplateModel, pdfFilePath: URL, type: TemplateType) {
-        self.invoice = invoice
-        self.pdfFilePath = pdfFilePath
-        self.type = type
+    init(
+           invoiceInput: InvoiceInput,
+           invoiceEntity: InvoiceEntity,
+           pdfFilePath: URL
+       ) async {
+           self.invoiceInput = invoiceInput
+           self.invoiceEntity = invoiceEntity
+           self.pdfFilePath = pdfFilePath
+
+           self.invoice = await invoiceEntity.toTemplateModel()
+       }
+    
+    func updateInvoice() async {
+        do {
+            var input = invoiceInput
+            input.isPaid = isPaid
+            try await CoreDataManager.shared.updateInvoice(
+                invoiceEntity,
+                input: input
+            )
+        } catch {
+            self.alert = .init(
+                title: "Failed to update invoice",
+                subtitle: "An error occurred. Please try again later."
+            )
+            shouldShowError = true
+        }
     }
     
     func deleteInvoice(completion: () -> Void) async {
         do {
-            try await CoreDataManager.shared.deleteInvoice(byID: invoice.id)
+            try await CoreDataManager.shared.deleteInvoice(invoiceEntity)
             completion()
         } catch {
             self.alert = .init(

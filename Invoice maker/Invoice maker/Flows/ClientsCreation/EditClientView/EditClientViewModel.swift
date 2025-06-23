@@ -22,6 +22,7 @@ final class EditClientViewModel: ObservableObject {
          coreDataManager: CoreDataManager = .shared) {
         self.client = client
         self.clientInput = .init(
+            id: .init(),
             clientName: client.clientName ?? "",
             email: client.email ?? "",
             phoneNumber: client.phoneNumber ?? "",
