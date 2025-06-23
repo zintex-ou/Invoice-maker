@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct GeneralTemplateView: View {
-    @StateObject var viewModel: GeneralTemplateViewModel
+    @ObservedObject var viewModel: GeneralTemplateViewModel
     private let a4Size = CGSize(width: 595, height: 842)
 
     var body: some View {

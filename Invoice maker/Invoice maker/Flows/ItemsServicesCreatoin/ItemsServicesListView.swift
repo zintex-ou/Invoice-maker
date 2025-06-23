@@ -21,7 +21,14 @@ struct ItemsServicesListView: View {
             }
             
             Button(viewModel.buttonTitle()) {
-                coordinator.pushTo(id: AddNewItemServiceView.navigationID, destination: { AddNewItemServiceView(viewModel: .init(offerType: viewModel.offerSelection)) })
+                coordinator.pushTo(
+                    id: AddNewItemServiceView.navigationID,
+                    destination: { AddNewItemServiceView(
+                        viewModel: .init(
+                            offerType: viewModel.offerSelection
+                        )
+                    )
+                    })
             }
             .buttonStyle(.main)
         }

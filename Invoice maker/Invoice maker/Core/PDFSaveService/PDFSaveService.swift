@@ -1,9 +1,6 @@
 import SwiftUI
 
 final class PDFSaveService {
-    static let shared = PDFSaveService()
-    private init() {}
-    
     private let pageSize = CGSize(width: 595, height: 842)
     
     @discardableResult

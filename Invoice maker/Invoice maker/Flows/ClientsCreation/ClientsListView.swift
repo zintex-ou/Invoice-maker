@@ -16,7 +16,11 @@ struct ClientsListView: View {
             }
             
             Button("Add new client") {
-                coordinator.pushTo(id: AddNewClientView.navigationID, destination: { AddNewClientView() })
+                coordinator
+                    .pushTo(
+                        id: AddNewClientView.navigationID,
+                        destination: { AddNewClientView()
+                        })
             }
             .buttonStyle(.main)
         }

@@ -5,6 +5,7 @@ final class PreviewViewModel: ObservableObject {
     var pdfFilePath: URL
     var alert: AlertModel = .init(title: "", subtitle: "")
     var invoiceInput: InvoiceInput
+    var isWithStatusChange: Bool
     private var invoiceEntity: InvoiceEntity
     
     @Published var shouldShowError: Bool = false
@@ -15,14 +16,24 @@ final class PreviewViewModel: ObservableObject {
     init(
            invoiceInput: InvoiceInput,
            invoiceEntity: InvoiceEntity,
-           pdfFilePath: URL
+           pdfFilePath: URL,
+           isWithStatusChange: Bool = false
        ) async {
            self.invoiceInput = invoiceInput
            self.invoiceEntity = invoiceEntity
            self.pdfFilePath = pdfFilePath
-
+           self.isWithStatusChange = isWithStatusChange
+           
            self.invoice = await invoiceEntity.toTemplateModel()
        }
+    
+    func dueDate() -> String {
+        "Due date: \(invoice.header.invoiceInfo.dueDate)"
+    }
+    
+    func total() -> String {
+        "\(invoice.summary.currency.rawValue) \(invoice.summary.total)"
+    }
     
     func updateInvoice() async {
         do {
