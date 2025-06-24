@@ -43,7 +43,8 @@ final class EditItemServiceViewModel: ObservableObject {
             quantity: itemService.quantity ?? "1",
             discountType: DiscountType(rawValue: itemService.discountType ?? "None") ?? .none,
             discount: itemService.discount ?? "0",
-            tax: itemService.tax ?? "0"
+            tax: itemService.tax ?? "0",
+            currency: .USD
         )
         
         self.coreDataManager = coreDataManager

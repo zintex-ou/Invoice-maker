@@ -9,9 +9,10 @@ final class ItemsServicesListViewModel: ObservableObject {
     @Published var errorAlertSubtitle = ""
     @Published var itemToDelete: ItemServiceEntity? = nil
     @Published var offerSelection: SegmentOfferType = .items
+    @Published var selectedItemService: [ItemServiceEntity] = []
     
     enum ViewType {
-        case choiseItemsOrServices
+        case choiseItemsOrServices(Currency)
         case editItemsOrServices
     }
     
@@ -19,8 +20,9 @@ final class ItemsServicesListViewModel: ObservableObject {
     
     private var cancellables = Set<AnyCancellable>()
     
-    init(viewType: ViewType) {
+    init(viewType: ViewType, selectedItemService: [ItemServiceEntity] = []) {
         self.viewType = viewType
+        self.selectedItemService = selectedItemService
         setSubscription()
     }
     
@@ -29,8 +31,15 @@ final class ItemsServicesListViewModel: ObservableObject {
         do {
             let fetched = try await CoreDataManager.shared.fetchItems()
             
-            self.items = fetched.filter { $0.isItem == true }
-            self.services = fetched.filter { $0.isItem == false }
+            switch viewType {
+            case .choiseItemsOrServices(let currency):
+                let newFetched = fetched.filter({ $0.currency == currency.rawValue })
+                self.items = newFetched.filter { $0.isItem == true }
+                self.services = newFetched.filter { $0.isItem == false }
+            case .editItemsOrServices:
+                self.items = fetched.filter { $0.isItem == true }
+                self.services = fetched.filter { $0.isItem == false }
+            }
         } catch let error {
             showErrorAlert = true
             errorAlertSubtitle = error.localizedDescription

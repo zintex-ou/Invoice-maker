@@ -50,7 +50,7 @@ struct SettingsView: View {
                                             })
                                         case .services:
                                             coordinator.pushTo(id: ItemsServicesListView.navigationID, destination: {
-                                                ItemsServicesListView()
+                                                ItemsServicesListView(viewModel: .init(viewType: .editItemsOrServices))
                                             })
                                         case .rate:
                                             requestReview()

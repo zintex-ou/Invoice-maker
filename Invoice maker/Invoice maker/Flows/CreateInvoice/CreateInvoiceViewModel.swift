@@ -13,10 +13,14 @@ final class CreateInvoiceViewModel: ObservableObject {
     @Published var dueDate: Date = .now
     @Published var client: ClientEntity?
     @Published var itemServices: [ItemServiceEntity] = []
+    @Published var discount: String = "0"
+    @Published var tax: String = "0"
     
     @Published var sholdShowCurrencyPicker: Bool = false
     @Published var showInvoiceDatePicker = false
     @Published var showDueDatePicker = false
+    @Published var shouldShowErrorView: Bool = false
+    @Published var shouldShowDiscountTax: Bool = false
     
     private let viewType: ViewType
     
@@ -66,6 +70,18 @@ final class CreateInvoiceViewModel: ObservableObject {
     
     func deleteItemService(_ itemService: ItemServiceEntity) {
         itemServices.removeAll { $0.id == itemService.id }
+    }
+    
+    func tapOnCreateInvoiceButton() {
+        shouldShowErrorView = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.shouldShowErrorView = false
+        }
+    }
+    
+    func shouldShowDiscountAndTax() {
+        shouldShowDiscountTax.toggle()
     }
     
     private func setSubscription() {
