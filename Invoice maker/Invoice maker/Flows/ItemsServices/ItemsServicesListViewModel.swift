@@ -10,9 +10,17 @@ final class ItemsServicesListViewModel: ObservableObject {
     @Published var itemToDelete: ItemServiceEntity? = nil
     @Published var offerSelection: SegmentOfferType = .items
     
+    enum ViewType {
+        case choiseItemsOrServices
+        case editItemsOrServices
+    }
+    
+    let viewType: ViewType
+    
     private var cancellables = Set<AnyCancellable>()
     
-    init() {
+    init(viewType: ViewType) {
+        self.viewType = viewType
         setSubscription()
     }
     
@@ -54,6 +62,10 @@ final class ItemsServicesListViewModel: ObservableObject {
     
     func alertDeleteMessage() -> String {
         "Are you sure you want to delete this \(offerSelection == .items ? "item" : "service")"
+    }
+    
+    func postSelectedItemService(_ item: ItemServiceEntity) {
+        NotificationService.shared.post(event: .selectedItemService, object: item)
     }
     
     private func setSubscription() {

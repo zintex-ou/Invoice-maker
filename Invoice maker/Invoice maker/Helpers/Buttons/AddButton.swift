@@ -13,7 +13,7 @@ struct AddButton: ButtonStyle {
                 .font(.sans(style: .semiBold, size: 16))
                 .foregroundStyle(configuration.isPressed ? .violet4663FF.opacity(0.5) : .violet4663FF)
         }
-        .frame(maxWidth: .infinity, maxHeight: 48)
+        .frame(maxWidth: .infinity, minHeight: 48, maxHeight: 48)
         .background(.white)
         .clipShape(Capsule())
         .minimumScaleFactor(0.8)

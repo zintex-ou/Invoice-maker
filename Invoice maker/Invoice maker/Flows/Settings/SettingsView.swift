@@ -46,7 +46,7 @@ struct SettingsView: View {
                                             })
                                         case .clients:
                                             coordinator.pushTo(id: ClientsListView.navigationID, destination: {
-                                                ClientsListView()
+                                                ClientsListView(viewModel: .init(viewType: .editClient))
                                             })
                                         case .services:
                                             coordinator.pushTo(id: ItemsServicesListView.navigationID, destination: {

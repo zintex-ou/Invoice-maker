@@ -8,7 +8,7 @@ struct TabBarView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
+        VStack(spacing: .zero) {
             TabView(selection: $viewModel.selectedIndex) {
                 InvoicesView()
                     .tag(0)
@@ -93,4 +93,8 @@ struct TabBarView: View {
             }
         }
     }
+}
+
+#Preview {
+    TabBarView()
 }
