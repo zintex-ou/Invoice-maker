@@ -7,6 +7,7 @@ final class CreateInvoiceViewModel: ObservableObject {
         case edit
     }
     
+    @Published var bottomHeight: CGFloat = .zero
     @Published var invoiceNumber: String = "1"
     @Published var currency: Currency = .USD
     @Published var invoiceDate: Date = .now
@@ -21,6 +22,7 @@ final class CreateInvoiceViewModel: ObservableObject {
     @Published var showDueDatePicker = false
     @Published var shouldShowErrorView: Bool = false
     @Published var shouldShowDiscountTax: Bool = false
+    @Published var isPresenterDiskont: Bool = false
     
     private let viewType: ViewType
     

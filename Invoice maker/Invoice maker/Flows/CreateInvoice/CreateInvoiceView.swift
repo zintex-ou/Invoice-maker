@@ -12,10 +12,21 @@ struct CreateInvoiceView: View {
     @StateObject var viewModel: CreateInvoiceViewModel
     @EnvironmentObject private var coordinator: Coordinator
     @FocusState private var focusedField: FocusedField?
-    @State var bottomHeight: CGFloat = .zero
     
     enum FocusedField {
         case invoiceNumber, currency, discount, tax
+    }
+    
+    var gesture: some Gesture {
+        DragGesture(minimumDistance: 10)
+            .onChanged { value in
+                let location = value.location
+                if location.y < 0 {
+                    viewModel.isPresenterDiskont = true
+                } else {
+                    viewModel.isPresenterDiskont = false
+                }
+            }
     }
     
     init(viewModel: CreateInvoiceViewModel) {
@@ -33,7 +44,7 @@ struct CreateInvoiceView: View {
             bottomView
             
             let offset = viewModel.shouldShowErrorView
-            ? -(max(0, bottomHeight) + 16)
+            ? -(max(0, viewModel.bottomHeight) + 16)
             : 150
             
             ErrorView(text: "No items added. To create an invoice, please сlick the “Add item & service” button and fill in the item details.")
@@ -55,6 +66,8 @@ struct CreateInvoiceView: View {
             isPresented: $viewModel.showDueDatePicker,
             selectedDate: $viewModel.dueDate
         )
+        .animation(.easeInOut, value: viewModel.isPresenterDiskont)
+        .animation(.default, value: viewModel.bottomHeight)
     }
     
     private var topView: some View {
@@ -193,77 +206,76 @@ struct CreateInvoiceView: View {
             .padding(.top, 24)
             
             Spacer()
-                .frame(height: bottomHeight + 8)
+                .frame(height: viewModel.bottomHeight + 8)
         }
         .scrollIndicators(.hidden)
     }
     
     private var bottomView: some View {
-        ZStack(alignment: .top) {
+        VStack(spacing: .zero) {
             RoundedCorners(radius: 25, corners: [.topLeft, .topRight])
                 .foregroundStyle(.white)
-                .frame(height: 92)
+                .frame(height: 24)
                 .overlay(
                     RoundedCorners(radius: 25, corners: [.topLeft, .topRight])
                         .stroke(LinearGradient.tabBarStroke, lineWidth: 1)
                 )
-                .padding(.horizontal, -16)
-            
-            VStack(spacing: .zero) {
-                Capsule()
-                    .fill(.grayF5F5F5)
-                    .frame(width: 36, height: 5)
-                    .padding(.top, 6)
-                    .onTapGesture {
-                        viewModel.shouldShowDiscountAndTax()
-                    }
-                
-                if viewModel.shouldShowDiscountTax {
-                    VStack(spacing: .zero) {
-                        HStack {
-                            CustomTextField(
-                                focused: $focusedField,
-                                equals: .discount,
-                                title: "Discount (%)",
-                                placeholder: "",
-                                isRequired: false,
-                                keyboardType: .numberPad,
-                                text: $viewModel.discount,
-                                callError: .constant(false)
-                            )
-                            
-                            CustomTextField(
-                                focused: $focusedField,
-                                equals: .tax,
-                                title: "Tax (%)",
-                                placeholder: "",
-                                isRequired: false,
-                                keyboardType: .numberPad,
-                                text: $viewModel.tax,
-                                callError: .constant(false)
-                            )
-                        }
-                        .padding(.top, 13)
-                        
-                        HStack {
-                            Text("Subtotal")
-                            
-                            Spacer()
-                            
-                            Text("\(viewModel.getCurrency()) 20 000,00")
-                        }
-                        .font(.sans(style: .regular, size: 16))
-                        .foregroundStyle(.black)
-                        .padding(.top, 16)
-                        
-                        Rectangle()
-                            .fill(.black767676.opacity(0.3))
-                            .frame(maxWidth: .infinity, maxHeight: 1)
-                            .padding(.top, 8)
-                    }
-                    .transition(.move(edge: .bottom))
+                .overlay(alignment: .top) {
+                    Capsule()
+                        .fill(.grayF5F5F5)
+                        .frame(width: 36, height: 5)
+                        .padding(.top, 6)
                 }
-                
+                .padding(.horizontal, -16)
+                .gesture(gesture)
+            
+            if viewModel.isPresenterDiskont {
+                VStack(spacing: .zero) {
+                    HStack {
+                        CustomTextField(
+                            focused: $focusedField,
+                            equals: .discount,
+                            title: "Discount (%)",
+                            placeholder: "",
+                            isRequired: false,
+                            keyboardType: .numberPad,
+                            text: $viewModel.discount,
+                            callError: .constant(false)
+                        )
+                        
+                        CustomTextField(
+                            focused: $focusedField,
+                            equals: .tax,
+                            title: "Tax (%)",
+                            placeholder: "",
+                            isRequired: false,
+                            keyboardType: .numberPad,
+                            text: $viewModel.tax,
+                            callError: .constant(false)
+                        )
+                    }
+                    
+                    HStack {
+                        Text("Subtotal")
+                        
+                        Spacer()
+                        
+                        Text("\(viewModel.getCurrency()) 20 000,00")
+                    }
+                    .font(.sans(style: .regular, size: 16))
+                    .foregroundStyle(.black)
+                    .padding(.top, 16)
+                    
+                    Rectangle()
+                        .fill(.black767676.opacity(0.3))
+                        .frame(maxWidth: .infinity, maxHeight: 1)
+                        .padding(.top, 8)
+                }
+                .padding(.bottom, 16)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+            
+            VStack(spacing: 24) {
                 HStack {
                     Text("Total")
                     
@@ -273,16 +285,14 @@ struct CreateInvoiceView: View {
                 }
                 .font(.sans(style: .semiBold, size: 20))
                 .foregroundStyle(.black)
-                .padding(.top, 16)
                 
                 Button("Create invoice") {
-                    viewModel.tapOnCreateInvoiceButton()
+                    
                 }
                 .buttonStyle(.main)
-                .padding(.top, 24)
                 .padding(.bottom, 8)
             }
-            .animation(.default, value: viewModel.shouldShowDiscountTax)
+            .background(.white)
         }
         .background(.white)
         .overlay(
@@ -292,7 +302,7 @@ struct CreateInvoiceView: View {
             }
         )
         .onPreferenceChange(BottomHeightPreferenceKey.self) { value in
-            bottomHeight = value
+            viewModel.bottomHeight = value
         }
         .ignoresSafeArea(.container, edges: .bottom)
     }
