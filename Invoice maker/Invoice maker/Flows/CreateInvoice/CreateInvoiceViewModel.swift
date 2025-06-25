@@ -26,6 +26,8 @@ final class CreateInvoiceViewModel: ObservableObject {
     
     private let viewType: ViewType
     
+    var errorText: String = ""
+    
     init(viewType: ViewType) {
         self.viewType = viewType
         setSubscription()
@@ -75,15 +77,16 @@ final class CreateInvoiceViewModel: ObservableObject {
     }
     
     func tapOnCreateInvoiceButton() {
-        if let client {
-            
-        } else {
-            shouldShowErrorView = true
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self.shouldShowErrorView = false
-            }
+        guard dueDate.isSameOrAfterDateIgnoringTime(invoiceDate) else {
+            showError("The due date must be the same or later than the invoice date.")
+            return
         }
+        
+        guard client != nil else {
+            showError("No items added. To create an invoice, please сlick the “Add item & service” button and fill in the item details.")
+            return
+        }
+        
     }
     
     func shouldShowDiscountAndTax() {
@@ -132,8 +135,19 @@ final class CreateInvoiceViewModel: ObservableObject {
         
         NotificationService.shared.observe(event: .selectedItemService) { [weak self] object in
             if let object = object as? ItemServiceEntity {
-                self?.itemServices.append(object)
+                if !(self?.itemServices.contains(where: { $0.id == object.id }) ?? true) {
+                    self?.itemServices.append(object)
+                }
             }
+        }
+    }
+    
+    private func showError(_ message: String) {
+        errorText = message
+        shouldShowErrorView = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.shouldShowErrorView = false
         }
     }
 }

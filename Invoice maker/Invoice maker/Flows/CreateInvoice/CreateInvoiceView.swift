@@ -47,7 +47,7 @@ struct CreateInvoiceView: View {
             ? -(max(0, viewModel.bottomHeight) + 16)
             : 150
             
-            ErrorView(text: "No items added. To create an invoice, please сlick the “Add item & service” button and fill in the item details.")
+            ErrorView(text: viewModel.errorText)
                 .opacity(viewModel.shouldShowErrorView ? 1 : 0)
                 .offset(y: offset)
                 .animation(.linear(duration: 0.7), value: viewModel.shouldShowErrorView)
@@ -68,6 +68,7 @@ struct CreateInvoiceView: View {
         )
         .animation(.easeInOut, value: viewModel.isPresenterDiskont)
         .animation(.default, value: viewModel.bottomHeight)
+        .animation(.default, value: viewModel.itemServices.count)
     }
     
     private var topView: some View {
