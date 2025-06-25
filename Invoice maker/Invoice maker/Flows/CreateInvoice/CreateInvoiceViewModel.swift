@@ -75,15 +75,52 @@ final class CreateInvoiceViewModel: ObservableObject {
     }
     
     func tapOnCreateInvoiceButton() {
-        shouldShowErrorView = true
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.shouldShowErrorView = false
+        if let client {
+            
+        } else {
+            shouldShowErrorView = true
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.shouldShowErrorView = false
+            }
         }
     }
     
     func shouldShowDiscountAndTax() {
         shouldShowDiscountTax.toggle()
+    }
+    
+    func getSubTotalPrice() -> Double {
+        guard !itemServices.isEmpty else {
+            return 0.0
+        }
+        
+        let price = itemServices.reduce(into: 0.0) { result, itemService in
+            let price = itemService.price
+            result += Double(price ?? "0") ?? 0
+        }
+        
+        return price
+    }
+    
+    func getTotalPrice() -> Double {
+        let subTotalPrice = getSubTotalPrice()
+        
+        var totalPrice = subTotalPrice
+        
+        if let discountPercent = Double(discount), discountPercent > 0 {
+            totalPrice -= (subTotalPrice * discountPercent / 100)
+        }
+        
+        if totalPrice < 0 {
+            totalPrice = 0
+        }
+        
+        if let taxPercent = Double(tax), taxPercent > 0 {
+            totalPrice += (totalPrice * taxPercent / 100)
+        }
+        
+        return totalPrice
     }
     
     private func setSubscription() {

@@ -238,7 +238,7 @@ struct CreateInvoiceView: View {
                             title: "Discount (%)",
                             placeholder: "",
                             isRequired: false,
-                            keyboardType: .numberPad,
+                            keyboardType: .decimalPad,
                             text: $viewModel.discount,
                             callError: .constant(false)
                         )
@@ -249,7 +249,7 @@ struct CreateInvoiceView: View {
                             title: "Tax (%)",
                             placeholder: "",
                             isRequired: false,
-                            keyboardType: .numberPad,
+                            keyboardType: .decimalPad,
                             text: $viewModel.tax,
                             callError: .constant(false)
                         )
@@ -260,7 +260,7 @@ struct CreateInvoiceView: View {
                         
                         Spacer()
                         
-                        Text("\(viewModel.getCurrency()) 20 000,00")
+                        Text("\(viewModel.getCurrency()) \(String(format: "%.2f", viewModel.getSubTotalPrice()))")
                     }
                     .font(.sans(style: .regular, size: 16))
                     .foregroundStyle(.black)
@@ -281,13 +281,13 @@ struct CreateInvoiceView: View {
                     
                     Spacer()
                     
-                    Text("\(viewModel.getCurrency()) 20 000,00")
+                    Text("\(viewModel.getCurrency()) \(String(format: "%.2f", viewModel.getTotalPrice()))")
                 }
                 .font(.sans(style: .semiBold, size: 20))
                 .foregroundStyle(.black)
                 
                 Button("Create invoice") {
-                    
+                    viewModel.tapOnCreateInvoiceButton()
                 }
                 .buttonStyle(.main)
                 .padding(.bottom, 8)
