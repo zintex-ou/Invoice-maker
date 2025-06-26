@@ -2,13 +2,14 @@ import SwiftUI
 
 final class PDFSaveService {
     private let pageSize = CGSize(width: 595, height: 842)
+    private let userDefaultsPDFService = UserDefaultsPDFService()
     
     @discardableResult
     func generateAndSave(
         type: TemplateType,
         templateModel: InvoiceTemplateModel,
         customColor: Color = .blueDAE0FF,
-        fileNamePrefix: String = "Invoice"
+        invoiceType: InvoiceType
     ) throws -> URL {
         let (pageCount, pageRenderer) = try prepareRenderer(type: type,
                                                             model: templateModel,
@@ -17,7 +18,7 @@ final class PDFSaveService {
         let pdfData = renderPDF(pageCount: pageCount,
                                 pageRenderer: pageRenderer)
         
-        return try save(data: pdfData, prefix: fileNamePrefix)
+        return try userDefaultsPDFService.savePDF(data: pdfData, for: invoiceType)
     }
     
     private func prepareRenderer(
@@ -263,15 +264,5 @@ final class PDFSaveService {
             }
         }
     }
-    
-    @discardableResult
-    private func save(data: Data, prefix: String) throws -> URL {
-        let filename = "\(prefix)_\(Int(Date().timeIntervalSince1970)).pdf"
-        let docsURL = try FileManager.default
-            .url(for: .documentDirectory, in: .userDomainMask,
-                 appropriateFor: nil, create: true)
-        let fileURL = docsURL.appendingPathComponent(filename)
-        try data.write(to: fileURL, options: .atomic)
-        return fileURL
-    }
+
 }
