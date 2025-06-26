@@ -40,8 +40,10 @@ final class CreateInvoiceViewModel: ObservableObject {
             return "New Invoice"
         case .createEstimate:
             return "New Estimate"
-        case .edit:
-            return "Edit"
+        case .editInvoice:
+            return "Edit Invoice"
+        case .editEstimate:
+            return "Edit Estimate"
         }
     }
     
