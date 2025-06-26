@@ -25,9 +25,9 @@ final class CreateInvoiceViewModel: ObservableObject {
     @Published var shouldShowDiscountTax: Bool = false
     @Published var isPresenterDiskont: Bool = false
     
-    private let viewType: ViewType
+    private(set) var viewType: ViewType
     
-    var errorText: String = ""
+    var errorText: String = "No items added. To create an invoice, please сlick the “Add item & service” button and fill in the item details."
     
     init(viewType: ViewType) {
         self.viewType = viewType
@@ -47,6 +47,42 @@ final class CreateInvoiceViewModel: ObservableObject {
         }
     }
     
+    func getInfoTitle() -> String {
+        switch viewType {
+        case .createEstimate:
+            return "Estimate info"
+        default:
+            return "Invoice info"
+        }
+    }
+    
+    func getNumberTitle() -> String {
+        switch viewType {
+        case .createEstimate:
+            return "Estimate number"
+        default:
+            return "Invoice number"
+        }
+    }
+    
+    func getDateTitle() -> String {
+        switch viewType {
+        case .createEstimate:
+            return "Estimate date"
+        default:
+            return "Invoice date"
+        }
+    }
+    
+    func getButtonTitle() -> String {
+        switch viewType {
+        case .createEstimate:
+            return "Create Estimate"
+        default:
+            return "Create Invoice"
+        }
+    }
+
     func getCurrency() -> String {
         return currency.rawValue
     }
@@ -80,9 +116,11 @@ final class CreateInvoiceViewModel: ObservableObject {
     }
     
     func tapOnCreateInvoiceButton() {
-        guard dueDate.isSameOrAfterDateIgnoringTime(invoiceDate) else {
-            showError("The due date must be the same or later than the invoice date.")
-            return
+        if viewType == .createInvoice || viewType == .editInvoice {
+            guard dueDate.isSameOrAfterDateIgnoringTime(invoiceDate) else {
+                showError("The due date must be the same or later than the invoice date.")
+                return
+            }
         }
         
         guard client != nil else {
