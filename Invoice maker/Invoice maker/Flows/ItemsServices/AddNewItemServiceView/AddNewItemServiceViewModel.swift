@@ -3,6 +3,8 @@ import SwiftUI
 final class AddNewItemServiceViewModel: ObservableObject {
     @Published var nameError = false
     @Published var priceError = false
+    @Published var sholdShowCurrencyPicker: Bool = false
+    @Published var currency: Currency = .USD
     
     @Published var itemServiceInput: ItemServiceInput
     
@@ -47,6 +49,11 @@ final class AddNewItemServiceViewModel: ObservableObject {
         nameError = itemServiceInput.name.isEmpty
         priceError = itemServiceInput.price.isEmpty
         return nameError || priceError
+    }
+    
+    
+    func tapOnCurrencyButton() {
+        sholdShowCurrencyPicker = true
     }
     
     func saveClient() {

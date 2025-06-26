@@ -35,7 +35,6 @@ extension CoreDataManager {
             businessProfile.ownerName = input.ownerName
             businessProfile.email = input.email
             businessProfile.phoneNumber = input.phoneNumber
-            businessProfile.currency = input.currency
             businessProfile.country = input.country
             businessProfile.city = input.city
             businessProfile.street = input.street
@@ -64,7 +63,6 @@ extension CoreDataManager {
             businessProfile.ownerName = input.ownerName
             businessProfile.email = input.email
             businessProfile.phoneNumber = input.phoneNumber
-            businessProfile.currency = input.currency
             businessProfile.country = input.country
             businessProfile.city = input.city
             businessProfile.street = input.street

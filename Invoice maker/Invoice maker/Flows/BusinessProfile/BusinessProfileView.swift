@@ -38,10 +38,6 @@ struct BusinessProfileView: View {
                 }
             }
         })
-        .sheet(isPresented: $viewModel.sholdShowCurrencyPicker) {
-            CurrencyPickerView(currency: $viewModel.currency)
-                .presentationDetents([.large])
-        }
         .alert(
             viewModel.alert.title,
             isPresented: $viewModel.shouldShowError) {
@@ -231,11 +227,6 @@ struct BusinessProfileView: View {
                             callError: .constant(false)
                         )
                     }
-                    
-                    Button(viewModel.currency.rawValue) {
-                        viewModel.tapOnCurrencyButton()
-                    }
-                    .buttonStyle(.disclosure(title: "Currency"))
                 }
                 .padding(.top, 12)
                 .padding(.horizontal, -12)

@@ -4,7 +4,6 @@
         <attribute name="apartment" optional="YES" attributeType="String"/>
         <attribute name="city" optional="YES" attributeType="String"/>
         <attribute name="country" optional="YES" attributeType="String"/>
-        <attribute name="currency" optional="YES" attributeType="String"/>
         <attribute name="email" attributeType="String"/>
         <attribute name="image" optional="YES" attributeType="Binary"/>
         <attribute name="ownerName" attributeType="String"/>

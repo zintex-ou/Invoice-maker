@@ -26,7 +26,6 @@ final class BusinessProfileViewModel: ObservableObject {
     }
     @Published var selectedImageData: Data?
     @Published var shouldShowCropView: Bool = false
-    @Published var sholdShowCurrencyPicker: Bool = false
     @Published var shouldShowFullList: Bool = false
     
     @Published var ownerName: String = ""
@@ -37,7 +36,6 @@ final class BusinessProfileViewModel: ObservableObject {
     @Published var street: String = ""
     @Published var apartment: String = ""
     @Published var postcode: String = ""
-    @Published var currency: Currency = .USD
     
     @Published var shouldShowOwnerNameError: Bool = false
     @Published var shouldShowMailError: Bool = false
@@ -83,10 +81,6 @@ final class BusinessProfileViewModel: ObservableObject {
         isFromGallerySelection
     }
     
-    func tapOnCurrencyButton() {
-        sholdShowCurrencyPicker = true
-    }
-    
     func tapOnMoreDetails() {
         shouldShowFullList.toggle()
     }
@@ -116,7 +110,6 @@ final class BusinessProfileViewModel: ObservableObject {
                 ownerName: ownerName,
                 email: mail,
                 phoneNumber: phoneNumber,
-                currency: currency.rawValue,
                 country: country,
                 city: city,
                 street: street,
@@ -149,7 +142,6 @@ final class BusinessProfileViewModel: ObservableObject {
                 self.ownerName = result.ownerName ?? ""
                 self.mail = result.email ?? ""
                 self.phoneNumber = result.phoneNumber ?? ""
-                self.currency = Currency(rawValue: result.currency ?? "USD") ?? .USD
                 self.country = result.country ?? ""
                 self.city = result.city ?? ""
                 self.selectedImageData = result.image

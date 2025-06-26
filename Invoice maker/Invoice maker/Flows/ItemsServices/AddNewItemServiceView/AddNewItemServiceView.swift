@@ -5,7 +5,6 @@ struct AddNewItemServiceView: View {
     
     @StateObject var viewModel: AddNewItemServiceViewModel
     
-#warning("Change curency dinamically")
     var body: some View {
         VStack(spacing: 0) {
             navigationBar
@@ -16,18 +15,10 @@ struct AddNewItemServiceView: View {
                 priceError: $viewModel.priceError,
                 itemService: $viewModel.itemServiceInput,
                 name: viewModel.nameFieldTitle,
-                currency: .USD,
+                currency: viewModel.currency,
                 title: viewModel.subtitle1,
                 subtitle: viewModel.subtitle2
             )
-            
-            Button(viewModel.titleButtonTitle) {
-                viewModel.onSaveTapped {
-                    coordinator.popToBack()
-                }
-            }
-            .buttonStyle(.main)
-            .padding(.vertical, 8)
         }
         .padding(.horizontal, 16)
         .alert("Save before leaving?",
@@ -52,6 +43,10 @@ struct AddNewItemServiceView: View {
             }
         } message: {
             Text(viewModel.errorAlertSubtitle)
+        }
+        .sheet(isPresented: $viewModel.sholdShowCurrencyPicker) {
+            CurrencyPickerView(currency: $viewModel.currency)
+                .presentationDetents([.large])
         }
     }
     
