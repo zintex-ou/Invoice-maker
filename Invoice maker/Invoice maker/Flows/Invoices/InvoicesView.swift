@@ -19,7 +19,6 @@ struct InvoicesView: View {
                 emptyStateView
                 
                 Spacer()
-                
             }
             
             Button("Create Invoice") {

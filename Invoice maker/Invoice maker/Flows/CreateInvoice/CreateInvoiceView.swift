@@ -49,9 +49,8 @@ struct CreateInvoiceView: View {
             
             ErrorView(text: viewModel.errorText)
                 .opacity(viewModel.shouldShowErrorView ? 1 : 0)
-                .offset(y: offset)
-                .animation(.linear(duration: 0.7), value: viewModel.shouldShowErrorView)
-                .transition(.move(edge: .bottom))
+                .offset(y: viewModel.shouldShowErrorView ? offset : 200)
+                .animation(.easeOut(duration: 0.7), value: viewModel.shouldShowErrorView)
         }
         .padding(.horizontal, 16)
         .sheet(isPresented: $viewModel.sholdShowCurrencyPicker) {
@@ -92,7 +91,7 @@ struct CreateInvoiceView: View {
     private var middleView: some View {
         ScrollView {
             VStack(spacing: .zero) {
-                Text("Invoice info")
+                Text(viewModel.getInfoTitle())
                     .font(.sans(style: .semiBold, size: 26))
                     .foregroundStyle(.black)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -101,7 +100,7 @@ struct CreateInvoiceView: View {
                     CustomTextField(
                         focused: $focusedField,
                         equals: .invoiceNumber,
-                        title: "Invoice number",
+                        title: viewModel.getNumberTitle(),
                         placeholder: "",
                         isRequired: false,
                         keyboardType: .numberPad,
@@ -113,12 +112,16 @@ struct CreateInvoiceView: View {
                         Button(viewModel.getInvoiceDate()) {
                             viewModel.tapOnInvoiceDateButton()
                         }
-                        .buttonStyle(.disclosure(title: "Invoice date"))
+                        .buttonStyle(.disclosure(title: viewModel.getDateTitle()))
                         
-                        Button(viewModel.getDueDate()) {
-                            viewModel.tapOnDueDateButton()
+                        
+                        if viewModel.viewType == .createInvoice ||
+                            viewModel.viewType == .editInvoice {
+                            Button(viewModel.getDueDate()) {
+                                viewModel.tapOnDueDateButton()
+                            }
+                            .buttonStyle(.disclosure(title: "Due date"))
                         }
-                        .buttonStyle(.disclosure(title: "Due date"))
                     }
                     
                     Button(viewModel.getCurrency()) {
@@ -287,7 +290,7 @@ struct CreateInvoiceView: View {
                 .font(.sans(style: .semiBold, size: 20))
                 .foregroundStyle(.black)
                 
-                Button("Create invoice") {
+                Button(viewModel.getButtonTitle()) {
                     viewModel.tapOnCreateInvoiceButton()
                 }
                 .buttonStyle(.main)
