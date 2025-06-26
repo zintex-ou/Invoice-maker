@@ -32,7 +32,7 @@ struct TabBarView: View {
         ZStack(alignment: .top) {
             RoundedCorners(radius: 25, corners: [.topLeft, .topRight])
                 .foregroundStyle(.white)
-                .frame(height: 92)
+                .frame(height: UIDevice.current.hasHomeButton ? 64 : 92)
                 .overlay(
                     RoundedCorners(radius: 25, corners: [.topLeft, .topRight])
                         .stroke(LinearGradient.tabBarStroke, lineWidth: 1)

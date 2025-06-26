@@ -198,6 +198,24 @@ extension CoreDataManager {
         }
     }
     
+    func fetchAllInvoicesInSelectedCurrencyInDateRange(
+        withCurrency currency: String,
+        from startDate: Date,
+        to endDate: Date
+    ) async throws -> [InvoiceEntity] {
+        try await viewContext.perform {
+            let request: NSFetchRequest<InvoiceEntity> = InvoiceEntity.fetchRequest()
+            
+            let currencyPredicate = NSPredicate(format: "currency == %@", currency)
+            let datePredicate = NSPredicate(format: "invoiceDate >= %@ AND invoiceDate <= %@", startDate as NSDate, endDate as NSDate)
+            
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [currencyPredicate, datePredicate])
+            
+            return try self.viewContext.fetch(request)
+        }
+    }
+
+    
     func createInvoice(input: InvoiceInput) async throws -> InvoiceEntity {
         try await viewContext.perform {
             let request: NSFetchRequest<ClientEntity> = ClientEntity.fetchRequest()
