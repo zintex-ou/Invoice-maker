@@ -4,7 +4,8 @@ final class CreateInvoiceViewModel: ObservableObject {
     enum ViewType {
         case createInvoice
         case createEstimate
-        case edit
+        case editInvoice
+        case editEstimate
     }
     
     @Published var bottomHeight: CGFloat = .zero
