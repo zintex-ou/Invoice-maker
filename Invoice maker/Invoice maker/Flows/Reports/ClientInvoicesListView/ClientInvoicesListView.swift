@@ -16,7 +16,8 @@ struct ClientInvoicesListView: View {
                     segments: SegmentInvoiceType.allCases
                 )
                 .padding(.bottom, 16)
-                
+       
+#warning("Refactor")
                 VStack(spacing: 8) {
                     ForEach(viewModel.filteredDetailViewModels) { model in
                         ZStack {
@@ -25,11 +26,11 @@ struct ClientInvoicesListView: View {
                             
                             InvoiceDetailsView(
                                 clientName: model.invoiceNumber,
-                                dueDate:    model.dueDate,
-                                currency:   model.currency,
-                                total:      model.total,
-                                namespace:  namespace,
-                                isPaid:     model.isPaid,
+                                dueDate: model.dueDate,
+                                currency: model.currency,
+                                total: model.total,
+                                namespace: namespace,
+                                isPaid: model.isPaid,
                                 isPopoverShown: model.isPresented
                             )
                             .padding(16)
@@ -38,10 +39,10 @@ struct ClientInvoicesListView: View {
                         .overlay(alignment: .topTrailing) {
                             VStack { }
                             .paidPopover(
-                                isPaid:      model.isPaid,
+                                isPaid: model.isPaid,
                                 isPresented: model.isPresented,
-                                selectedID:  .constant(1),
-                                namespace:   namespace
+                                selectedID: .constant(1),
+                                namespace: namespace
                             ) {
                                 viewModel.updateStatus()
                             }

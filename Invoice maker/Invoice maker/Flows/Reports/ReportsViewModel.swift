@@ -33,24 +33,8 @@ final class ReportsViewModel: ObservableObject {
     @Published var chartSegment: [InvoiceReportChartSegment] = []
     
     let gradientMap: [String: LinearGradient] = [
-        "Paid": LinearGradient(
-            stops: [
-                Gradient.Stop(color: Color(red: 0.3, green: 0.85, blue: 0.39), location: 0.00),
-                Gradient.Stop(color: Color(red: 0.61, green: 1, blue: 0.67), location: 0.62),
-                Gradient.Stop(color: Color(red: 0.24, green: 0.8, blue: 0.34), location: 1.00),
-            ],
-            startPoint: UnitPoint(x: 0.5, y: 0),
-            endPoint: UnitPoint(x: 0.5, y: 1)
-        ),
-        "Unpaid": LinearGradient(
-            stops: [
-                Gradient.Stop(color: Color(red: 0.27, green: 0.39, blue: 1), location: 0.00),
-                Gradient.Stop(color: Color(red: 0.62, green: 0.86, blue: 0.98), location: 0.62),
-                Gradient.Stop(color: Color(red: 0.73, green: 0.8, blue: 0.98), location: 1.00),
-            ],
-            startPoint: UnitPoint(x: 0.5, y: 0),
-            endPoint: UnitPoint(x: 0.5, y: 1)
-        )
+        "Paid": .greenGradient,
+        "Unpaid": .blueGradient
     ]
     
     private var cancellables = Set<AnyCancellable>()
@@ -76,11 +60,11 @@ final class ReportsViewModel: ObservableObject {
         }
     }
     
-    private static let fullFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "en_US_POSIX")
-        f.dateFormat = "d MMM yyyy"
-        return f
+    private let fullFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "d MMM yyyy"
+        return dateFormatter
     }()
     
     var formattedDateRange: String {
@@ -94,13 +78,25 @@ final class ReportsViewModel: ObservableObject {
         }
         
         if sortedDates.count == 1 {
-            return Self.fullFormatter.string(from: first)
+            return fullFormatter.string(from: first)
         }
         
         let last = sortedDates.last!
-        let startString = Self.fullFormatter.string(from: first)
-        let endString   = Self.fullFormatter.string(from: last)
+        let startString = fullFormatter.string(from: first)
+        let endString = fullFormatter.string(from: last)
         return "\(startString) – \(endString)"
+    }
+    
+    func chartCenterOverlayTitle() -> String {
+        "\(currency.rawValue) \(invoiceReportModel.total.formattedWithoutDecimals)"
+    }
+    
+    func chartBottomPaidTitle() -> String {
+        "\(currency.rawValue) \(invoiceReportModel.paidInvoicesTotal.formattedWithoutDecimals)"
+    }
+    
+    func chartButtonUnpaidTitle() -> String {
+        "\(currency.rawValue) \(invoiceReportModel.unpaidInvoicesTotal.formattedWithoutDecimals)"
     }
 }
 

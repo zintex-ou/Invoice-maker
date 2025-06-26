@@ -118,7 +118,16 @@ struct ReportsView: View {
                                         angularInset: 4
                                     )
                                     .cornerRadius(8)
-                                    .foregroundStyle(viewModel.gradientMap[item.label, default: LinearGradient(colors: [.gray], startPoint: .top, endPoint: .bottom)])
+                                    .foregroundStyle(
+                                        viewModel.gradientMap[
+                                            item.label,
+                                            default: LinearGradient(
+                                                colors: [.gray],
+                                                startPoint: .top,
+                                                endPoint: .bottom
+                                            )
+                                        ]
+                                    )
                                 }
                             }
                         }
@@ -141,7 +150,7 @@ struct ReportsView: View {
     
     private var chartCenterOverlay: some View {
         VStack {
-            Text("\(viewModel.currency.rawValue) \(viewModel.invoiceReportModel.total.formattedWithoutDecimals)")
+            Text(viewModel.chartCenterOverlayTitle())
                 .font(.sans(style: .semiBold, size: 26))
                 .foregroundStyle(.black)
             
@@ -164,7 +173,7 @@ struct ReportsView: View {
                         .foregroundStyle(.black)
                 }
                 
-                Text("\(viewModel.currency.rawValue) \(viewModel.invoiceReportModel.paidInvoicesTotal.formattedWithoutDecimals)")
+                Text(viewModel.chartBottomPaidTitle())
             }
             
             VStack {
@@ -178,7 +187,7 @@ struct ReportsView: View {
                         .foregroundStyle(.black)
                 }
                 
-                Text("\(viewModel.currency.rawValue) \(viewModel.invoiceReportModel.unpaidInvoicesTotal.formattedWithoutDecimals)")
+                Text(viewModel.chartButtonUnpaidTitle())
             }
         }
     }
