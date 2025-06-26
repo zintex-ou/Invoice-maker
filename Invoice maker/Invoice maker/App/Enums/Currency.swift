@@ -29,4 +29,8 @@ enum Currency: String, CaseIterable {
     case AED
     case SAR
     case COP
+    
+    init(from raw: String?) {
+        self = Currency(rawValue: raw ?? "USD") ?? .USD
+    }
 }

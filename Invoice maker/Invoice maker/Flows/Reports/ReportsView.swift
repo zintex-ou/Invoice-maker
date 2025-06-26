@@ -93,6 +93,7 @@ struct ReportsView: View {
                 viewModel.onCurrencyButtonTapped()
             }
             .buttonStyle(.disclosure(title: "Currency"))
+            .padding(.top, 22)
         }
     }
     

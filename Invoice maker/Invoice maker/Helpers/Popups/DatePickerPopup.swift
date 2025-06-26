@@ -64,7 +64,6 @@ struct DatePickerPresenter: ViewModifier {
                     isPresented = false
                 }
                 .transition(.scale.combined(with: .opacity))
-                .zIndex(1)
             }
         }
     }

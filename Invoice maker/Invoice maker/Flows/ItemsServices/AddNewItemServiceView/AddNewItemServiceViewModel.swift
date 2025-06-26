@@ -34,7 +34,8 @@ final class AddNewItemServiceViewModel: ObservableObject {
             quantity: "1",
             discountType: .none,
             discount: "",
-            tax: ""
+            tax: "",
+            currency: .USD
         )
     }
     

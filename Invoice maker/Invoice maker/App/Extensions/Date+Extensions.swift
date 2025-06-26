@@ -11,4 +11,11 @@ extension Date {
     var formatedDateString: String {
         Date.dateFormatter.string(from: self)
     }
+    
+    func isSameOrAfterDateIgnoringTime(_ otherDate: Date) -> Bool {
+        let calendar = Calendar.current
+        let selfDate = calendar.startOfDay(for: self)
+        let otherDate = calendar.startOfDay(for: otherDate)
+        return selfDate >= otherDate
+    }
 }

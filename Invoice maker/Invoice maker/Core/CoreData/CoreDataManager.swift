@@ -155,6 +155,7 @@ extension CoreDataManager {
             item.discountType = input.discountType.rawValue
             item.discount = input.discount
             item.tax = input.tax
+            item.currency = input.currency.rawValue
             try self.viewContext.save()
             return item
         }
@@ -172,6 +173,7 @@ extension CoreDataManager {
             item.discountType = input.discountType.rawValue
             item.discount = input.discount
             item.tax = input.tax
+            item.currency = input.currency.rawValue
             try self.viewContext.save()
             return item
         }

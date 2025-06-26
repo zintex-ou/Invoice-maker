@@ -2,8 +2,11 @@ import SwiftUI
 
 struct ClientsListView: View {
     @EnvironmentObject private var coordinator: Coordinator
+    @StateObject var viewModel: ClientsListViewModel
     
-    @StateObject var viewModel: ClientsListViewModel = .init()
+    init(viewModel: ClientsListViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         VStack {
@@ -39,7 +42,6 @@ struct ClientsListView: View {
                     Task { await viewModel.deleteClient(clientToDelete) }
                 }
             }
-
         } message: {
             Text("Are you sure you want to delete this client? ")
         }
@@ -92,7 +94,7 @@ struct ClientsListView: View {
             Text("Clients")
                 .font(.sans(style: .semiBold, size: 26))
                 .foregroundStyle(.black)
-        
+            
             Text("Add client details once and create\ninvoices in just a few clicks.")
                 .font(.sans(style: .regular, size: 16))
                 .foregroundStyle(.black767676)
@@ -107,11 +109,7 @@ struct ClientsListView: View {
             VStack(spacing: 12) {
                 ForEach(viewModel.clients, id: \.id) { client in
                     Button("") {
-                        coordinator.pushTo(id: EditClientView.navigationID, destination: {
-                            EditClientView(
-                                viewModel: .init(client: client)
-                            )
-                        })
+                        tapOn(client: client)
                     }
                     .buttonStyle(
                         .clientCellWithActions(
@@ -135,8 +133,22 @@ struct ClientsListView: View {
             Spacer()
         }
     }
+    
+    private func tapOn(client: ClientEntity) {
+        switch viewModel.viewType {
+        case .choiseClient:
+            viewModel.postSelectedClient(client)
+            coordinator.popToBack()
+        case .editClient:
+            coordinator.pushTo(id: EditClientView.navigationID, destination: {
+                EditClientView(
+                    viewModel: .init(client: client)
+                )
+            })
+        }
+    }
 }
 
 #Preview {
-    ClientsListView()
+    ClientsListView(viewModel: .init(viewType: .editClient))
 }

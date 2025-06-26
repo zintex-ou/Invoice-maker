@@ -9,4 +9,5 @@ struct ItemServiceInput {
     var discountType: DiscountType
     var discount: String
     var tax: String
+    var currency: Currency
 }

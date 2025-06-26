@@ -3,7 +3,11 @@ import SwiftUI
 struct ItemsServicesListView: View {
     @EnvironmentObject private var coordinator: Coordinator
     
-    @StateObject var viewModel: ItemsServicesListViewModel = .init()
+    @StateObject var viewModel: ItemsServicesListViewModel
+    
+    init(viewModel: ItemsServicesListViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         VStack {
@@ -116,11 +120,7 @@ struct ItemsServicesListView: View {
             VStack(spacing: 12) {
                 ForEach(viewModel.offerSelection == .items ? viewModel.items : viewModel.services, id: \.id) { item in
                     Button("") {
-                        coordinator.pushTo(id: EditItemServiceView.navigationID, destination: {
-                            EditItemServiceView(
-                                viewModel: .init(itemService: item)
-                            )
-                        })
+                        tapOnItemsServices(item)
                     }
                     .buttonStyle(
                         .itemCell(
@@ -144,12 +144,24 @@ struct ItemsServicesListView: View {
                     )
                 }
             }
-            
-            Spacer()
+        }
+    }
+    
+    private func tapOnItemsServices(_ item: ItemServiceEntity) {
+        switch viewModel.viewType {
+        case .choiseItemsOrServices:
+            viewModel.postSelectedItemService(item)
+            coordinator.popToBack()
+        case .editItemsOrServices:
+            coordinator.pushTo(id: EditItemServiceView.navigationID, destination: {
+                EditItemServiceView(
+                    viewModel: .init(itemService: item)
+                )
+            })
         }
     }
 }
 
 #Preview {
-    ItemsServicesListView()
+    ItemsServicesListView(viewModel: .init(viewType: .editItemsOrServices))
 }

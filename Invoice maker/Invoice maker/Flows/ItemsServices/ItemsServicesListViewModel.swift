@@ -9,10 +9,20 @@ final class ItemsServicesListViewModel: ObservableObject {
     @Published var errorAlertSubtitle = ""
     @Published var itemToDelete: ItemServiceEntity? = nil
     @Published var offerSelection: SegmentOfferType = .items
+    @Published var selectedItemService: [ItemServiceEntity] = []
+    
+    enum ViewType {
+        case choiseItemsOrServices(Currency)
+        case editItemsOrServices
+    }
+    
+    let viewType: ViewType
     
     private var cancellables = Set<AnyCancellable>()
     
-    init() {
+    init(viewType: ViewType, selectedItemService: [ItemServiceEntity] = []) {
+        self.viewType = viewType
+        self.selectedItemService = selectedItemService
         setSubscription()
     }
     
@@ -21,8 +31,15 @@ final class ItemsServicesListViewModel: ObservableObject {
         do {
             let fetched = try await CoreDataManager.shared.fetchItems()
             
-            self.items = fetched.filter { $0.isItem == true }
-            self.services = fetched.filter { $0.isItem == false }
+            switch viewType {
+            case .choiseItemsOrServices(let currency):
+                let newFetched = fetched.filter({ $0.currency == currency.rawValue })
+                self.items = newFetched.filter { $0.isItem == true }
+                self.services = newFetched.filter { $0.isItem == false }
+            case .editItemsOrServices:
+                self.items = fetched.filter { $0.isItem == true }
+                self.services = fetched.filter { $0.isItem == false }
+            }
         } catch let error {
             showErrorAlert = true
             errorAlertSubtitle = error.localizedDescription
@@ -54,6 +71,10 @@ final class ItemsServicesListViewModel: ObservableObject {
     
     func alertDeleteMessage() -> String {
         "Are you sure you want to delete this \(offerSelection == .items ? "item" : "service")"
+    }
+    
+    func postSelectedItemService(_ item: ItemServiceEntity) {
+        NotificationService.shared.post(event: .selectedItemService, object: item)
     }
     
     private func setSubscription() {
