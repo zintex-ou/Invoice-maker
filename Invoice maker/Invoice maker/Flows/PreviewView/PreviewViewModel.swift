@@ -29,8 +29,16 @@ final class PreviewViewModel: ObservableObject {
            self.invoice = invoice
        }
     
+    func title() -> String {
+        invoiceInput.isInvoice ? "Preview" : "Estimate"
+    }
+    
+    func buttonTitle() -> String {
+        "Send \(title().lowercased())"
+    }
+    
     func dueDate() -> String {
-        "Due date: \(invoice.header.invoiceInfo.dueDate)"
+        "\(invoiceInput.isInvoice ? "Due date" : "Estimate date"): \(invoice.header.invoiceInfo.dueDate)"
     }
     
     func total() -> String {

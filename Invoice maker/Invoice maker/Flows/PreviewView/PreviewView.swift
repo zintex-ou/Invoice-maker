@@ -17,6 +17,7 @@ struct PreviewView: View {
                 )
             )
             .scrollDisabled(true)
+            .padding(.top, 80)
             
             VStack {
                 navigationBar
@@ -66,7 +67,7 @@ struct PreviewView: View {
             HStack {
                 Spacer()
                 
-                Text("Invoice")
+                Text(viewModel.title())
                     .font(.sans(style: .semiBold, size: 20))
                     .foregroundStyle(.black)
                 
@@ -132,7 +133,7 @@ struct PreviewView: View {
                 }
             }
             
-            Button("Send invoice") {
+            Button(viewModel.buttonTitle()) {
                 viewModel.sendInvoice()
             }
             .buttonStyle(.main)
@@ -152,6 +153,16 @@ struct PreviewView: View {
                 .buttonStyle(.circle(.property1Edit, title: "Edit"))
                 
                 Spacer()
+          
+#warning("Add push to create invoice")
+                if !viewModel.invoiceInput.isInvoice {
+                    Button("") {
+                        
+                    }
+                    .buttonStyle(.circle(.property1Invoices, title: "Convert"))
+                    
+                    Spacer()
+                }
                 
                 Button("") {
                     Task {

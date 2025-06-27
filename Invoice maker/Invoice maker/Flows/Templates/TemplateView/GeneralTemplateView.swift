@@ -9,7 +9,6 @@ struct GeneralTemplateView: View {
             let screenSize = geometry.size
             let scale = min(screenSize.width / a4Size.width,
                             screenSize.height / a4Size.height) * 0.9
-            let topPadding = (screenSize.height / scale - a4Size.height) / 2
             
             ScrollView {
                 pages
@@ -18,7 +17,6 @@ struct GeneralTemplateView: View {
                         height: screenSize.height * CGFloat(viewModel.pages.0.count) * scale,
                         alignment: .top
                     )
-                    .padding(.vertical, topPadding)
                     .scaleEffect(scale, anchor: .top)
             }
             .frame(width: screenSize.width, alignment: .top)
