@@ -109,23 +109,17 @@ struct ClientsListView: View {
         ScrollView {
             VStack(spacing: 12) {
                 ForEach(viewModel.clients, id: \.id) { client in
-                    Button("") {
+                    Button {
                         tapOn(client: client)
+                    } label: {
+                        ClientViewCell(
+                            client: client,
+                            isSelectedCell: viewModel.isSelected(client: client),
+                            viewType: viewModel.viewType,
+                        ) {
+                            viewModel.showDeleteAlert(for: client)
+                        }
                     }
-                    .buttonStyle(
-                        .clientCellWithActions(
-                            clientName: client.clientName ?? "",
-                            clientEmail: client.email ?? "",
-                            editAction: {
-                                coordinator.pushTo(id: AddNewClientView.navigationID,
-                                                   destination: { AddNewClientView(viewModel: .init(viewState: .editing(client: client)))
-                                })
-                            },
-                            deleteAction: {
-                                viewModel.showDeleteAlert(for: client)
-                            }
-                        )
-                    )
                 }
             }
             .padding(.top, 24)

@@ -9,16 +9,12 @@ final class ClientsListViewModel: ObservableObject {
     @Published var clientToDelete: ClientEntity? = nil
     @Published var selectedClient: ClientEntity?
     
-    enum ViewType {
-        case choiseClient
-        case editClient
-    }
-    
-    let viewType: ViewType
+    private(set) var viewType: ClientViewType
     private var cancellables = Set<AnyCancellable>()
     
-    init(viewType: ViewType, selectedClient: ClientEntity? = nil) {
+    init(viewType: ClientViewType, selectedClient: ClientEntity? = nil) {
         self.viewType = viewType
+        self.selectedClient = selectedClient
         setSubscription()
     }
     
@@ -51,7 +47,12 @@ final class ClientsListViewModel: ObservableObject {
     func postSelectedClient(_ client: ClientEntity) {
         NotificationService.shared.post(event: .selectedClient, object: client)
     }
-
+    
+    func isSelected(client: ClientEntity) -> Bool {
+        guard let selectedClient else { return false }
+        return client.id == selectedClient.id
+    }
+    
     private func setSubscription() {
         NotificationService.shared.observe(event: .updateClients) { [weak self] object in
             if let object = object as? ClientEntity {
