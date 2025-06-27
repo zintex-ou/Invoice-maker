@@ -128,13 +128,13 @@ struct ChooseTemplateView: View {
                             viewModel.templateType = type
                         }
                     }
-                    .frame(width: 240, height: 340)
+                    .frame(width: viewModel.invoiceType == .invoice ? 240 : nil, height: viewModel.invoiceType == .invoice ? 340 : nil)
                     .tag(index)
             }
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-        .frame(height: 360)
         .padding(.top, 24)
+        .padding(.horizontal, 24)
         .padding(.bottom, 16)
     }
     
