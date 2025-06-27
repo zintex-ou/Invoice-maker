@@ -123,10 +123,11 @@ final class CreateInvoiceViewModel: ObservableObject {
             }
         }
         
-        guard client != nil else {
+        guard !itemServices.isEmpty else {
             showError("No items added. To create an invoice, please сlick the “Add item & service” button and fill in the item details.")
             return
         }
+        
         completion(viewType)
     }
     

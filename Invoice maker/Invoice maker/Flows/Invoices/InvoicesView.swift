@@ -36,13 +36,16 @@ struct InvoicesView: View {
                 }
             }
             
-            Button("Create Invoice") {
-                coordinator.pushTo(id: CreateInvoiceView.navigationID) {
-                    CreateInvoiceView(viewModel: .init(viewType: .createInvoice))
+            HStack {
+                Button("Create Invoice") {
+                    coordinator.pushTo(id: CreateInvoiceView.navigationID) {
+                        CreateInvoiceView(viewModel: .init(viewType: .createInvoice))
+                    }
                 }
+                .buttonStyle(.main)
             }
-            .buttonStyle(.main)
-            .padding(.bottom, 8)
+            .padding(.vertical, 8)
+            .background(.white)
         }
         .padding(.horizontal, 16)
         .animation(.default, value: viewModel.allInvoices.count)
@@ -78,6 +81,7 @@ struct InvoicesView: View {
                                 dueDate: dueDate,
                                 currency: Currency(from: invoice.currency),
                                 totalPrice: total,
+                                isInvoice: invoice.isInvoice,
                                 isPaid: isPaid) { isPaid in
                                     viewModel.change(isPaid: isPaid, for: id)
                                 }

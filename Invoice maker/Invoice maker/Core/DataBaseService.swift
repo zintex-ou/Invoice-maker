@@ -15,7 +15,7 @@ final class DataBaseService {
     
     func fetchInvoices() async {
         do {
-            let result = try await dataBaseManager.fetchInvoices(ofType: .invoice)
+            let result = try await dataBaseManager.fetchInvoices()
             
             var invoices: [InvoiceEntity] = []
             var estimates: [InvoiceEntity] = []
@@ -46,12 +46,15 @@ final class DataBaseService {
     
     func createInvoice(with model: InvoiceInput) async throws -> InvoiceEntity {
         let invoice = try await CoreDataManager.shared.createInvoice(input: model)
-        allInvoices.insert(invoice, at: 0)
-        
-        if invoice.isPaid {
-            paidInvoices.insert(invoice, at: 0)
+        if invoice.isInvoice {
+            allInvoices.insert(invoice, at: 0)
+            if invoice.isPaid {
+                paidInvoices.insert(invoice, at: 0)
+            } else {
+                unPaidInvoices.insert(invoice, at: 0)
+            }
         } else {
-            unPaidInvoices.insert(invoice, at: 0)
+            allEstimates.insert(invoice, at: 0)
         }
         
         return invoice
