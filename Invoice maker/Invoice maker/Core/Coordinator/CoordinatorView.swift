@@ -20,6 +20,7 @@ struct CoordinatorView: View {
                         .navigationBarBackButtonHidden(true)
                 }
                 .onChange(of: scenePhase, perform: { newPhase in
+#if PROD
                     if newPhase == .active,
                        isOnboardingCompleted,
                        !purchaseManager.isActivityPurchases()
@@ -34,6 +35,7 @@ struct CoordinatorView: View {
                             }
                         }
                     }
+#endif
                 })
         }
         .environmentObject(coordinator)

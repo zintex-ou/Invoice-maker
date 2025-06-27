@@ -1,0 +1,61 @@
+import Foundation
+
+@MainActor
+final class DataBaseService {
+    static let shared = DataBaseService()
+    private let dataBaseManager = CoreDataManager.shared
+    
+    @Published var allInvoices: [InvoiceEntity] = []
+    @Published var paidInvoices: [InvoiceEntity] = []
+    @Published var unPaidInvoices: [InvoiceEntity] = []
+    
+    @Published var allEstimates: [InvoiceEntity] = []
+    
+    private init() {}
+    
+    func fetchInvoices() async {
+        do {
+            let result = try await dataBaseManager.fetchInvoices(ofType: .invoice)
+            
+            var invoices: [InvoiceEntity] = []
+            var estimates: [InvoiceEntity] = []
+            var paid: [InvoiceEntity] = []
+            var unpaid: [InvoiceEntity] = []
+            
+            for item in result {
+                if item.isInvoice {
+                    invoices.append(item)
+                    if item.isPaid {
+                        paid.append(item)
+                    } else {
+                        unpaid.append(item)
+                    }
+                } else {
+                    estimates.append(item)
+                }
+            }
+
+            allInvoices = invoices
+            paidInvoices = paid
+            unPaidInvoices = unpaid
+            allEstimates = estimates
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func change(isPaid: Bool, for id: UUID) async {
+        guard let index = allInvoices.firstIndex(where: { $0.id == id }) else { return }
+        allInvoices[index].isPaid = isPaid
+        
+        if isPaid {
+            guard let unPaidIndex = unPaidInvoices.firstIndex(where: { $0.id == id }) else { return }
+            let inPaidInvoice = unPaidInvoices.remove(at: unPaidIndex)
+            paidInvoices.append(inPaidInvoice)
+        } else {
+            guard let paidIndex = paidInvoices.firstIndex(where: { $0.id == id }) else { return }
+            let invoice = paidInvoices.remove(at: paidIndex)
+            unPaidInvoices.append(invoice)
+        }
+    }
+}

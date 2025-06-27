@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 @MainActor
 final class InvoicesViewModel: ObservableObject {
@@ -8,24 +9,32 @@ final class InvoicesViewModel: ObservableObject {
     @Published var paidInvoices: [InvoiceEntity] = []
     @Published var unPaidInvoices: [InvoiceEntity] = []
     
-    private let userDefaultsPDFService = UserDefaultsPDFService()
-    private let dataBaseManager = CoreDataManager.shared
-
-    init() {}
+    private let dataBaseService = DataBaseService.shared
+    private var cancellables = Set<AnyCancellable>()
     
-    func fetchInvoices() async {
-        do {
-            let result = try await dataBaseManager.fetchInvoices(ofType: .invoice)
-            allInvoices = result
-            paidInvoices = result.filter({ $0.isPaid == true })
-            unPaidInvoices = result.filter({ $0.isPaid == false })
-        } catch {
-            print(error.localizedDescription)
-        }
+    init() {
+        bindToDataBaseService()
     }
     
-    func changeIsPaid(status: Bool, for id: UUID) {
-        guard let index = allInvoices.firstIndex(where: { $0.id == id }) else { return }
-        allInvoices[index].isPaid = status
+    func change(isPaid: Bool, for id: UUID) {
+        Task {
+            await dataBaseService.change(isPaid: isPaid, for: id)
+        }
+    }
+}
+
+extension InvoicesViewModel {
+    private func bindToDataBaseService() {
+        dataBaseService.$allInvoices
+            .assign(to: \.allInvoices, on: self)
+            .store(in: &cancellables)
+        
+        dataBaseService.$paidInvoices
+            .assign(to: \.paidInvoices, on: self)
+            .store(in: &cancellables)
+        
+        dataBaseService.$unPaidInvoices
+            .assign(to: \.unPaidInvoices, on: self)
+            .store(in: &cancellables)
     }
 }

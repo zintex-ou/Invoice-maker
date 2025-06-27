@@ -45,9 +45,9 @@ struct InvoicesView: View {
             .padding(.bottom, 8)
         }
         .padding(.horizontal, 16)
-        .task {
-            await viewModel.fetchInvoices()
-        }
+        .animation(.default, value: viewModel.allInvoices.count)
+        .animation(.default, value: viewModel.paidInvoices.count)
+        .animation(.default, value: viewModel.unPaidInvoices.count)
     }
     
     private var invoiceList: some View {
@@ -79,7 +79,7 @@ struct InvoicesView: View {
                                 currency: Currency(from: invoice.currency),
                                 totalPrice: total,
                                 isPaid: isPaid) { isPaid in
-                                    viewModel.changeIsPaid(status: isPaid, for: id)
+                                    viewModel.change(isPaid: isPaid, for: id)
                                 }
                         }
                     }

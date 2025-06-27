@@ -2,8 +2,10 @@ import UIKit
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //    private let coreDataManager = CoreDataManager.shared
+    private let dataBaseService = DataBaseService.shared
+    
+    
     var shortcutItem: UIApplicationShortcutItem!
-    var window: UIWindow?
     
     func scene(
         _ scene: UIScene,
@@ -15,6 +17,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneDidBecomeActive(_ scene: UIScene) {
+        Task {
+            await dataBaseService.fetchInvoices()
+        }
+        
         guard let shortcutItem else { return }
         handle(shortcutItem: shortcutItem)
     }
