@@ -233,7 +233,7 @@ extension CoreDataManager {
             invoice.isPaid = input.isPaid
             invoice.client = input.client
             invoice.total = input.total
-            invoice.pdfFilePath = input.pdfFilePath.absoluteString
+            invoice.pdfFilePath = input.pdfFilePath
             invoice.type = input.type.rawValue
             invoice.isInvoice = input.isInvoice
             
@@ -257,10 +257,16 @@ extension CoreDataManager {
     }
     
     @discardableResult
-    func updateInvoice(_ invoice: InvoiceEntity,
-                       input: InvoiceInput) async throws -> InvoiceEntity {
+    func updateInvoice(input: InvoiceInput) async throws -> InvoiceEntity {
         try await viewContext.perform {
-            let invoice = try self.viewContext.existingObject(with: invoice.objectID) as! InvoiceEntity
+            
+            let request: NSFetchRequest<InvoiceEntity> = InvoiceEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", input.id as CVarArg)
+            request.fetchLimit = 1
+            
+            guard let invoice = try self.viewContext.fetch(request).first else {
+                throw NSError(domain: "Invoice not found", code: 0)
+            }
             invoice.invoiceNumber = input.number
             invoice.invoiceDate = input.invoiceDate
             invoice.dueDate = input.dueDate
@@ -269,7 +275,7 @@ extension CoreDataManager {
             invoice.tax = input.tax
             invoice.isPaid = input.isPaid
             invoice.total = input.total
-            invoice.pdfFilePath = input.pdfFilePath.absoluteString
+            invoice.pdfFilePath = input.pdfFilePath
             invoice.type = input.type.rawValue
             invoice.client = input.client
             

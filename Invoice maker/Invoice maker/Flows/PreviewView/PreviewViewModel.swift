@@ -1,13 +1,11 @@
 import SwiftUI
 
 final class PreviewViewModel: ObservableObject {
-    var invoice: InvoiceTemplateModel
     var pdfFilePath: URL
     var alert: AlertModel = .init(title: "", subtitle: "")
-    var invoiceInput: InvoiceInput
     var isWithStatusChange: Bool
-    var customColor: Color
     private var invoiceEntity: InvoiceEntity
+    let isInvoice: Bool
     
     @Published var shouldShowError: Bool = false
     @Published var isPaid: Bool = false
@@ -15,44 +13,59 @@ final class PreviewViewModel: ObservableObject {
     @Published var popoverID: Int = 1
     
     init(
-           invoiceInput: InvoiceInput,
-           invoiceEntity: InvoiceEntity,
-           invoice: InvoiceTemplateModel,
-           isWithStatusChange: Bool = false,
-           customColor: Color
-       ) {
-           self.invoiceInput = invoiceInput
-           self.invoiceEntity = invoiceEntity
-           self.pdfFilePath = invoiceInput.pdfFilePath
-           self.isWithStatusChange = isWithStatusChange
-           self.customColor = customColor
-           self.invoice = invoice
-       }
+        invoiceEntity: InvoiceEntity,
+        isWithStatusChange: Bool = false
+    ) {
+            self.invoiceEntity = invoiceEntity
+            self.pdfFilePath = invoiceEntity.pdfFilePath ?? .currentDirectory()
+            self.isWithStatusChange = isWithStatusChange
+            self.isInvoice = invoiceEntity.isInvoice
+        }
     
     func title() -> String {
-        invoiceInput.isInvoice ? "Preview" : "Estimate"
+        isInvoice ? "Preview" : "Estimate"
     }
     
     func buttonTitle() -> String {
         "Send \(title().lowercased())"
     }
     
+    func name() -> String {
+        invoiceEntity.client?.clientName ?? ""
+    }
+    
     func dueDate() -> String {
-        "\(invoiceInput.isInvoice ? "Due date" : "Estimate date"): \(invoice.header.invoiceInfo.dueDate)"
+        "\(isInvoice ? "Due date" : "Estimate date"): \(invoiceEntity.dueDate ?? .now)"
     }
     
     func total() -> String {
-        "\(invoice.summary.currency) \(invoice.summary.total)"
+        "\(invoiceEntity.currency ?? "USD") \(invoiceEntity.total)"
     }
     
     func updateInvoice() async {
         do {
-            var input = invoiceInput
-            input.isPaid = isPaid
-            try await CoreDataManager.shared.updateInvoice(
-                invoiceEntity,
-                input: input
-            )
+            if let client = invoiceEntity.client,
+               let itemService = invoiceEntity.itemService {
+                let input = InvoiceInput(
+                    id: invoiceEntity.id ?? .init(),
+                    client: client,
+                    number: invoiceEntity.invoiceNumber ?? "",
+                    invoiceDate: invoiceEntity.invoiceDate ?? .now,
+                    dueDate: invoiceEntity.dueDate ?? .now,
+                    currency: invoiceEntity.currency ?? "USD",
+                    discount: invoiceEntity.discount ?? "",
+                    tax: invoiceEntity.tax ?? "",
+                    isPaid: invoiceEntity.isPaid,
+                    total: invoiceEntity.total,
+                    itemOrServices: (itemService as? Set<ItemServiceEntity>)?.map { $0 } ?? [],
+                    pdfFilePath: invoiceEntity.pdfFilePath ?? .currentDirectory(),
+                    type: .init(rawValue: invoiceEntity.type ?? "topDark") ?? TemplateType.topDark,
+                    isInvoice: isInvoice
+                )
+                try await CoreDataManager.shared.updateInvoice(
+                    input: input
+                )
+            }
         } catch {
             self.alert = .init(
                 title: "Failed to update invoice",
