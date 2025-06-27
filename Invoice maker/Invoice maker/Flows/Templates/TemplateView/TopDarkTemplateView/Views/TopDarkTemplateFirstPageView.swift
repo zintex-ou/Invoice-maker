@@ -7,11 +7,11 @@ struct TopDarkTemplateFirstPageView: View {
     
     var body: some View {
         VStack {
-            ZStack {
+            ZStack(alignment: .leading) {
                 Color.black
                     .ignoresSafeArea()
                 
-                HStack {
+                HStack(alignment: .top) {
                     if let logo = templateModel.header.logo,
                        let image = UIImage(data: logo) {
                         Image(uiImage: image)

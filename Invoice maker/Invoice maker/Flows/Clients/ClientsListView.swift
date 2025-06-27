@@ -9,8 +9,9 @@ struct ClientsListView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             navigationBar
+                .padding(.bottom, 4)
             
             if viewModel.clients.isEmpty {
                 emptyView
@@ -127,6 +128,7 @@ struct ClientsListView: View {
                     )
                 }
             }
+            .padding(.top, 24)
             
             Spacer()
         }

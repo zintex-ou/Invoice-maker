@@ -62,7 +62,7 @@ struct ClientInvoicesListView: View {
                 Button("") {
                     coordinator.popToBack()
                 }
-                .buttonStyle(.circle(.property1Cross))
+                .buttonStyle(.circle(.property1Arrow))
                 
                 Spacer()
             }

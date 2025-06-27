@@ -10,13 +10,15 @@ struct ItemsServicesListView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             navigationBar
+                .padding(.bottom, 4)
             
             SegmentedControl(
                 selection: $viewModel.offerSelection,
                 segments: SegmentOfferType.allCases
             )
+            .padding(.top, 24)
             
             if (viewModel.items.isEmpty && viewModel.offerSelection == .items) || (viewModel.services.isEmpty && viewModel.offerSelection == .services) {
                 emptyView
@@ -106,7 +108,7 @@ struct ItemsServicesListView: View {
                 .font(.sans(style: .semiBold, size: 26))
                 .foregroundStyle(.black)
         
-            Text("Add \(viewModel.offerSelection == .items ? "item" : "service") details once and create invoices in just a few clicks.")
+            Text("Add \(viewModel.offerSelection == .items ? "item" : "service") details once and create\ninvoices in just a few clicks.")
                 .font(.sans(style: .regular, size: 16))
                 .foregroundStyle(.black767676)
                 .multilineTextAlignment(.center)
@@ -129,7 +131,7 @@ struct ItemsServicesListView: View {
                             discountType: DiscountType(rawValue: item.discountType ?? "") ?? .none,
                             discont: "\(item.discount ?? "")",
                             tax: "\(item.tax ?? "")",
-                            total: item.price ?? "",
+                            total: item.total ?? "",
                             currency: .USD,
                             editAction: {
                                 coordinator.pushTo(
@@ -151,6 +153,7 @@ struct ItemsServicesListView: View {
                 }
             }
         }
+        .padding(.top, 24)
     }
     
     private func tapOnItemsServices(_ item: ItemServiceEntity) {
