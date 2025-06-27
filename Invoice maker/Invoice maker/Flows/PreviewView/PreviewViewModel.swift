@@ -35,11 +35,19 @@ final class PreviewViewModel: ObservableObject {
     }
     
     func dueDate() -> String {
-        "\(isInvoice ? "Due date" : "Estimate date"): \(invoiceEntity.dueDate ?? .now)"
+        "\(isInvoice ? "Due date" : "Estimate date"): \(invoiceEntity.dueDate?.formatedDateString ?? Date.now.formatedDateString)"
     }
     
     func total() -> String {
         "\(invoiceEntity.currency ?? "USD") \(invoiceEntity.total)"
+    }
+    
+    func tapOnMenuButton(_ value: Bool) {
+        isPaid = value
+        isPaidPopShow  = false
+        Task {
+            await updateInvoice()
+        }
     }
     
     func updateInvoice() async {
@@ -55,12 +63,12 @@ final class PreviewViewModel: ObservableObject {
                     currency: invoiceEntity.currency ?? "USD",
                     discount: invoiceEntity.discount ?? "",
                     tax: invoiceEntity.tax ?? "",
-                    isPaid: invoiceEntity.isPaid,
+                    isPaid: isPaid,
                     total: invoiceEntity.total,
                     itemOrServices: (itemService as? Set<ItemServiceEntity>)?.map { $0 } ?? [],
                     pdfFilePath: invoiceEntity.pdfFilePath ?? .currentDirectory(),
                     type: .init(rawValue: invoiceEntity.type ?? "topDark") ?? TemplateType.topDark,
-                    isInvoice: isInvoice
+                    isInvoice: invoiceEntity.isInvoice
                 )
                 try await CoreDataManager.shared.updateInvoice(
                     input: input

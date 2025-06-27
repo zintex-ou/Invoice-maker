@@ -5,7 +5,7 @@ struct FullscreenPreviewView: View {
     var url: URL
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             navigationBar
             
             PDFKitView(url: url, withScroll: true)
