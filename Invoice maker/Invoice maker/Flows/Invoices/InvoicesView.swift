@@ -76,15 +76,21 @@ struct InvoicesView: View {
                             let total = invoice.total
                             let isPaid = invoice.isPaid
                             
-                            InvoiceViewCell(
-                                nameOfClient: name,
-                                dueDate: dueDate,
-                                currency: Currency(from: invoice.currency),
-                                totalPrice: total,
-                                isInvoice: invoice.isInvoice,
-                                isPaid: isPaid) { isPaid in
-                                    viewModel.change(isPaid: isPaid, for: id)
-                                }
+                            Button {
+                                coordinator.pushTo(id: PreviewView.navigationID, destination: {
+                                    PreviewView(viewModel: .init(invoiceEntity: invoice, isWithStatusChange: true))
+                                })
+                            } label: {
+                                InvoiceViewCell(
+                                    nameOfClient: name,
+                                    dueDate: dueDate,
+                                    currency: Currency(from: invoice.currency),
+                                    totalPrice: total,
+                                    isInvoice: invoice.isInvoice,
+                                    isPaid: isPaid) { isPaid in
+                                        viewModel.change(isPaid: isPaid, for: id)
+                                    }
+                            }
                         }
                     }
                 }

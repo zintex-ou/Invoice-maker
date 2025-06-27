@@ -35,7 +35,7 @@ final class ChooseTemplateViewModel: ObservableObject {
     }
     
     @MainActor
-    func saveTemplate(completion: @escaping ((InvoiceTemplateModel, InvoiceInput, InvoiceEntity)) -> Void) async {
+    func saveTemplate(completion: @escaping (InvoiceEntity) -> Void) async {
         do {
             let uuid = UUID()
             let bp = try await CoreDataManager.shared.fetchBusinessProfile()
@@ -113,7 +113,7 @@ final class ChooseTemplateViewModel: ObservableObject {
                 let coreDataEntity = try await dataBaseService.createInvoice(with: invoiceInput)
                 
                 await MainActor.run {
-                    completion((invoiceTemplateModel, invoiceInput, coreDataEntity))
+                    completion(coreDataEntity)
                 }
             } catch {
                 print(error, "error")

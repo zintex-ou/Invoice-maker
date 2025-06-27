@@ -9,15 +9,11 @@ struct PreviewView: View {
         ZStack(alignment: .bottom) {
             Color.grayF5F5F5
             
-            GeneralTemplateView(
-                viewModel: .init(
-                    templateModel: viewModel.invoice,
-                    type: viewModel.invoiceInput.type,
-                    customColor: viewModel.customColor
-                )
-            )
-            .scrollDisabled(true)
-            .padding(.top, 80)
+            PDFKitView(url: viewModel.pdfFilePath, withScroll: false)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .layoutPriority(1)
+                .padding(22)
+                .padding(.top, -80)
             
             VStack {
                 navigationBar
@@ -83,7 +79,7 @@ struct PreviewView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 VStack(alignment: .leading) {
-                    Text(viewModel.invoice.header.billTo.name)
+                    Text(viewModel.name())
                         .font(.sans(style: .semiBold, size: 16))
                         .foregroundStyle(.black)
                     
@@ -155,7 +151,7 @@ struct PreviewView: View {
                 Spacer()
           
 #warning("Add push to create invoice")
-                if !viewModel.invoiceInput.isInvoice {
+                if !viewModel.isInvoice {
                     Button("") {
                         
                     }
