@@ -38,7 +38,7 @@ struct InvoiceViewCell: View {
                 
                 Menu {
                     Button {
-                        tapOnMenuButton()
+                        tapOnMenuButton(false)
                     } label: {
                         HStack {
                             Text("Unpaid")
@@ -54,7 +54,7 @@ struct InvoiceViewCell: View {
                     }
                     
                     Button {
-                        tapOnMenuButton()
+                        tapOnMenuButton(true)
                     } label: {
                         HStack {
                             Text("Paid")
@@ -96,8 +96,9 @@ struct InvoiceViewCell: View {
         .animation(.default, value: isPaid)
     }
     
-    func tapOnMenuButton() {
-        isPaid.toggle()
+    func tapOnMenuButton(_ isPaid: Bool) {
+        guard self.isPaid != isPaid else { return }
+        self.isPaid = isPaid
         isPaidCompletion(isPaid)
     }
     

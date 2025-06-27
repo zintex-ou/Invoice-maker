@@ -6,13 +6,13 @@ struct InvoicesView: View {
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            VStack(spacing: 0) {
-                MainHeader(isPremium: $viewModel.isPremium) {
-                    coordinator.presentFullScreenCover(id: PaywallView.navigationID) {
-                        PaywallView()
-                    }
-                }
-                .padding(.top, 12)
+            VStack(spacing: .zero) {
+                SegmentedControl(
+                    selection: $viewModel.invoiceSelection,
+                    segments: SegmentInvoiceType.allCases
+                )
+                .padding(.top, 24)
+                .padding(.bottom, 4)
                 
                 switch viewModel.invoiceSelection {
                 case .all:
@@ -51,12 +51,7 @@ struct InvoicesView: View {
     }
     
     private var invoiceList: some View {
-        VStack(spacing: .zero) {
-            SegmentedControl(
-                selection: $viewModel.invoiceSelection,
-                segments: SegmentInvoiceType.allCases
-            )
-            
+        ZStack(alignment: .top) {
             var model: [InvoiceEntity] {
                 switch viewModel.invoiceSelection {
                 case .all:
@@ -92,8 +87,9 @@ struct InvoicesView: View {
                 .padding(.top, 24)
             }
             .scrollIndicators(.hidden)
+            
+            ListTopShadow()
         }
-        .padding(.top, 24)
     }
     
     private var emptyStateView: some View {

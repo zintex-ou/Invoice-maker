@@ -4,64 +4,61 @@ import Charts
 struct ReportsView: View {
     @EnvironmentObject private var coordinator: Coordinator
     @StateObject private var viewModel = ReportsViewModel()
-
+    
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 0) {
-                MainHeader(isPremium: $viewModel.isPremium) {
-                    coordinator.presentFullScreenCover(id: PaywallView.navigationID) {
-                        PaywallView()
-                    }
-                }
-                .padding(.top, 12)
-                .padding(.horizontal, 16)
-                
-                filterView
-                
-                chart
-                
-                VStack(spacing: 8) {
-                    ForEach(viewModel.clientInvoiceReport, id: \.id) { report in
-                        Button("") {
-                            coordinator.pushTo(id: ClientInvoicesListView.navigationID) {
-                                ClientInvoicesListView(viewModel: .init(report: report))
-                            }
-                        }
-                        .buttonStyle(
-                            .clientReportCell(model: report)
-                        )
-                    }
-                }
-            }
-            .padding(.bottom, 68)
-        }
-        .padding(.horizontal, 16)
-        .sheet(isPresented: $viewModel.shouldShowCurrencyPicker) {
-            CurrencyPickerView(currency: $viewModel.currency)
-                .presentationDetents([.large])
-        }
-        .overlay {
-            if viewModel.showCaledar {
-                ZStack {
-                    Color
-                        .black767676.opacity(0.3)
-                        .ignoresSafeArea()
-                        .onTapGesture {
-                            withAnimation {
-                                viewModel.showCaledar = false
-                            }
-                        }
+        ZStack(alignment: .top) {
+            ScrollView {
+                VStack(spacing: 0) {
+                    filterView
                     
-                    calendarView
-                        .onAppear {
-                            viewModel.draftDates = viewModel.dates
+                    chart
+                    
+                    VStack(spacing: 8) {
+                        ForEach(viewModel.clientInvoiceReport, id: \.id) { report in
+                            Button("") {
+                                coordinator.pushTo(id: ClientInvoicesListView.navigationID) {
+                                    ClientInvoicesListView(viewModel: .init(report: report))
+                                }
+                            }
+                            .buttonStyle(
+                                .clientReportCell(model: report)
+                            )
                         }
+                    }
+                }
+                .padding(.bottom, 68)
+            }
+            .padding(.horizontal, 16)
+            .scrollIndicators(.hidden)
+            .sheet(isPresented: $viewModel.shouldShowCurrencyPicker) {
+                CurrencyPickerView(currency: $viewModel.currency)
+                    .presentationDetents([.large])
+            }
+            .overlay {
+                if viewModel.showCaledar {
+                    ZStack {
+                        Color
+                            .black767676.opacity(0.3)
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                withAnimation {
+                                    viewModel.showCaledar = false
+                                }
+                            }
+                        
+                        calendarView
+                            .onAppear {
+                                viewModel.draftDates = viewModel.dates
+                            }
+                    }
                 }
             }
-        }
-        .onChange(of: viewModel.showCaledar) { isShowing in
-            guard !isShowing else { return }
-            viewModel.commitDraft()
+            .onChange(of: viewModel.showCaledar) { isShowing in
+                guard !isShowing else { return }
+                viewModel.commitDraft()
+            }
+            
+            ListTopShadow()
         }
     }
     
@@ -95,6 +92,7 @@ struct ReportsView: View {
             .buttonStyle(.disclosure(title: "Currency"))
             .padding(.top, 22)
         }
+        .padding(.top, 24)
     }
     
     private var chart: some View {
