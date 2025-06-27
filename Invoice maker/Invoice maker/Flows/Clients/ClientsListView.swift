@@ -22,7 +22,7 @@ struct ClientsListView: View {
                 coordinator
                     .pushTo(
                         id: AddNewClientView.navigationID,
-                        destination: { AddNewClientView()
+                        destination: { AddNewClientView(viewModel: .init(viewState: .initial))
                         })
             }
             .buttonStyle(.main)
@@ -116,10 +116,8 @@ struct ClientsListView: View {
                             clientName: client.clientName ?? "",
                             clientEmail: client.email ?? "",
                             editAction: {
-                                coordinator.pushTo(id: EditClientView.navigationID, destination: {
-                                    EditClientView(
-                                        viewModel: .init(client: client)
-                                    )
+                                coordinator.pushTo(id: AddNewClientView.navigationID,
+                                                   destination: { AddNewClientView(viewModel: .init(viewState: .editing(client: client)))
                                 })
                             },
                             deleteAction: {
@@ -140,10 +138,8 @@ struct ClientsListView: View {
             viewModel.postSelectedClient(client)
             coordinator.popToBack()
         case .editClient:
-            coordinator.pushTo(id: EditClientView.navigationID, destination: {
-                EditClientView(
-                    viewModel: .init(client: client)
-                )
+            coordinator.pushTo(id: AddNewClientView.navigationID,
+                               destination: { AddNewClientView(viewModel: .init(viewState: .editing(client: client)))
             })
         }
     }

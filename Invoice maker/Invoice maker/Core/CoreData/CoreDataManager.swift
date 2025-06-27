@@ -154,6 +154,7 @@ extension CoreDataManager {
             item.discount = input.discount
             item.tax = input.tax
             item.currency = input.currency.rawValue
+            item.total = input.total
             try self.viewContext.save()
             return item
         }
@@ -172,6 +173,7 @@ extension CoreDataManager {
             item.discount = input.discount
             item.tax = input.tax
             item.currency = input.currency.rawValue
+            item.total = input.total
             try self.viewContext.save()
             return item
         }
@@ -220,13 +222,6 @@ extension CoreDataManager {
             request.predicate = NSPredicate(format: "id == %@", input.id as CVarArg)
             request.fetchLimit = 1
             
-            guard let client = try self.viewContext.fetch(request).first else {
-                throw NSError(
-                    domain: "AppErrorDomain",
-                    code: 404,
-                    userInfo: [NSLocalizedDescriptionKey: "Client with id \(input.id) not found"]
-                )
-            }
             let invoice = InvoiceEntity(context: self.viewContext)
             invoice.id = input.id
             invoice.invoiceNumber = input.number
@@ -236,9 +231,9 @@ extension CoreDataManager {
             invoice.discount = input.discount
             invoice.tax = input.tax
             invoice.isPaid = input.isPaid
-            invoice.client = client
+            invoice.client = input.client
             invoice.total = input.total
-            invoice.pdfFilePath = input.pdfFilePath
+            invoice.pdfFilePath = input.pdfFilePath.absoluteString
             invoice.type = input.type.rawValue
             
             for itemInput in input.itemOrServices {
@@ -248,7 +243,7 @@ extension CoreDataManager {
                 item.name = itemInput.name
                 item.price = itemInput.price
                 item.quantity = itemInput.quantity
-                item.discountType = itemInput.discountType.rawValue
+                item.discountType = itemInput.discountType
                 item.discount = itemInput.discount
                 item.tax = itemInput.tax
                 
@@ -273,21 +268,14 @@ extension CoreDataManager {
             invoice.tax = input.tax
             invoice.isPaid = input.isPaid
             invoice.total = input.total
-            invoice.pdfFilePath = input.pdfFilePath
+            invoice.pdfFilePath = input.pdfFilePath.absoluteString
             invoice.type = input.type.rawValue
             
             let request: NSFetchRequest<ClientEntity> = ClientEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", input.id as CVarArg)
             request.fetchLimit = 1
             
-            guard let client = try self.viewContext.fetch(request).first else {
-                throw NSError(
-                    domain: "AppErrorDomain",
-                    code: 404,
-                    userInfo: [NSLocalizedDescriptionKey: "Client with id \(input.id) not found"]
-                )
-            }
-            invoice.client = client
+            invoice.client = input.client
             
             for itemInput in input.itemOrServices {
                 let item = ItemServiceEntity(context: self.viewContext)
@@ -296,7 +284,7 @@ extension CoreDataManager {
                 item.name = itemInput.name
                 item.price = itemInput.price
                 item.quantity = itemInput.quantity
-                item.discountType = itemInput.discountType.rawValue
+                item.discountType = itemInput.discountType
                 item.discount = itemInput.discount
                 item.tax = itemInput.tax
                 

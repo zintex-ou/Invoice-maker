@@ -1,26 +1,16 @@
 import SwiftUI
- 
+
 struct FullscreenPreviewView: View {
     @EnvironmentObject private var coordinator: Coordinator
-    var model: InvoiceTemplateModel
-    var type: TemplateType
+    var url: URL
     
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Color.grayF5F5F5
+        VStack {
+            navigationBar
             
-            GeneralTemplateView(
-                viewModel: .init(
-                    templateModel: model,
-                    type: type
-                )
-            )
-            
-            VStack {
-                navigationBar
-                
-                Spacer()
-            }
+            PDFKitView(url: url)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .layoutPriority(1)
         }
         .ignoresSafeArea(.container, edges: .bottom)
     }

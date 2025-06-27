@@ -115,7 +115,7 @@ final class CreateInvoiceViewModel: ObservableObject {
         itemServices.removeAll { $0.id == itemService.id }
     }
     
-    func tapOnCreateInvoiceButton() {
+    func tapOnCreateInvoiceButton(completion: @escaping (ViewType) -> Void) {
         if viewType == .createInvoice || viewType == .editInvoice {
             guard dueDate.isSameOrAfterDateIgnoringTime(invoiceDate) else {
                 showError("The due date must be the same or later than the invoice date.")
@@ -127,7 +127,26 @@ final class CreateInvoiceViewModel: ObservableObject {
             showError("No items added. To create an invoice, please сlick the “Add item & service” button and fill in the item details.")
             return
         }
+        completion(viewType)
+    }
+    
+    func createChooseTemplateInvoiceModel() -> ChooseTemplateInvoiceModel? {
+        guard let client = client else {
+            return nil
+        }
         
+        return ChooseTemplateInvoiceModel(
+            client: client,
+            number: invoiceNumber,
+            invoiceDate: invoiceDate,
+            dueDate: dueDate,
+            currency: currency.rawValue,
+            discount: discount,
+            tax: tax,
+            subtotal: getSubTotalPrice(),
+            total: getTotalPrice(),
+            itemOrServices: itemServices
+        )
     }
     
     func shouldShowDiscountAndTax() {

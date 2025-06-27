@@ -7,11 +7,11 @@ struct InvoiceSummaryView: View {
         VStack {
             divider
             
-            SummaryRow(label: "Subtotal", value: "\(model.currency.rawValue) \(model.subtotal)", isBold: false, color: .black, fontSize: 8)
+            SummaryRow(label: "Subtotal", value: "\(model.currency) \(model.subtotal)", isBold: false, color: .black, fontSize: 8)
             
-            SummaryRow(label: "Discount:", value: "\(model.discountPercentage ?? 0)%", isBold: false, color: .black767676, fontSize: 8)
+            SummaryRow(label: "Discount:", value: "\(model.discountPercentage)%", isBold: false, color: .black767676, fontSize: 8)
             
-            SummaryRow(label: "Tax", value: "\(model.taxPercentage ?? 0)%", isBold: false, color: .black767676, fontSize: 8)
+            SummaryRow(label: "Tax", value: "\(model.taxPercentage)%", isBold: false, color: .black767676, fontSize: 8)
             
             divider
             
@@ -26,9 +26,9 @@ struct InvoiceSummaryView: View {
     }
 }
 
-#Preview {
-    InvoiceSummaryView(model: .init(currency: .AUD, subtotal: 34.32))
-}
+//#Preview {
+//    InvoiceSummaryView(model: .init(currency: .AUD, subtotal: 34.32))
+//}
 
 private struct SummaryRow: View {
     let label: String

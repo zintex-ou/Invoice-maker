@@ -2,13 +2,14 @@ import SwiftUI
 
 final class GeneralTemplateViewModel: ObservableObject {
     @Published var currentPage = 0
-    @Published var customColor = Color.blueDAE0FF
+    @Published var customColor: Color
     @Published var templateModel: InvoiceTemplateModel
     let type: TemplateType
     
-    init(templateModel: InvoiceTemplateModel, type: TemplateType) {
+    init(templateModel: InvoiceTemplateModel, type: TemplateType, customColor: Color) {
         self.templateModel = templateModel
         self.type = type
+        self.customColor = customColor
     }
     
     var pages: ([[InvoiceItemRowModel]], Bool) {

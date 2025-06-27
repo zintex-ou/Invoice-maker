@@ -12,7 +12,8 @@ struct PreviewView: View {
             GeneralTemplateView(
                 viewModel: .init(
                     templateModel: viewModel.invoice,
-                    type: viewModel.invoiceInput.type
+                    type: viewModel.invoiceInput.type,
+                    customColor: viewModel.customColor
                 )
             )
             .scrollDisabled(true)
@@ -39,7 +40,7 @@ struct PreviewView: View {
         ZStack {
             HStack {
                 Button("") {
-                    coordinator.popToBack()
+                    coordinator.popTo(id: TabBarView.navigationID)
                 }
                 .buttonStyle(.circle(.property1Cross))
                 
@@ -50,8 +51,7 @@ struct PreviewView: View {
                         .pushTo(
                             id: FullscreenPreviewView.navigationID,
                             destination: { FullscreenPreviewView(
-                                model: viewModel.invoice,
-                                type: viewModel.invoiceInput.type
+                                url: viewModel.pdfFilePath
                             )
                             })
                 } label: {
@@ -156,7 +156,7 @@ struct PreviewView: View {
                 Button("") {
                     Task {
                         await viewModel.deleteInvoice(completion: {
-                            coordinator.popToRoot()
+                            coordinator.popTo(id: TabBarView.navigationID)
                         })
                     }
                 }

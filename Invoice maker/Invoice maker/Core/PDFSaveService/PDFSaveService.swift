@@ -8,7 +8,7 @@ final class PDFSaveService {
     func generateAndSave(
         type: TemplateType,
         templateModel: InvoiceTemplateModel,
-        customColor: Color = .blueDAE0FF,
+        customColor: Color,
         invoiceType: InvoiceType
     ) throws -> URL {
         let (pageCount, pageRenderer) = try prepareRenderer(type: type,
@@ -28,31 +28,31 @@ final class PDFSaveService {
     ) throws -> (pageCount: Int, pageRenderer: (Int) -> AnyView) {
         switch type {
         case .topDark:
-            let vm = GeneralTemplateViewModel(templateModel: model, type: .topDark)
+            let vm = GeneralTemplateViewModel(templateModel: model, type: .topDark, customColor: customColor)
             return (
                 vm.pages.0.count,
                 makeTopDarkRenderer(vm: vm, color: customColor)
             )
         case .cleanWhite:
-            let vm = GeneralTemplateViewModel(templateModel: model, type: .cleanWhite)
+            let vm = GeneralTemplateViewModel(templateModel: model, type: .cleanWhite, customColor: customColor)
             return (
                 vm.pages.0.count,
                 makeCleanWhiteRenderer(vm: vm, color: customColor)
             )
         case .minimal:
-            let vm = GeneralTemplateViewModel(templateModel: model, type: .minimal)
+            let vm = GeneralTemplateViewModel(templateModel: model, type: .minimal, customColor: customColor)
             return (
                 vm.pages.0.count,
                 makeMinimalRenderer(vm: vm, color: customColor)
             )
         case .classic:
-            let vm = GeneralTemplateViewModel(templateModel: model, type: .classic)
+            let vm = GeneralTemplateViewModel(templateModel: model, type: .classic, customColor: customColor)
             return (
                 vm.pages.0.count,
                 makeClassicRenderer(vm: vm, color: customColor)
             )
         case .corporate:
-            let vm = GeneralTemplateViewModel(templateModel: model, type: .corporate)
+            let vm = GeneralTemplateViewModel(templateModel: model, type: .corporate, customColor: customColor)
             return (
                 vm.pages.0.count,
                 makeCorporateRenderer(vm: vm, color: customColor)
@@ -258,11 +258,10 @@ final class PDFSaveService {
                            height: pageSize.height,
                            alignment: .top)
                 let host = UIHostingController(rootView: view)
-                host.view.frame = CGRect(origin: .zero, size: pageSize)
+                host.view.frame = CGRect(origin: .zero, size: self.pageSize)
                 host.view.backgroundColor = .white
                 host.view.drawHierarchy(in: host.view.bounds, afterScreenUpdates: true)
             }
         }
     }
-
 }

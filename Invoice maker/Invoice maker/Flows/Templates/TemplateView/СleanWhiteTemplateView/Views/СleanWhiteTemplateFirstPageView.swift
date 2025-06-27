@@ -8,14 +8,20 @@ struct СleanWhiteTemplateFirstPageView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                VStack(alignment: .leading) {
-                    Text("Due Date:")
-                        .font(.sans(style: .regular, size: 12))
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(templateModel.header.businessProfile.name)
+                        .font(.sans(style: .semiBold, size: 26))
                         .foregroundStyle(.black767676)
                     
-                    Text(templateModel.header.invoiceInfo.dueDate)
-                        .font(.sans(style: .regular, size: 12))
-                        .foregroundStyle(.black)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Due Date:")
+                            .font(.sans(style: .regular, size: 12))
+                            .foregroundStyle(.black767676)
+                        
+                        Text(templateModel.header.invoiceInfo.dueDate)
+                            .font(.sans(style: .regular, size: 12))
+                            .foregroundStyle(.black)
+                    }
                 }
                 .padding(.top, 28)
                 

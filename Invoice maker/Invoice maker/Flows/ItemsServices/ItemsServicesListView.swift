@@ -29,7 +29,8 @@ struct ItemsServicesListView: View {
                     id: AddNewItemServiceView.navigationID,
                     destination: { AddNewItemServiceView(
                         viewModel: .init(
-                            offerType: viewModel.offerSelection
+                            offerType: viewModel.offerSelection,
+                            viewState: .initial
                         )
                     )
                     })
@@ -131,9 +132,14 @@ struct ItemsServicesListView: View {
                             total: item.price ?? "",
                             currency: .USD,
                             editAction: {
-                                coordinator.pushTo(id: EditItemServiceView.navigationID, destination: {
-                                    EditItemServiceView(
-                                        viewModel: .init(itemService: item)
+                                coordinator.pushTo(
+                                    id: AddNewItemServiceView.navigationID,
+                                    destination: {
+                                    AddNewItemServiceView(
+                                        viewModel: .init(
+                                            offerType: viewModel.offerSelection,
+                                            viewState: .editing(entity: item)
+                                        )
                                     )
                                 })
                             },
@@ -153,10 +159,15 @@ struct ItemsServicesListView: View {
             viewModel.postSelectedItemService(item)
             coordinator.popToBack()
         case .editItemsOrServices:
-            coordinator.pushTo(id: EditItemServiceView.navigationID, destination: {
-                EditItemServiceView(
-                    viewModel: .init(itemService: item)
-                )
+            coordinator.pushTo(
+                id: AddNewItemServiceView.navigationID,
+                destination: {
+                    AddNewItemServiceView(
+                        viewModel: .init(
+                            offerType: viewModel.offerSelection,
+                            viewState: .editing(entity: item)
+                        )
+                    )
             })
         }
     }

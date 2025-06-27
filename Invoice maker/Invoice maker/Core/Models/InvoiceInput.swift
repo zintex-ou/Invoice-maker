@@ -2,16 +2,16 @@ import Foundation
 
 struct InvoiceInput {
     let id: UUID
-    let client: ClientInput
+    let client: ClientEntity
     let number: String
     let invoiceDate: Date
     let dueDate: Date
     let currency: String
-    let discount: Double
-    let tax: Double
+    let discount: String
+    let tax: String
     var isPaid: Bool
     let total: Double
-    let itemOrServices: [ItemServiceInput]
-    let pdfFilePath: String
+    let itemOrServices: [ItemServiceEntity]
+    let pdfFilePath: URL
     let type: TemplateType
 }

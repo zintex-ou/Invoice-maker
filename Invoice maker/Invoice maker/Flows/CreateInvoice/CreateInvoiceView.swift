@@ -180,11 +180,16 @@ struct CreateInvoiceView: View {
                                     total: item.price ?? "",
                                     currency: Currency(from: item.currency),
                                     editAction: {
-                                        coordinator.pushTo(id: EditItemServiceView.navigationID, destination: {
-                                            EditItemServiceView(
-                                                viewModel: .init(itemService: item)
-                                            )
-                                        })
+                                        coordinator.pushTo(
+                                            id: AddNewItemServiceView.navigationID,
+                                            destination: {
+                                                AddNewItemServiceView(
+                                                    viewModel: .init(
+                                                        offerType: item.isItem ? .items : .services,
+                                                        viewState: .editing(entity: item)
+                                                    )
+                                                )
+                                            })
                                     },
                                     deleteAction: {
                                         viewModel.deleteItemService(item)
@@ -291,7 +296,20 @@ struct CreateInvoiceView: View {
                 .foregroundStyle(.black)
                 
                 Button(viewModel.getButtonTitle()) {
-                    viewModel.tapOnCreateInvoiceButton()
+                    viewModel.tapOnCreateInvoiceButton(
+                        completion: { viewType in
+                            let type = (viewType == .createEstimate || viewType == .editEstimate) ? InvoiceType.estimate : InvoiceType.invoice
+                            if let chooseTemplateInvoiceModel = viewModel.createChooseTemplateInvoiceModel() {
+                                coordinator.pushTo(id: ChooseTemplateView.navigationID) {
+                                    ChooseTemplateView(
+                                        viewModel: .init(
+                                            chooseTemplateInvoiceModel: chooseTemplateInvoiceModel,
+                                            invoiceType: type
+                                        )
+                                    )
+                                }
+                            }
+                        })
                 }
                 .buttonStyle(.main)
                 .padding(.bottom, 8)
