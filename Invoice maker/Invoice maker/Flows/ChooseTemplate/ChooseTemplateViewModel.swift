@@ -11,6 +11,8 @@ final class ChooseTemplateViewModel: ObservableObject {
     let chooseTemplateInvoiceModel: ChooseTemplateInvoiceModel
     let invoiceType: InvoiceType
     
+    private let dataBaseService = DataBaseService.shared
+    
     init(chooseTemplateInvoiceModel: ChooseTemplateInvoiceModel,
          invoiceType: InvoiceType
     ) {
@@ -108,7 +110,7 @@ final class ChooseTemplateViewModel: ObservableObject {
                     isInvoice: invoiceType == .invoice
                 )
                 
-                let coreDataEntity = try await CoreDataManager.shared.createInvoice(input: invoiceInput)
+                let coreDataEntity = try await dataBaseService.createInvoice(with: invoiceInput)
                 
                 await MainActor.run {
                     completion((invoiceTemplateModel, invoiceInput, coreDataEntity))

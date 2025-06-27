@@ -34,7 +34,7 @@ final class DataBaseService {
                     estimates.append(item)
                 }
             }
-
+            
             allInvoices = invoices
             paidInvoices = paid
             unPaidInvoices = unpaid
@@ -42,6 +42,19 @@ final class DataBaseService {
         } catch {
             print(error.localizedDescription)
         }
+    }
+    
+    func createInvoice(with model: InvoiceInput) async throws -> InvoiceEntity {
+        let invoice = try await CoreDataManager.shared.createInvoice(input: model)
+        allInvoices.insert(invoice, at: 0)
+        
+        if invoice.isPaid {
+            paidInvoices.insert(invoice, at: 0)
+        } else {
+            unPaidInvoices.insert(invoice, at: 0)
+        }
+        
+        return invoice
     }
     
     func change(isPaid: Bool, for id: UUID) async {
