@@ -19,8 +19,10 @@ struct AddNewItemServiceView: View {
             itemServiceForm
             
             Button(viewModel.buttonTitle) {
-                viewModel.onSaveTapped {
-                    coordinator.popToBack()
+                withAnimation {
+                    viewModel.onSaveTapped {
+                        coordinator.popToBack()
+                    }
                 }
             }
             .buttonStyle(.main)
@@ -162,22 +164,65 @@ struct AddNewItemServiceView: View {
                     callError: .constant(false)
                 )
                 
-                ZStack {
+                Menu {
+                    Button {
+                        viewModel.discountType = .none
+                    } label: {
+                        HStack {
+                            Text("None")
+                                .foregroundStyle(.black)
+                                .font(.sans(style: .regular, size: 17))
+                            
+                            if viewModel.discountType == .none {
+                                Image(.property1Tick)
+                                    .resizable()
+                                    .frame(width: 12, height: 12)
+                            }
+                        }
+                    }
+                    
+                    Button {
+                        viewModel.discountType = .flatAmount
+                    } label: {
+                        HStack {
+                            Text("Flat amount")
+                                .foregroundStyle(.black)
+                                .font(.sans(style: .regular, size: 17))
+                            
+                            if viewModel.discountType == .flatAmount {
+                                Image(.property1Tick)
+                                    .resizable()
+                                    .renderingMode(.template)
+                                    .frame(width: 12, height: 12)
+                                    .foregroundStyle(.violet4663FF)
+                            }
+                        }
+                        
+                    }
+                    
+                    Button {
+                        viewModel.discountType = .percentage
+                    } label: {
+                        HStack {
+                            Text("Percentage")
+                                .foregroundStyle(.black)
+                                .font(.sans(style: .regular, size: 17))
+                            
+                            if viewModel.discountType == .percentage {
+                                Image(.property1Tick)
+                                    .resizable()
+                                    .renderingMode(.template)
+                                    .frame(width: 12, height: 12)
+                                    .foregroundStyle(.violet4663FF)
+                            }
+                        }
+                        
+                    }
+                } label: {
                     Button(viewModel.discountType.rawValue) {
                         viewModel.isDiscountPopShow.toggle()
                     }
                     .buttonStyle(.discount(isPopoverShown: viewModel.isDiscountPopShow, namespace: discountPopover))
-                }
-                .zIndex(100)
-                .overlay(alignment: .topTrailing) {
-                    if viewModel.isDiscountPopShow {
-                        DiscountPopover(
-                            discountType: $viewModel.discountType,
-                            isPopoverShown: $viewModel.isDiscountPopShow,
-                            namespace: discountPopover,
-                            action: { }
-                        )
-                    }
                 }
                 
                 if viewModel.discountType != .none {
@@ -203,12 +248,11 @@ struct AddNewItemServiceView: View {
                     text: $viewModel.tax,
                     callError: .constant(false)
                 )
-                
-                Spacer()
             }
             .padding(.top, 24)
             .padding(.bottom, 8)
             .padding(.horizontal, 4)
+            .transition(.move(edge: .bottom))
         }
         .scrollDismissesKeyboard(.interactively)
     }

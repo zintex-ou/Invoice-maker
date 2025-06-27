@@ -43,6 +43,7 @@ struct ClientsExpandableTextFieldSection<Value: Hashable>: View {
                 }
             }
             .padding(.top, 24)
+            .transition(.move(edge: .bottom))
         }
         .scrollDismissesKeyboard(.interactively)
     }
