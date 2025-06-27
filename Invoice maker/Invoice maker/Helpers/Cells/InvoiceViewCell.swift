@@ -5,6 +5,7 @@ struct InvoiceViewCell: View {
     let dueDate: Date
     let currency: Currency
     let totalPrice: Double
+    let isInvoice: Bool
     @State var isPaid: Bool
     
     let isPaidCompletion: (Bool) -> Void
@@ -36,56 +37,58 @@ struct InvoiceViewCell: View {
                     .foregroundStyle(.black)
                     .font(.sans(style: .semiBold, size: 16))
                 
-                Menu {
-                    Button {
-                        tapOnMenuButton(false)
-                    } label: {
-                        HStack {
-                            Text("Unpaid")
-                                .foregroundStyle(!isPaid ? .violet4663FF : .black)
-                                .font(.sans(style: .regular, size: 17))
-                            
-                            if !isPaid {
-                                Image(.property1Tick)
-                                    .resizable()
-                                    .frame(width: 12, height: 12)
-                            }
-                        }
-                    }
-                    
-                    Button {
-                        tapOnMenuButton(true)
-                    } label: {
-                        HStack {
-                            Text("Paid")
-                                .foregroundStyle(isPaid ? .violet4663FF : .black)
-                                .font(.sans(style: .regular, size: 17))
-                            
-                            if isPaid {
-                                Image(.property1Tick)
-                                    .resizable()
-                                    .renderingMode(.template)
-                                    .frame(width: 12, height: 12)
-                                    .foregroundStyle(.violet4663FF)
+                if isInvoice {
+                    Menu {
+                        Button {
+                            tapOnMenuButton(false)
+                        } label: {
+                            HStack {
+                                Text("Unpaid")
+                                    .foregroundStyle(!isPaid ? .violet4663FF : .black)
+                                    .font(.sans(style: .regular, size: 17))
+                                
+                                if !isPaid {
+                                    Image(.property1Tick)
+                                        .resizable()
+                                        .frame(width: 12, height: 12)
+                                }
                             }
                         }
                         
+                        Button {
+                            tapOnMenuButton(true)
+                        } label: {
+                            HStack {
+                                Text("Paid")
+                                    .foregroundStyle(isPaid ? .violet4663FF : .black)
+                                    .font(.sans(style: .regular, size: 17))
+                                
+                                if isPaid {
+                                    Image(.property1Tick)
+                                        .resizable()
+                                        .renderingMode(.template)
+                                        .frame(width: 12, height: 12)
+                                        .foregroundStyle(.violet4663FF)
+                                }
+                            }
+                            
+                        }
+                    } label: {
+                        HStack(spacing: 2) {
+                            Text(isPaid ? "Paid" : "Unpaid")
+                                .foregroundStyle(.black)
+                                .font(.sans(style: .regular, size: 12))
+                            
+                            
+                            Image(.discountArrow)
+                                .resizable()
+                                .frame(width: 12, height: 12)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(isPaid ? .green69EB89 : .blueA0C4FF)
+                        .clipShape(Capsule())
                     }
-                } label: {
-                    HStack(spacing: 2) {
-                        Text(isPaid ? "Paid" : "Unpaid")
-                            .foregroundStyle(.black)
-                            .font(.sans(style: .regular, size: 12))
-                        
-                        
-                        Image(.discountArrow)
-                            .resizable()
-                            .frame(width: 12, height: 12)
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(isPaid ? .green69EB89 : .blueA0C4FF)
-                    .clipShape(Capsule())
                 }
             }
         }
@@ -116,6 +119,7 @@ struct InvoiceViewCell: View {
                 dueDate: .now,
                 currency: .USD,
                 totalPrice: 100,
+                isInvoice: true,
                 isPaid: ((index % 2) != 0),
                 isPaidCompletion: {_ in
                     
