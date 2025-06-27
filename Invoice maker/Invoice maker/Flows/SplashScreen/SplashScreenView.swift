@@ -8,7 +8,7 @@ struct SplashScreenView: View {
     
     var body: some View {
         ZStack {
-            Image(.crown)
+            Image(.icon)
                 .resizable()
                 .frame(width: 100, height: 100)
                 .clipShape(RoundedRectangle(cornerRadius: 16))

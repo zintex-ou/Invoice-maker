@@ -147,6 +147,7 @@ final class BusinessProfileViewModel: ObservableObject {
                 self.selectedImageData = result.image
                 self.postcode = result.postalCode ?? ""
                 self.street = result.street ?? ""
+                self.apartment = result.apartment ?? ""
             } catch {
                 self.alert = .init(
                     title: "Failed to Fetch Profile",
