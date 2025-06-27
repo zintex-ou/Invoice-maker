@@ -22,7 +22,7 @@ struct SegmentedControl<Segment: SegmentedItemProtocol>: View {
 
                 Capsule()
                     .foregroundStyle(.violet4663FF)
-                    .frame(width: segmentWidth - 4, height: controlHeight - 4)
+                    .frame(maxWidth: segmentWidth - 4, maxHeight: controlHeight - 4)
                     .offset(x: offsetX)
                     .animation(.easeInOut(duration: 0.3), value: selection)
 

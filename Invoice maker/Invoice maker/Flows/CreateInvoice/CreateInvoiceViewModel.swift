@@ -160,7 +160,7 @@ final class CreateInvoiceViewModel: ObservableObject {
         }
         
         let price = itemServices.reduce(into: 0.0) { result, itemService in
-            let price = itemService.price
+            let price = itemService.total
             result += Double(price ?? "0") ?? 0
         }
         
