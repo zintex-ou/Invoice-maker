@@ -36,16 +36,13 @@ struct ChooseTemplateView: View {
             
             Button("Save") {
                 Task {
-                    await viewModel.saveTemplate(completion: { invoice, invoiceInput, invoiceEntity in
+                    await viewModel.saveTemplate(completion: { invoiceEntity in
                         coordinator
                             .pushTo(
                                 id: PreviewView.navigationID,
                                 destination: { PreviewView(
                                     viewModel: .init(
-                                        invoiceInput: invoiceInput,
-                                        invoiceEntity: invoiceEntity,
-                                        invoice: invoice,
-                                        customColor: viewModel.customColor.color
+                                        invoiceEntity: invoiceEntity
                                     )
                                 )
                                 })
@@ -60,16 +57,13 @@ struct ChooseTemplateView: View {
                isPresented: $viewModel.isShowDeleteAlert) {
             Button("Save", role: .cancel) {
                 Task {
-                    await viewModel.saveTemplate(completion: { invoice, invoiceInput, invoiceEntity in
+                    await viewModel.saveTemplate(completion: { invoiceEntity in
                         coordinator
                             .pushTo(
                                 id: PreviewView.navigationID,
                                 destination: { PreviewView(
                                     viewModel: .init(
-                                        invoiceInput: invoiceInput,
-                                        invoiceEntity: invoiceEntity,
-                                        invoice: invoice,
-                                        customColor: viewModel.customColor.color
+                                        invoiceEntity: invoiceEntity
                                     )
                                 )
                                 })

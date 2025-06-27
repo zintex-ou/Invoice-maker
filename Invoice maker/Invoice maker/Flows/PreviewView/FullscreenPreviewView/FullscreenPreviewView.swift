@@ -8,7 +8,7 @@ struct FullscreenPreviewView: View {
         VStack {
             navigationBar
             
-            PDFKitView(url: url)
+            PDFKitView(url: url, withScroll: true)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .layoutPriority(1)
         }
