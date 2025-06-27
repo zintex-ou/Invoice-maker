@@ -2,6 +2,7 @@ import SwiftUI
 
 final class TabBarViewModel: ObservableObject {
     @Published var selectedIndex: Int = 0
+    @Published var isPremium: Bool = false
 
     init() {}
 

@@ -9,6 +9,10 @@ struct TabBarView: View {
 
     var body: some View {
         VStack(spacing: .zero) {
+            MainHeader(isPremium: $viewModel.isPremium)
+            .padding(.top, 12)
+            .padding(.bottom, 4)
+            
             TabView(selection: $viewModel.selectedIndex) {
                 InvoicesView()
                     .tag(0)

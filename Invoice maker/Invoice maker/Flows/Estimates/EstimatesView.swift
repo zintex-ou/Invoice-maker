@@ -7,13 +7,6 @@ struct EstimatesView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack(spacing: 0) {
-                MainHeader(isPremium: $viewModel.isPremium) {
-                    coordinator.presentFullScreenCover(id: PaywallView.navigationID) {
-                        PaywallView()
-                    }
-                }
-                .padding(.top, 12)
-                
                 Spacer()
                 
                 emptyStateView
