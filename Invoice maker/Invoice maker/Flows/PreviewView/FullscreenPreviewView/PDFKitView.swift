@@ -8,8 +8,10 @@ struct PDFKitView: UIViewRepresentable {
     func makeUIView(context: UIViewRepresentableContext<PDFKitView>) -> PDFView {
         let pdfView = PDFView()
         pdfView.document = PDFDocument(url: url)
-        pdfView.autoScales = true
+        pdfView.scaleFactor = 0.6
         pdfView.isUserInteractionEnabled = withScroll
+        pdfView.backgroundColor = .grayF5F5F5
+        pdfView.displayMode = .singlePageContinuous//withScroll ? .singlePageContinuous : .singlePage
         return pdfView
     }
     

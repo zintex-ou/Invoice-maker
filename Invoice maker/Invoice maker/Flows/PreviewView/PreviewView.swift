@@ -7,18 +7,18 @@ struct PreviewView: View {
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            Color.grayF5F5F5
-            
-            PDFKitView(url: viewModel.pdfFilePath, withScroll: false)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .layoutPriority(1)
-                .padding(22)
-                .padding(.top, -80)
-            
-            VStack {
+            VStack(spacing: 0) {
                 navigationBar
                 
-                Spacer()
+                VStack(spacing: 0) {
+                    Rectangle()
+                        .fill(.grayF5F5F5)
+                        .frame(height: 24)
+                    
+                    PDFKitView(url: viewModel.pdfFilePath, withScroll: false)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .layoutPriority(1)
+                }
             }
             
             bottomView
@@ -97,19 +97,35 @@ struct PreviewView: View {
                     
                     if viewModel.isWithStatusChange {
                         Menu {
-                            Button("Unpaid") {
-                                viewModel.isPaid = false
-                                viewModel.isPaidPopShow  = false
-                                Task {
-                                    await viewModel.updateInvoice()
+                            Button {
+                                viewModel.tapOnMenuButton(false)
+                            } label: {
+                                HStack {
+                                    Text("Unpaid")
+                                        .font(.sans(style: .regular, size: 17))
+                                    
+                                    if !viewModel.isPaid {
+                                        Image(.property1Tick)
+                                            .resizable()
+                                            .frame(width: 12, height: 12)
+                                    }
                                 }
                             }
                             
-                            Button("Paid") {
-                                viewModel.isPaid = true
-                                viewModel.isPaidPopShow  = false
-                                Task {
-                                    await viewModel.updateInvoice()
+                            Button {
+                                viewModel.tapOnMenuButton(true)
+                            } label: {
+                                HStack {
+                                    Text("Paid")
+                                        .font(.sans(style: .regular, size: 17))
+                                    
+                                    if viewModel.isPaid {
+                                        Image(.property1Tick)
+                                            .resizable()
+                                            .renderingMode(.template)
+                                            .frame(width: 12, height: 12)
+                                            .foregroundStyle(.violet4663FF)
+                                    }
                                 }
                             }
                         } label: {
