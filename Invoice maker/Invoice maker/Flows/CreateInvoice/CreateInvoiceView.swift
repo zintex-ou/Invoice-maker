@@ -297,14 +297,13 @@ struct CreateInvoiceView: View {
                 
                 Button(viewModel.getButtonTitle()) {
                     viewModel.tapOnCreateInvoiceButton(
-                        completion: { viewType in
-                            let type = (viewType == .createEstimate || viewType == .editEstimate) ? InvoiceType.estimate : InvoiceType.invoice
-                            if let chooseTemplateInvoiceModel = viewModel.createChooseTemplateInvoiceModel() {
+                        completion: { invoiceModel in
+                            if let invoiceModel {
                                 coordinator.pushTo(id: ChooseTemplateView.navigationID) {
                                     ChooseTemplateView(
                                         viewModel: .init(
-                                            chooseTemplateInvoiceModel: chooseTemplateInvoiceModel,
-                                            invoiceType: type
+                                            chooseTemplateInvoiceModel: invoiceModel,
+                                            invoiceType: viewModel.getInvoiceType()
                                         )
                                     )
                                 }

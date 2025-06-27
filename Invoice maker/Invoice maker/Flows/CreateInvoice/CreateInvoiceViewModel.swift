@@ -26,12 +26,15 @@ final class CreateInvoiceViewModel: ObservableObject {
     @Published var isPresenterDiskont: Bool = false
     
     private(set) var viewType: ViewType
+    private let dataBaseManager: CoreDataManager = .shared
+    private var bussinesProfile: BusinessProfileEntity? = nil
     
     var errorText: String = "No items added. To create an invoice, please сlick the “Add item & service” button and fill in the item details."
     
     init(viewType: ViewType) {
         self.viewType = viewType
         setSubscription()
+        fetchBussinessProfile()
     }
     
     func getTopTitle() -> String {
@@ -82,7 +85,7 @@ final class CreateInvoiceViewModel: ObservableObject {
             return "Create Invoice"
         }
     }
-
+    
     func getCurrency() -> String {
         return currency.rawValue
     }
@@ -115,7 +118,7 @@ final class CreateInvoiceViewModel: ObservableObject {
         itemServices.removeAll { $0.id == itemService.id }
     }
     
-    func tapOnCreateInvoiceButton(completion: @escaping (ViewType) -> Void) {
+    func tapOnCreateInvoiceButton(completion: @escaping (ChooseTemplateInvoiceModel?) -> Void) {
         if viewType == .createInvoice || viewType == .editInvoice {
             guard dueDate.isSameOrAfterDateIgnoringTime(invoiceDate) else {
                 showError("The due date must be the same or later than the invoice date.")
@@ -123,15 +126,32 @@ final class CreateInvoiceViewModel: ObservableObject {
             }
         }
         
+        guard let bussinesProfile = bussinesProfile,
+              let ownerName = bussinesProfile.ownerName, !ownerName.isEmpty,
+              let email = bussinesProfile.email, !email.isEmpty else {
+            showError("Please complete your business profile by providing both your name and email address.")
+            return
+        }
+        
+        guard client != nil else {
+            showError("Please select a client before creating the invoice.")
+            return
+        }
+        
         guard !itemServices.isEmpty else {
             showError("No items added. To create an invoice, please сlick the “Add item & service” button and fill in the item details.")
             return
         }
         
-        completion(viewType)
+        completion(createChooseTemplateInvoiceModel())
     }
     
-    func createChooseTemplateInvoiceModel() -> ChooseTemplateInvoiceModel? {
+    func getInvoiceType() -> InvoiceType {
+        let type = (viewType == .createEstimate || viewType == .editEstimate) ? InvoiceType.estimate : InvoiceType.invoice
+        return type
+    }
+    
+    private func createChooseTemplateInvoiceModel() -> ChooseTemplateInvoiceModel? {
         guard let client = client else {
             return nil
         }
@@ -209,6 +229,17 @@ final class CreateInvoiceViewModel: ObservableObject {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.shouldShowErrorView = false
+        }
+    }
+    
+    private func fetchBussinessProfile() {
+        Task {
+            do {
+                guard let result = try await dataBaseManager.fetchBusinessProfile() else { return }
+                self.bussinesProfile = result
+            } catch {
+                
+            }
         }
     }
 }
