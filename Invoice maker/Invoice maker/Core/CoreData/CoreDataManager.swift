@@ -191,9 +191,17 @@ extension CoreDataManager {
 // MARK: - Invoice
 
 extension CoreDataManager {
-    func fetchAllInvoices() async throws -> [InvoiceEntity] {
+    func  fetchInvoices(ofType type: InvoiceType) async throws -> [InvoiceEntity] {
         try await viewContext.perform {
             let request: NSFetchRequest<InvoiceEntity> = InvoiceEntity.fetchRequest()
+
+            let isInvoicePredicate = NSPredicate(
+                format: "isInvoice == %@",
+                NSNumber(value: type == .invoice)
+            )
+
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [isInvoicePredicate])
+
             return try self.viewContext.fetch(request)
         }
     }
@@ -235,6 +243,7 @@ extension CoreDataManager {
             invoice.total = input.total
             invoice.pdfFilePath = input.pdfFilePath.absoluteString
             invoice.type = input.type.rawValue
+            invoice.isInvoice = input.isInvoice
             
             for itemInput in input.itemOrServices {
                 let item = ItemServiceEntity(context: self.viewContext)

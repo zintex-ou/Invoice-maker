@@ -15,7 +15,7 @@ final class InvoicesViewModel: ObservableObject {
     
     func fetchInvoices() async {
         do {
-            let result = try await dataBaseManager.fetchAllInvoices()
+            let result = try await dataBaseManager.fetchInvoices(ofType: .invoice)
             allInvoices = result
             paidInvoices = result.filter({ $0.isPaid == true })
             unPaidInvoices = result.filter({ $0.isPaid == false })

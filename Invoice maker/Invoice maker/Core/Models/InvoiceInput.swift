@@ -14,4 +14,5 @@ struct InvoiceInput {
     let itemOrServices: [ItemServiceEntity]
     let pdfFilePath: URL
     let type: TemplateType
+    let isInvoice: Bool
 }

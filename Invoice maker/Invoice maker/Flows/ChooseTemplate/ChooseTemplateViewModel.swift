@@ -104,7 +104,8 @@ final class ChooseTemplateViewModel: ObservableObject {
                     total: chooseTemplateInvoiceModel.total,
                     itemOrServices: chooseTemplateInvoiceModel.itemOrServices,
                     pdfFilePath: url,
-                    type: templateType
+                    type: templateType,
+                    isInvoice: invoiceType == .invoice
                 )
                 
                 let coreDataEntity = try await CoreDataManager.shared.createInvoice(input: invoiceInput)

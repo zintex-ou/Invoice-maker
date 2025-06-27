@@ -31,6 +31,7 @@
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="invoiceDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="invoiceNumber" optional="YES" attributeType="String"/>
+        <attribute name="isInvoice" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isPaid" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="pdfFilePath" optional="YES" attributeType="String"/>
         <attribute name="tax" optional="YES" attributeType="String"/>
