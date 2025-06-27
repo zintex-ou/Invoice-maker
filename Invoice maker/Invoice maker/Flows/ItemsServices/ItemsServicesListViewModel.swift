@@ -11,16 +11,10 @@ final class ItemsServicesListViewModel: ObservableObject {
     @Published var offerSelection: SegmentOfferType = .items
     @Published var selectedItemService: [ItemServiceEntity] = []
     
-    enum ViewType {
-        case choiseItemsOrServices(Currency)
-        case editItemsOrServices
-    }
-    
-    let viewType: ViewType
-    
+    private(set) var viewType: ItemServiceViewType
     private var cancellables = Set<AnyCancellable>()
     
-    init(viewType: ViewType, selectedItemService: [ItemServiceEntity] = []) {
+    init(viewType: ItemServiceViewType, selectedItemService: [ItemServiceEntity] = []) {
         self.viewType = viewType
         self.selectedItemService = selectedItemService
         setSubscription()
@@ -54,6 +48,10 @@ final class ItemsServicesListViewModel: ObservableObject {
             showErrorAlert = true
             errorAlertSubtitle = error.localizedDescription
         }
+    }
+    
+    func isSelectedCell(_ item: ItemServiceEntity) -> Bool {
+        selectedItemService.contains(where: { $0.id == item.id })
     }
     
     func showDeleteAlert(for item: ItemServiceEntity) {

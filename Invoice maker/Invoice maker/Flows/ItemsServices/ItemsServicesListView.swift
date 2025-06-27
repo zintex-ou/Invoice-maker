@@ -54,7 +54,7 @@ struct ItemsServicesListView: View {
                     Task { await viewModel.deleteItemService(itemToDelete) }
                 }
             }
-
+            
         } message: {
             Text(viewModel.alertDeleteMessage())
         }
@@ -107,7 +107,7 @@ struct ItemsServicesListView: View {
             Text(viewModel.offerSelection == .items ? "Items" : "Services")
                 .font(.sans(style: .semiBold, size: 26))
                 .foregroundStyle(.black)
-        
+            
             Text("Add \(viewModel.offerSelection == .items ? "item" : "service") details once and create\ninvoices in just a few clicks.")
                 .font(.sans(style: .regular, size: 16))
                 .foregroundStyle(.black767676)
@@ -117,39 +117,23 @@ struct ItemsServicesListView: View {
         }
     }
     
-#warning("Change curency dinamically")
     var list: some View {
         ScrollView {
             VStack(spacing: 12) {
-                ForEach(viewModel.offerSelection == .items ? viewModel.items : viewModel.services, id: \.id) { item in
-                    Button("") {
+                let model = viewModel.offerSelection == .items ? viewModel.items : viewModel.services
+                
+                ForEach(model, id: \.id) { item in
+                    Button {
                         tapOnItemsServices(item)
-                    }
-                    .buttonStyle(
-                        .itemCell(
-                            itemName: item.name ?? "",
-                            discountType: DiscountType(rawValue: item.discountType ?? "") ?? .none,
-                            discont: "\(item.discount ?? "")",
-                            tax: "\(item.tax ?? "")",
-                            total: item.total ?? "",
-                            currency: .USD,
-                            editAction: {
-                                coordinator.pushTo(
-                                    id: AddNewItemServiceView.navigationID,
-                                    destination: {
-                                    AddNewItemServiceView(
-                                        viewModel: .init(
-                                            offerType: viewModel.offerSelection,
-                                            viewState: .editing(entity: item)
-                                        )
-                                    )
-                                })
-                            },
-                            deleteAction: {
+                    } label: {
+                        ItemServiceViewCell(
+                            itemService: item,
+                            isSelectedCell: viewModel.isSelectedCell(item),
+                            offerSelection: viewModel.offerSelection,
+                            viewType: viewModel.viewType) {
                                 viewModel.showDeleteAlert(for: item)
                             }
-                        )
-                    )
+                    }
                 }
             }
         }
@@ -171,7 +155,7 @@ struct ItemsServicesListView: View {
                             viewState: .editing(entity: item)
                         )
                     )
-            })
+                })
         }
     }
 }
