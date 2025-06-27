@@ -14,7 +14,7 @@ struct AddNewItemServiceView: View {
     var body: some View {
         VStack(spacing: 0) {
             navigationBar
-                .padding(.bottom, 24)
+                .padding(.bottom, 4)
             
             itemServiceForm
             
@@ -82,14 +82,22 @@ struct AddNewItemServiceView: View {
                         coordinator.popToBack()
                     }
                 }
-                .buttonStyle(.circle(.property1Cross))
+                .buttonStyle(.circle(.property1Arrow))
                 
+                Spacer()
+            }
+            
+            HStack {
                 Spacer()
                 
                 Text(viewModel.title)
                     .font(.sans(style: .semiBold, size: 20))
                     .foregroundStyle(.black)
                 
+                Spacer()
+            }
+            
+            HStack {
                 Spacer()
                 
                 if case .editing = viewModel.viewState {
@@ -104,7 +112,7 @@ struct AddNewItemServiceView: View {
     
     @ViewBuilder
     private var itemServiceForm: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 12) {
                 Text(viewModel.subtitle1)
                     .font(.sans(style: .semiBold, size: 26))
@@ -198,7 +206,8 @@ struct AddNewItemServiceView: View {
                 
                 Spacer()
             }
-            .padding(.vertical, 8)
+            .padding(.top, 24)
+            .padding(.bottom, 8)
             .padding(.horizontal, 4)
         }
         .scrollDismissesKeyboard(.interactively)

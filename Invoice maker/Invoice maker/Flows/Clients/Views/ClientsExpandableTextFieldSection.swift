@@ -8,7 +8,7 @@ struct ClientsExpandableTextFieldSection<Value: Hashable>: View {
     @FocusState.Binding var focused: Value?
     
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(spacing: 12) {
                 ForEach(mainFields.indices, id: \.self) { index in
                     let field = mainFields[index]
@@ -42,6 +42,7 @@ struct ClientsExpandableTextFieldSection<Value: Hashable>: View {
                     }
                 }
             }
+            .padding(.top, 24)
         }
         .scrollDismissesKeyboard(.interactively)
     }

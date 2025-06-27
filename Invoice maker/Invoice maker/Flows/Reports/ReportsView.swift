@@ -7,7 +7,7 @@ struct ReportsView: View {
     
     var body: some View {
         ZStack(alignment: .top) {
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
                     filterView
                     

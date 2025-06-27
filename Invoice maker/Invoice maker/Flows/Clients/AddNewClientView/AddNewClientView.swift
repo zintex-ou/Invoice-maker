@@ -14,13 +14,16 @@ struct AddNewClientView: View {
     var body: some View {
         VStack(spacing: 0) {
             navigationBar
-                .padding(.bottom, 24)
+                .padding(.bottom, 4)
             
             textFieldsView
             
+            
             Button(viewModel.buttonTitle) {
-                viewModel.onSaveTapped {
-                    coordinator.popToBack()
+                withAnimation {
+                    viewModel.onSaveTapped {
+                        coordinator.popToBack()
+                    }
                 }
             }
             .buttonStyle(.main)
@@ -74,14 +77,22 @@ struct AddNewClientView: View {
                         coordinator.popToBack()
                     }
                 }
-                .buttonStyle(.circle(.property1Cross))
+                .buttonStyle(.circle(.property1Arrow))
                 
+                Spacer()
+            }
+            
+            HStack {
                 Spacer()
                 
                 Text(viewModel.title)
                     .font(.sans(style: .semiBold, size: 20))
                     .foregroundStyle(.black)
                 
+                Spacer()
+            }
+            
+            HStack {
                 Spacer()
                 
                 if case .editing = viewModel.viewState {
@@ -95,7 +106,6 @@ struct AddNewClientView: View {
     }
     
     private var textFieldsView: some View {
-        VStack {
             ClientsExpandableTextFieldSection(
                 mainFields: [
                     FormFieldSettings(
@@ -129,7 +139,7 @@ struct AddNewClientView: View {
                         title: "Fax",
                         placeholder: "",
                         isRequired: false,
-                        keyboardType: .default,
+                        keyboardType: .phonePad,
                         text: $viewModel.fax,
                         showError: .constant(false),
                         equals: FocusedField.fax
@@ -188,6 +198,5 @@ struct AddNewClientView: View {
                 isExpanded: $viewModel.isExpanded,
                 focused: $focusedField
             )
-        }
     }
 }

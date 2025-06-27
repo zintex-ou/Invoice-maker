@@ -56,18 +56,33 @@ struct ChooseTemplateView: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
         }
-        .alert("Delete Item",
+        .alert("Are you sure you want to leave?",
                isPresented: $viewModel.isShowDeleteAlert) {
-            Button("Cancel", role: .cancel) {
-                
+            Button("Save", role: .cancel) {
+                Task {
+                    await viewModel.saveTemplate(completion: { invoice, invoiceInput, invoiceEntity in
+                        coordinator
+                            .pushTo(
+                                id: PreviewView.navigationID,
+                                destination: { PreviewView(
+                                    viewModel: .init(
+                                        invoiceInput: invoiceInput,
+                                        invoiceEntity: invoiceEntity,
+                                        invoice: invoice,
+                                        customColor: viewModel.customColor.color
+                                    )
+                                )
+                                })
+                    })
+                }
             }
             
-            Button("Delete", role: .destructive) {
+            Button("Leave", role: .destructive) {
                 coordinator.popTo(id: TabBarView.navigationID)
             }
             
         } message: {
-            Text("Are you sure you want to delete this item? ")
+            Text("You have unsaved changes. If you close this invoice, all data will be lost.")
         }
         .alert(
             viewModel.alert.title,
