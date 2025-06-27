@@ -271,11 +271,6 @@ extension CoreDataManager {
             invoice.total = input.total
             invoice.pdfFilePath = input.pdfFilePath.absoluteString
             invoice.type = input.type.rawValue
-            
-            let request: NSFetchRequest<ClientEntity> = ClientEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", input.id as CVarArg)
-            request.fetchLimit = 1
-            
             invoice.client = input.client
             
             for itemInput in input.itemOrServices {
