@@ -2,7 +2,7 @@ import SwiftUI
 
 final class PDFSaveService {
     private let pageSize = CGSize(width: 595, height: 842)
-    private let userDefaultsPDFService = UserDefaultsPDFService()
+    private let fileManagerPDFService = FileManagerPDFService()
     
     @discardableResult
     func generateAndSave(
@@ -18,7 +18,7 @@ final class PDFSaveService {
         let pdfData = renderPDF(pageCount: pageCount,
                                 pageRenderer: pageRenderer)
         
-        return try userDefaultsPDFService.savePDF(data: pdfData, for: invoiceType)
+        return try fileManagerPDFService.savePDF(data: pdfData, for: invoiceType)
     }
     
     private func prepareRenderer(

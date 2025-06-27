@@ -1,6 +1,6 @@
 import Foundation
 
-final class UserDefaultsPDFService {
+final class FileManagerPDFService {
     private let fileManager = FileManager.default
 
     func savePDF(data: Data, for type: InvoiceType) throws -> URL {
@@ -39,7 +39,6 @@ final class UserDefaultsPDFService {
         let filename = "\(type.rawValue)_\(Int(Date().timeIntervalSince1970)).pdf"
         return folderURL.appendingPathComponent(filename)
     }
-    
     
     private func ensureFolderExists(for type: InvoiceType) throws -> URL {
         let docsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
