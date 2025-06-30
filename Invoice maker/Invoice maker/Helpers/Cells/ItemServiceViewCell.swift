@@ -11,7 +11,7 @@ struct ItemServiceViewCell: View {
     
     init(
         itemService: ItemServiceEntity,
-        isSelectedCell: Bool,
+        isSelectedCell: Bool = false,
         offerSelection: SegmentOfferType,
         viewType: ItemServiceViewType,
         deleteAction: (() -> Void)? = nil,

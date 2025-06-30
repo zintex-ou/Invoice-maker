@@ -170,32 +170,17 @@ struct CreateInvoiceView: View {
                 
                 VStack(spacing: 12) {
                     ForEach(viewModel.itemServices, id: \.self) { item in
-                        Button("") { }
-                            .buttonStyle(
-                                .itemCell(
-                                    itemName: item.name ?? "",
-                                    discountType: DiscountType(rawValue: item.discountType ?? "") ?? .none,
-                                    discont: "\(item.discount ?? "")",
-                                    tax: "\(item.tax ?? "")",
-                                    total: item.price ?? "",
-                                    currency: Currency(from: item.currency),
-                                    editAction: {
-                                        coordinator.pushTo(
-                                            id: AddNewItemServiceView.navigationID,
-                                            destination: {
-                                                AddNewItemServiceView(
-                                                    viewModel: .init(
-                                                        offerType: item.isItem ? .items : .services,
-                                                        viewState: .editing(entity: item)
-                                                    )
-                                                )
-                                            })
-                                    },
-                                    deleteAction: {
-                                        viewModel.deleteItemService(item)
-                                    }
-                                )
-                            )
+                        Button {
+
+                        } label: {
+
+                            ItemServiceViewCell(
+                                itemService: item,
+                                offerSelection: item.isItem ? SegmentOfferType.items : SegmentOfferType.services,
+                                viewType: .editItemsOrServices) {
+                                    viewModel.deleteItemService(item)
+                                }
+                        }
                     }
                     
                     Button("Add item&service") {
