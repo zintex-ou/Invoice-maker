@@ -131,17 +131,20 @@ struct PreviewView: View {
                                 }
                             }
                         } label: {
-                            Button(viewModel.isPaid ? "Paid" : "Unpaid") {
-                                viewModel.isPaidPopShow = true
+                            HStack(spacing: 2) {
+                                Text(viewModel.isPaid ? "Paid" : "Unpaid")
+                                    .foregroundStyle(.black)
+                                    .font(.sans(style: .regular, size: 12))
+                                
+                                
+                                Image(.discountArrow)
+                                    .resizable()
+                                    .frame(width: 12, height: 12)
                             }
-                            .buttonStyle(
-                                .paid(
-                                    isPaid: $viewModel.isPaid,
-                                    isPopoverShown: viewModel.isPaidPopShow,
-                                    namespace: paidPopover,
-                                    id: viewModel.popoverID
-                                )
-                            )
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(viewModel.isPaid ? .green69EB89 : .blueA0C4FF)
+                            .clipShape(Capsule())
                         }
                     }
                 }

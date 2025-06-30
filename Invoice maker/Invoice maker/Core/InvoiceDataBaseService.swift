@@ -60,7 +60,7 @@ final class InvoiceDataBaseService {
         return invoice
     }
     
-    func change(isPaid: Bool, for id: UUID) async {
+    func change(isPaid: Bool, for id: UUID) async throws {
         guard let index = allInvoices.firstIndex(where: { $0.id == id }) else { return }
         allInvoices[index].isPaid = isPaid
 
@@ -74,6 +74,6 @@ final class InvoiceDataBaseService {
             unPaidInvoices.append(invoice)
         }
         
-        try? await dataBaseManager.updateIsPaid(for: id, isPaid: isPaid)
+        try await dataBaseManager.updateIsPaid(for: id, isPaid: isPaid)
     }
 }

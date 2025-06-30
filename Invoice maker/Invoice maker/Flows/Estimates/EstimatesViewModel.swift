@@ -15,7 +15,11 @@ final class EstimatesViewModel: ObservableObject {
     
     func change(isPaid: Bool, for id: UUID) {
         Task {
-            await dataBaseService.change(isPaid: isPaid, for: id)
+            do {
+                try await dataBaseService.change(isPaid: isPaid, for: id)
+            } catch {
+                print("Failed to update invoice")
+            }
         }
     }
 }

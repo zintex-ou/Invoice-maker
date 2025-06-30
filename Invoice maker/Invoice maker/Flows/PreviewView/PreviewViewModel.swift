@@ -1,5 +1,6 @@
-import SwiftUI
+import Foundation
 
+@MainActor
 final class PreviewViewModel: ObservableObject {
     var pdfFilePath: URL
     var alert: AlertModel = .init(title: "", subtitle: "")
@@ -8,22 +9,24 @@ final class PreviewViewModel: ObservableObject {
     let isInvoice: Bool
     
     @Published var shouldShowError: Bool = false
-    @Published var isPaid: Bool = false
-    @Published var isPaidPopShow = false
+    @Published var isPaid: Bool
     @Published var popoverID: Int = 1
+    
+    private let dataBaseService = InvoiceDataBaseService.shared
     
     init(
         invoiceEntity: InvoiceEntity,
         isWithStatusChange: Bool = false
     ) {
-            self.invoiceEntity = invoiceEntity
-            self.pdfFilePath = invoiceEntity.pdfFilePath ?? .currentDirectory()
-            self.isWithStatusChange = isWithStatusChange
-            self.isInvoice = invoiceEntity.isInvoice
-        }
+        self.invoiceEntity = invoiceEntity
+        self.pdfFilePath = invoiceEntity.pdfFilePath ?? .currentDirectory()
+        self.isWithStatusChange = isWithStatusChange
+        self.isInvoice = invoiceEntity.isInvoice
+        self.isPaid = invoiceEntity.isPaid
+    }
     
     func title() -> String {
-        isInvoice ? "Preview" : "Estimate"
+        isInvoice ? "Invoice" : "Estimate"
     }
     
     func buttonTitle() -> String {
@@ -44,42 +47,18 @@ final class PreviewViewModel: ObservableObject {
     
     func tapOnMenuButton(_ value: Bool) {
         isPaid = value
-        isPaidPopShow  = false
+        
         Task {
-            await updateInvoice()
-        }
-    }
-    
-    func updateInvoice() async {
-        do {
-            if let client = invoiceEntity.client,
-               let itemService = invoiceEntity.itemService {
-                let input = InvoiceInput(
-                    id: invoiceEntity.id ?? .init(),
-                    client: client,
-                    number: invoiceEntity.invoiceNumber ?? "",
-                    invoiceDate: invoiceEntity.invoiceDate ?? .now,
-                    dueDate: invoiceEntity.dueDate ?? .now,
-                    currency: invoiceEntity.currency ?? "USD",
-                    discount: invoiceEntity.discount ?? "",
-                    tax: invoiceEntity.tax ?? "",
-                    isPaid: isPaid,
-                    total: invoiceEntity.total,
-                    itemOrServices: (itemService as? Set<ItemServiceEntity>)?.map { $0 } ?? [],
-                    pdfFilePath: invoiceEntity.pdfFilePath ?? .currentDirectory(),
-                    type: .init(rawValue: invoiceEntity.type ?? "topDark") ?? TemplateType.topDark,
-                    isInvoice: invoiceEntity.isInvoice
+            do {
+                guard let id = invoiceEntity.id else { return }
+                try await dataBaseService.change(isPaid: value, for: id)
+            } catch {
+                self.alert = .init(
+                    title: "Failed to update invoice",
+                    subtitle: "An error occurred. Please try again later."
                 )
-                try await CoreDataManager.shared.updateInvoice(
-                    input: input
-                )
+                shouldShowError = true
             }
-        } catch {
-            self.alert = .init(
-                title: "Failed to update invoice",
-                subtitle: "An error occurred. Please try again later."
-            )
-            shouldShowError = true
         }
     }
     
