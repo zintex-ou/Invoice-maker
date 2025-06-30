@@ -47,9 +47,7 @@ struct EstimatesView: View {
                                 currency: Currency(from: invoice.currency),
                                 totalPrice: total,
                                 isInvoice: invoice.isInvoice,
-                                isPaid: isPaid) { isPaid in
-                                    viewModel.change(isPaid: isPaid, for: id)
-                                }
+                                isPaid: .constant(isPaid))
                         }
                     }
                 }

@@ -8,6 +8,8 @@ final class ClientInvoicesListViewModel: ObservableObject {
         report.detailViewModels()
     }
     
+    private let dataBaseService = InvoiceDataBaseService.shared
+    
     var title: String {
         report.name
     }
@@ -27,8 +29,13 @@ final class ClientInvoicesListViewModel: ObservableObject {
         self.report = report
     }
     
-    #warning("add update")
-    func updateStatus(isPaid: Bool) {
-        
+    func change(isPaid: Bool, for id: UUID) {
+        Task {
+            do {
+                try await dataBaseService.change(isPaid: isPaid, for: id)
+            } catch {
+                print("Failed to update invoice")
+            }
+        }
     }
 }

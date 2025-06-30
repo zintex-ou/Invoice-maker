@@ -23,17 +23,20 @@ struct ClientInvoicesListView: View {
                             RoundedRectangle(cornerRadius: 12)
                                 .fill(.grayF5F5F5)
                             
+                            let isPaidBinding = Binding<Bool>(
+                                get: { model.isPaid },
+                                set: { newValue in
+                                    viewModel.change(isPaid: newValue, for: model.id)
+                                }
+                            )
+                            
                             InvoiceViewCell(
                                 title: model.invoiceNumber,
                                 dueDate: model.dueDate,
                                 currency: model.currency,
                                 totalPrice: model.total,
                                 isInvoice: true,
-                                isPaid: model.isPaid,
-                                isPaidCompletion: { isPaid in
-                                    viewModel.updateStatus(isPaid: isPaid)
-                                }
-                            )
+                                isPaid: isPaidBinding)
                         }
                         .frame(height: 85)
                     }

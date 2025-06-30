@@ -61,6 +61,13 @@ struct InvoicesView: View {
                         if let id = invoice.id,
                            let name = invoice.client?.clientName,
                            let dueDate = invoice.dueDate {
+                            
+                            let isPaidBinding = Binding<Bool>(
+                                get: { invoice.isPaid },
+                                set: { newValue in
+                                    viewModel.change(isPaid: newValue, for: id)
+                                }
+                            )
 
                             Button {
                                 coordinator.pushTo(id: PreviewView.navigationID, destination: {
@@ -73,9 +80,7 @@ struct InvoicesView: View {
                                     currency: Currency(from: invoice.currency),
                                     totalPrice: invoice.total,
                                     isInvoice: invoice.isInvoice,
-                                    isPaid: invoice.isPaid) { isPaid in
-                                        viewModel.change(isPaid: isPaid, for: id)
-                                    }
+                                    isPaid: isPaidBinding)
                             }
                         }
                     }

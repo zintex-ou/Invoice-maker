@@ -6,9 +6,7 @@ struct InvoiceViewCell: View {
     let currency: Currency
     let totalPrice: Double
     let isInvoice: Bool
-    @State var isPaid: Bool
-    
-    let isPaidCompletion: (Bool) -> Void
+    @Binding var isPaid: Bool
     
     var body: some View {
         HStack(alignment: .center) {
@@ -102,7 +100,6 @@ struct InvoiceViewCell: View {
     func tapOnMenuButton(_ isPaid: Bool) {
         guard self.isPaid != isPaid else { return }
         self.isPaid = isPaid
-        isPaidCompletion(isPaid)
     }
     
     func getColorForDate() -> Color {
@@ -120,10 +117,7 @@ struct InvoiceViewCell: View {
                 currency: .USD,
                 totalPrice: 100,
                 isInvoice: true,
-                isPaid: ((index % 2) != 0),
-                isPaidCompletion: {_ in
-                    
-                })
+                isPaid: .constant(false))
         }
     }
     .padding(.horizontal, 16)
