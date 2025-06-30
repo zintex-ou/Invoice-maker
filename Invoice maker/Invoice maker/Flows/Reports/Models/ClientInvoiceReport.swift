@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ClientInvoiceReport {
+struct ClientInvoiceReport: Equatable {
     let id: UUID
     let client: ClientEntity
     let invoices: [InvoiceEntity]
@@ -27,7 +27,10 @@ extension ClientInvoiceReport {
                 dueDate: invoice.invoiceDate ?? Date(),
                 currency: Currency(rawValue: invoice.currency ?? "") ?? .USD,
                 total: invoice.total,
-                isPaid: invoice.isPaid
+                isPaid: Binding<Bool>(
+                    get: { invoice.isPaid },
+                    set: { invoice.isPaid = $0 }
+                )
             )
         }
     }

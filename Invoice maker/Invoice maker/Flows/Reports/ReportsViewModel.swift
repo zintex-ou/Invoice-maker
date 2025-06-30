@@ -6,7 +6,7 @@ final class ReportsViewModel: ObservableObject {
     @Published var currency: Currency
     @Published var shouldShowCurrencyPicker: Bool = false
     @Published var invoiceReportModel: InvoiceReportModel
-    @Published var showCaledar = false
+    @Published var showCalendar = false
     @Published var clientInvoiceReport: [ClientInvoiceReport] = []
     
     @Published var dates: Set<DateComponents> = {
@@ -49,15 +49,7 @@ final class ReportsViewModel: ObservableObject {
             unpaidInvoicesTotal: 0
         )
         
-        Task {
-            try await fetchInvoicesGroupedByPaidStatus(
-                currency: currency,
-                from: dates.compactMap { Calendar.current.date(from: $0)
-                }.min() ?? .now,
-                to: dates.compactMap { Calendar.current.date(from: $0) }.max() ?? .distantFuture)
-            
-            await setSubscriptions()
-        }
+        setSubscriptions()
     }
     
     private let fullFormatter: DateFormatter = {
@@ -108,25 +100,56 @@ extension ReportsViewModel {
     func commitDraft() {
         guard draftDates.count >= 2 else { return }
         let sorted = draftDates
-           .sorted {
-             ($0.date ?? .distantFuture) < ($1.date ?? .distantFuture)
-           }
-         dates = Set(sorted.prefix(2))
-     }
-}
-
-@MainActor
-private extension ReportsViewModel {
+            .sorted {
+                ($0.date ?? .distantFuture) < ($1.date ?? .distantFuture)
+            }
+        dates = Set(sorted.prefix(2))
+    }
+    
+    func setSubscriptions() {
+        Publishers.CombineLatest($currency, $dates)
+            .sink { [weak self] currency, dates in
+                Task {
+                    guard let self else { return }
+                    let calendar = Calendar.current
+                    let startDate = dates.compactMap { calendar.date(from: $0) }.min() ?? .now
+                    let endDate = dates.compactMap { calendar.date(from: $0) }.max() ?? .distantFuture
+                    try await self.fetchInvoicesGroupedByPaidStatus(
+                        currency: currency,
+                        from: startDate,
+                        to: endDate
+                    )
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    @MainActor
     func fetchInvoicesGroupedByPaidStatus(
         currency: Currency,
         from startDate: Date,
         to endDate: Date
     ) async throws {
-        let allInvoices = try await CoreDataManager.shared.fetchAllInvoicesInSelectedCurrencyInDateRange(
-            withCurrency: currency.rawValue,
-            from: startDate,
-            to: endDate
-        )
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: startDate)
+        let endOfDay: Date = {
+            let components = DateComponents(hour: 23, minute: 59, second: 59)
+            return calendar.date(byAdding: components, to: calendar.startOfDay(for: endDate)) ?? .now
+        }()
+        
+        let allInvoices = InvoiceDataBaseService.shared.allInvoices
+            .filter { invoice in
+                guard
+                    let invoiceCurrency = invoice.currency,
+                    let invoiceDate = invoice.invoiceDate
+                else {
+                    return false
+                }
+                
+                return invoiceCurrency == currency.rawValue &&
+                invoiceDate >= startOfDay &&
+                invoiceDate <= endOfDay
+            }
         
         let paid = allInvoices.filter { $0.isPaid }
         let unpaid = allInvoices.filter { !$0.isPaid }
@@ -153,7 +176,7 @@ private extension ReportsViewModel {
             )
         }
         .sorted { $0.totalAmount > $1.totalAmount }
-        
+    
         invoiceReportModel = InvoiceReportModel(
             total: allInvoicesTotal,
             totalInvoiceCount: totalInvoices,
@@ -166,29 +189,15 @@ private extension ReportsViewModel {
                         .init(label: "Unpaid", value: invoiceReportModel.unpaidInvoicesTotal)]
     }
     
-    func setSubscriptions() {
-        $currency
-            .sink { [weak self] currency in
-                Task {
-                    try await self?.fetchInvoicesGroupedByPaidStatus(
-                        currency: currency,
-                        from: self?.dates.compactMap { Calendar.current.date(from: $0)
-                        }.min() ?? .now,
-                        to: self?.dates.compactMap { Calendar.current.date(from: $0) }.max() ?? .distantFuture)
-                }
-            }
-            .store(in: &cancellables)
-        
-        $dates
-            .sink { [weak self] dates in
-                Task {
-                    try await self?.fetchInvoicesGroupedByPaidStatus(
-                        currency: self?.currency ?? .USD,
-                        from: dates.compactMap { Calendar.current.date(from: $0)
-                        }.min() ?? .now,
-                        to: dates.compactMap { Calendar.current.date(from: $0) }.max() ?? .distantFuture)
-                }
-            }
-            .store(in: &cancellables)
+    @MainActor
+    func refreshReports() async {
+        do {
+            let calendar = Calendar.current
+            let startDate = dates.compactMap { calendar.date(from: $0) }.min() ?? .now
+            let endDate = dates.compactMap { calendar.date(from: $0) }.max() ?? .distantFuture
+            try await fetchInvoicesGroupedByPaidStatus(currency: currency, from: startDate, to: endDate)
+        } catch {
+            print("Failed to refresh reports")
+        }
     }
 }

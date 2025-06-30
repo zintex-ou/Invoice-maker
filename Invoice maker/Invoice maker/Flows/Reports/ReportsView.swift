@@ -25,8 +25,9 @@ struct ReportsView: View {
                             )
                         }
                     }
+                    .id(UUID())
                 }
-                .padding(.bottom, 68)
+                .padding(.bottom, 8)
             }
             .padding(.horizontal, 16)
             .scrollIndicators(.hidden)
@@ -35,14 +36,14 @@ struct ReportsView: View {
                     .presentationDetents([.large])
             }
             .overlay {
-                if viewModel.showCaledar {
+                if viewModel.showCalendar {
                     ZStack {
                         Color
                             .black767676.opacity(0.3)
                             .ignoresSafeArea()
                             .onTapGesture {
                                 withAnimation {
-                                    viewModel.showCaledar = false
+                                    viewModel.showCalendar = false
                                 }
                             }
                         
@@ -53,9 +54,12 @@ struct ReportsView: View {
                     }
                 }
             }
-            .onChange(of: viewModel.showCaledar) { isShowing in
+            .onChange(of: viewModel.showCalendar) { isShowing in
                 guard !isShowing else { return }
                 viewModel.commitDraft()
+            }
+            .task {
+                await viewModel.refreshReports()
             }
             
             ListTopShadow()
@@ -82,7 +86,7 @@ struct ReportsView: View {
             }
             .onTapGesture {
                 withAnimation {
-                    viewModel.showCaledar = true
+                    viewModel.showCalendar = true
                 }
             }
             
