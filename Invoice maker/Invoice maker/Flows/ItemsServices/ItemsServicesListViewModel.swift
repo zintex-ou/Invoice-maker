@@ -43,10 +43,25 @@ final class ItemsServicesListViewModel: ObservableObject {
     func deleteItemService(_ item: ItemServiceEntity) async {
         do {
             try await CoreDataManager.shared.deleteItemOrService(item)
-            await fetchItemsServices()
+            await updateAfterDelete(item)
         } catch let error {
             showErrorAlert = true
             errorAlertSubtitle = error.localizedDescription
+        }
+    }
+    
+    @MainActor
+    private func updateAfterDelete(_ item: ItemServiceEntity) {
+        withAnimation {
+            if offerSelection == .items {
+                items.removeAll(where: {
+                    $0.id == item.id
+                })
+            } else {
+                services.removeAll(where: {
+                    $0.id == item.id
+                })
+            }
         }
     }
     

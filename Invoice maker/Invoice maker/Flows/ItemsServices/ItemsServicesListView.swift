@@ -40,9 +40,6 @@ struct ItemsServicesListView: View {
             .buttonStyle(.main)
         }
         .padding(.horizontal, 16)
-//        .onAppear(perform: {
-//            Task { await viewModel.fetchItemsServices() }
-//        })
         .task {
             await viewModel.fetchItemsServices()
         }
@@ -125,7 +122,7 @@ struct ItemsServicesListView: View {
             VStack(spacing: 12) {
                 let model = viewModel.offerSelection == .items ? viewModel.items : viewModel.services
                 
-                ForEach(model, id: \.id) { item in
+                ForEach(model, id: \.self) { item in
                     Button {
                         tapOnItemsServices(item)
                     } label: {

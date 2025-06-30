@@ -11,7 +11,7 @@ struct PDFKitView: UIViewRepresentable {
         pdfView.scaleFactor = 0.6
         pdfView.isUserInteractionEnabled = withScroll
         pdfView.backgroundColor = .grayF5F5F5
-        pdfView.displayMode = .singlePageContinuous//withScroll ? .singlePageContinuous : .singlePage
+        pdfView.displayMode = .singlePageContinuous
         return pdfView
     }
     
