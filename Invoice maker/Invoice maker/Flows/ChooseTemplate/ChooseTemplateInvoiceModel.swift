@@ -12,4 +12,5 @@ struct ChooseTemplateInvoiceModel {
     var subtotal: Double
     let total: Double
     let itemOrServices: [ItemServiceEntity]
+    let pdfPath: URL?
 }

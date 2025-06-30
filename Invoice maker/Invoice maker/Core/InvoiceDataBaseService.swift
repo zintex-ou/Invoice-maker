@@ -66,6 +66,17 @@ final class InvoiceDataBaseService {
         self.unPaidInvoices = self.unPaidInvoices.filter { $0.id != invoice.id }
         
         let invoice = try await CoreDataManager.shared.updateInvoice(input: invoice)
+        if invoice.isInvoice {
+            allInvoices.insert(invoice, at: 0)
+            if invoice.isPaid {
+                paidInvoices.insert(invoice, at: 0)
+            } else {
+                unPaidInvoices.insert(invoice, at: 0)
+            }
+        } else {
+            allEstimates.insert(invoice, at: 0)
+        }
+        
         return invoice
     }
     

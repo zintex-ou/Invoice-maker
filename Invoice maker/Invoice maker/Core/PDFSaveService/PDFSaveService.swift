@@ -21,6 +21,28 @@ final class PDFSaveService {
         return try fileManagerPDFService.savePDF(data: pdfData, for: invoiceType)
     }
     
+    @discardableResult
+    func updateAndSave(
+        oldURL: URL?,
+        type: TemplateType,
+        templateModel: InvoiceTemplateModel,
+        customColor: Color,
+        invoiceType: InvoiceType
+    ) throws -> URL {
+        let (pageCount, pageRenderer) = try prepareRenderer(type: type,
+                                                            model: templateModel,
+                                                            customColor: customColor)
+        
+        let pdfData = renderPDF(pageCount: pageCount,
+                                pageRenderer: pageRenderer)
+        
+        if let oldURL {
+            return try fileManagerPDFService.updatePDF(data: pdfData, at: oldURL, for: invoiceType)
+        } else {
+            return try fileManagerPDFService.savePDF(data: pdfData, for: invoiceType)
+        }
+    }
+    
     private func prepareRenderer(
         type: TemplateType,
         model: InvoiceTemplateModel,

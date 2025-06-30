@@ -9,15 +9,14 @@ final class FileManagerPDFService {
         return path
     }
     
-    func updatePDF(data: Data, at url: URL) throws {
-        guard fileManager.fileExists(atPath: url.path) else {
-            throw NSError(
-                domain: "PDFPathService",
-                code: 404,
-                userInfo: [NSLocalizedDescriptionKey: "The file does not exist at the specified path."]
-            )
+    func updatePDF(data: Data, at url: URL, for type: InvoiceType) throws -> URL {
+        if fileManager.fileExists(atPath: url.path) {
+            try fileManager.removeItem(at: url)
         }
-        try data.write(to: url, options: .atomic)
+        
+        let newPath = try generateNewPDFPath(for: type)
+        try data.write(to: newPath, options: .atomic)
+        return newPath
     }
     
     func getAllSavedPDFs(for type: InvoiceType) throws -> [URL] {

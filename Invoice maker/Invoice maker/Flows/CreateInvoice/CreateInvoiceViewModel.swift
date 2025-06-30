@@ -22,6 +22,7 @@ final class CreateInvoiceViewModel: ObservableObject {
     private(set) var viewType: InvoiceViewType
     private let dataBaseManager: CoreDataManager = .shared
     private var invoiceId: UUID? = nil
+    private var pdfPath: URL? = nil
     private var bussinesProfile: BusinessProfileEntity? = nil
     private var cancellables = Set<AnyCancellable>()
     
@@ -163,7 +164,8 @@ final class CreateInvoiceViewModel: ObservableObject {
             tax: tax,
             subtotal: getSubTotalPrice(),
             total: getTotalPrice(),
-            itemOrServices: itemServices
+            itemOrServices: itemServices,
+            pdfPath: pdfPath
         )
     }
     
@@ -288,6 +290,7 @@ final class CreateInvoiceViewModel: ObservableObject {
             }
             self.discount = invoice.discount ?? "0"
             self.tax = invoice.tax ?? "0"
+            self.pdfPath = invoice.pdfFilePath
         default:
             break
         }

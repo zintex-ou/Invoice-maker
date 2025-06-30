@@ -102,12 +102,9 @@ final class ChooseTemplateViewModel: ObservableObject {
             )
             
             do {
-                
-                let url = try PDFSaveService().generateAndSave(
-                    type: templateType,
+                let pdfURL = try await generateURL(
                     templateModel: invoiceTemplateModel,
-                    customColor: customColor.color,
-                    invoiceType: invoiceType
+                    oldURL: chooseTemplateInvoiceModel.pdfPath
                 )
                 
                 let invoiceInput = InvoiceInput(
@@ -122,7 +119,7 @@ final class ChooseTemplateViewModel: ObservableObject {
                     isPaid: false,
                     total: chooseTemplateInvoiceModel.total,
                     itemOrServices: chooseTemplateInvoiceModel.itemOrServices,
-                    pdfFilePath: url,
+                    pdfFilePath: pdfURL,
                     type: templateType,
                     isInvoice: invoiceType == .invoice
                 )
@@ -147,6 +144,29 @@ final class ChooseTemplateViewModel: ObservableObject {
             return try await dataBaseService.createInvoice(with: invoiceInput)
         case .editInvoice, .editEstimate:
             return try await dataBaseService.update(invoice: invoiceInput)
+        }
+    }
+    
+    private func generateURL(templateModel: InvoiceTemplateModel, oldURL: URL?) async throws -> URL {
+        switch viewType {
+        case .createInvoice, .createEstimate:
+            let url = try PDFSaveService().generateAndSave(
+                type: templateType,
+                templateModel: templateModel,
+                customColor: customColor.color,
+                invoiceType: invoiceType
+            )
+            
+            return url
+        case .editInvoice, .editEstimate:
+            let url = try PDFSaveService().updateAndSave(
+                oldURL: oldURL,
+                type: templateType,
+                templateModel: templateModel,
+                customColor: customColor.color,
+                invoiceType: invoiceType
+            )
+            return url
         }
     }
 }
