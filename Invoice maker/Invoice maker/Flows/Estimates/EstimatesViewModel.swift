@@ -6,7 +6,7 @@ final class EstimatesViewModel: ObservableObject {
     @Published var isPremium: Bool = false
     @Published var allEstimates: [InvoiceEntity] = []
     
-    private let dataBaseService = DataBaseService.shared
+    private let dataBaseService = InvoiceDataBaseService.shared
     private var cancellables = Set<AnyCancellable>()
     
     init() {

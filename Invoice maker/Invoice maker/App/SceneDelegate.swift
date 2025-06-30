@@ -2,7 +2,7 @@ import UIKit
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //    private let coreDataManager = CoreDataManager.shared
-    private let dataBaseService = DataBaseService.shared
+    private let dataBaseService = InvoiceDataBaseService.shared
     
     
     var shortcutItem: UIApplicationShortcutItem!

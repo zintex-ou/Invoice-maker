@@ -9,7 +9,7 @@ final class InvoicesViewModel: ObservableObject {
     @Published var paidInvoices: [InvoiceEntity] = []
     @Published var unPaidInvoices: [InvoiceEntity] = []
     
-    private let dataBaseService = DataBaseService.shared
+    private let dataBaseService = InvoiceDataBaseService.shared
     private var cancellables = Set<AnyCancellable>()
     
     init() {

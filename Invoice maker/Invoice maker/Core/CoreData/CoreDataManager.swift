@@ -298,6 +298,23 @@ extension CoreDataManager {
         }
     }
     
+    func updateIsPaid(for id: UUID, isPaid: Bool) async throws {
+        try await viewContext.perform {
+            let request: NSFetchRequest<InvoiceEntity> = InvoiceEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            request.fetchLimit = 1
+
+            guard let invoice = try self.viewContext.fetch(request).first else {
+                throw NSError(domain: "InvoiceError", code: 404, userInfo: [
+                    NSLocalizedDescriptionKey: "Invoice not found with id \(id)"
+                ])
+            }
+
+            invoice.isPaid = isPaid
+            try self.viewContext.save()
+        }
+    }
+    
     func deleteInvoice(_ invoice: InvoiceEntity) async throws {
         try await viewContext.perform {
             let toDelete = try self.viewContext.existingObject(with: invoice.objectID)

@@ -11,7 +11,7 @@ final class ChooseTemplateViewModel: ObservableObject {
     let chooseTemplateInvoiceModel: ChooseTemplateInvoiceModel
     let invoiceType: InvoiceType
     
-    private let dataBaseService = DataBaseService.shared
+    private let dataBaseService = InvoiceDataBaseService.shared
     
     init(chooseTemplateInvoiceModel: ChooseTemplateInvoiceModel,
          invoiceType: InvoiceType

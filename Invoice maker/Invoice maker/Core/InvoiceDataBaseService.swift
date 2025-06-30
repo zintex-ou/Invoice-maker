@@ -1,8 +1,8 @@
 import Foundation
 
 @MainActor
-final class DataBaseService {
-    static let shared = DataBaseService()
+final class InvoiceDataBaseService {
+    static let shared = InvoiceDataBaseService()
     private let dataBaseManager = CoreDataManager.shared
     
     @Published var allInvoices: [InvoiceEntity] = []
@@ -63,7 +63,7 @@ final class DataBaseService {
     func change(isPaid: Bool, for id: UUID) async {
         guard let index = allInvoices.firstIndex(where: { $0.id == id }) else { return }
         allInvoices[index].isPaid = isPaid
-        
+
         if isPaid {
             guard let unPaidIndex = unPaidInvoices.firstIndex(where: { $0.id == id }) else { return }
             let inPaidInvoice = unPaidInvoices.remove(at: unPaidIndex)
@@ -73,5 +73,7 @@ final class DataBaseService {
             let invoice = paidInvoices.remove(at: paidIndex)
             unPaidInvoices.append(invoice)
         }
+        
+        try? await dataBaseManager.updateIsPaid(for: id, isPaid: isPaid)
     }
 }
