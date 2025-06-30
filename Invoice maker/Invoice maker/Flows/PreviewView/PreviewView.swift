@@ -7,17 +7,19 @@ struct PreviewView: View {
     
     var body: some View {
         ZStack(alignment: .bottom) {
+            
+            Color.grayF5F5F5
+            
             VStack(spacing: 0) {
                 navigationBar
                 
-                VStack(spacing: 0) {
-                    Rectangle()
-                        .fill(.grayF5F5F5)
-                        .frame(height: 24)
-                    
-                    PDFKitView(url: viewModel.pdfFilePath, withScroll: false)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .layoutPriority(1)
+                GeometryReader { geometryProxy in
+                    PDFPageView(
+                        url: viewModel.pdfFilePath,
+                        pageNumber: 0
+                    )
+                    .padding(16)
+                    .frame(width: geometryProxy.size.width, height: geometryProxy.size.width * 1.414)
                 }
             }
             
@@ -165,7 +167,7 @@ struct PreviewView: View {
                 .buttonStyle(.circle(.property1Edit, title: "Edit"))
                 
                 Spacer()
-          
+                
 #warning("Add push to create invoice")
                 if !viewModel.isInvoice {
                     Button("") {
