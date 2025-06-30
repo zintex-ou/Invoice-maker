@@ -67,7 +67,11 @@ final class PreviewViewModel: ObservableObject {
         Task {
             do {
                 guard let id = invoiceEntity.id else { return }
-                try await dataBaseService.deleteInvoice(with: id)
+                if isInvoice {
+                    try await dataBaseService.deleteInvoice(with: id)
+                } else {
+                    try await dataBaseService.deleteEstimate(with: id)
+                }
                 completion()
             } catch {
                 self.alert = .init(
