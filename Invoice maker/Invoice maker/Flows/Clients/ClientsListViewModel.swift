@@ -32,10 +32,19 @@ final class ClientsListViewModel: ObservableObject {
     func deleteClient(_ client: ClientEntity) async {
         do {
             try await CoreDataManager.shared.deleteClient(client)
-            await fetchClients()
+            await updateAfterDelete(client)
         } catch {
             showErrorAlert = true
             errorAlertSubtitle = error.localizedDescription
+        }
+    }
+    
+    @MainActor
+    private func updateAfterDelete(_ item: ClientEntity) {
+        withAnimation {
+            clients.removeAll {
+                $0.id == item.id
+            }
         }
     }
     

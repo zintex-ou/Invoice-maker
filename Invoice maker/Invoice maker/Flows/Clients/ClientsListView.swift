@@ -29,9 +29,9 @@ struct ClientsListView: View {
             .buttonStyle(.main)
         }
         .padding(.horizontal, 16)
-        .onAppear(perform: {
-            Task { await viewModel.fetchClients() }
-        })
+        .task {
+            await viewModel.fetchClients()
+        }
         .alert("Delete Client",
                isPresented: $viewModel.isShowDeleteAlert) {
             Button("Cancel", role: .cancel) {
