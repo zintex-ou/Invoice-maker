@@ -25,6 +25,17 @@ final class InvoicesViewModel: ObservableObject {
             }
         }
     }
+    
+    func getInvoices() -> [InvoiceEntity] {
+        switch invoiceSelection {
+        case .all:
+            return allInvoices
+        case .paid:
+            return paidInvoices
+        case .unpaid:
+            return unPaidInvoices
+        }
+    }
 }
 
 extension InvoicesViewModel {
