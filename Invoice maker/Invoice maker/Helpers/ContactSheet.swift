@@ -8,6 +8,8 @@ final class ContactSheet: NSObject, MFMailComposeViewControllerDelegate {
     private var isContactsShown = false
     private let application: UIApplication = .shared
     private var pdfAttachment: (data: Data, fileName: String)?
+    
+    private var mailCompletion: ((MFMailComposeResult) -> Void)?
 
     override private init() {}
 
@@ -39,12 +41,17 @@ final class ContactSheet: NSObject, MFMailComposeViewControllerDelegate {
     ) {
         controller.dismiss(animated: true)
         isContactsShown = false
+
+        mailCompletion?(result)
+        mailCompletion = nil
+
         closeAction?()
     }
     
     func presentContactSheetWithPdf(
         pdfData: Data? = nil,
-        fileName: String = ""
+        fileName: String = "",
+        completion: ((MFMailComposeResult) -> Void)? = nil
     ) {
         guard !isContactsShown else { return }
         
@@ -77,6 +84,8 @@ final class ContactSheet: NSObject, MFMailComposeViewControllerDelegate {
                 fileName: attachment.fileName
             )
         }
+        
+        self.mailCompletion = completion
         
         UIApplication.shared.topViewController?.present(picker, animated: true)
     }

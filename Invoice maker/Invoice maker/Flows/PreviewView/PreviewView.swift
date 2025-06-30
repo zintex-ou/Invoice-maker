@@ -41,7 +41,7 @@ struct PreviewView: View {
                 Button("") {
                     coordinator.popTo(id: TabBarView.navigationID)
                 }
-                .buttonStyle(.circle(.property1Cross))
+                .buttonStyle(.circle(.property1Arrow))
                 
                 Spacer()
                 
@@ -151,7 +151,11 @@ struct PreviewView: View {
             }
             
             Button(viewModel.buttonTitle()) {
-                viewModel.sendInvoice()
+                viewModel.sendInvoice(completion: { isSent in
+                    if isSent {
+                        coordinator.popTo(id: TabBarView.navigationID)
+                    }
+                })
             }
             .buttonStyle(.main)
             .padding(.vertical, 8)

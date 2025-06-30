@@ -30,6 +30,11 @@ struct TabBarView: View {
             tabBar
         }
         .ignoresSafeArea(edges: .bottom)
+        .popup(
+            isPresented: $viewModel.showSentPopup,
+            message: "Invoice is send!",
+            lottie: "PlaneLottie"
+        )
     }
 
     private var tabBar: some View {
