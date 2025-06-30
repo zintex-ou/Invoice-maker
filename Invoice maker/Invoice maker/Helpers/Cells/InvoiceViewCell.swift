@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InvoiceViewCell: View {
-    let nameOfClient: String
+    let title: String
     let dueDate: Date
     let currency: Currency
     let totalPrice: Double
@@ -13,7 +13,7 @@ struct InvoiceViewCell: View {
     var body: some View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(nameOfClient)
+                Text(title)
                     .foregroundStyle(.black)
                     .font(.sans(style: .semiBold, size: 16))
                 
@@ -115,7 +115,7 @@ struct InvoiceViewCell: View {
         ForEach(0..<5, id: \.self) { index in
             
             InvoiceViewCell(
-                nameOfClient: "Name of Client",
+                title: "Name of Client",
                 dueDate: .now,
                 currency: .USD,
                 totalPrice: 100,

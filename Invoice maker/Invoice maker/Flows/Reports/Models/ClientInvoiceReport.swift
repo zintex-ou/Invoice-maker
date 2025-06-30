@@ -19,25 +19,15 @@ struct ClientInvoiceReport {
 }
 
 extension ClientInvoiceReport {
-    func detailViewModels(
-        popovers: Binding<[UUID: Bool]>
-    ) -> [InvoiceDetailViewModel] {
+    func detailViewModels() -> [InvoiceDetailViewModel] {
         invoices.map { invoice in
-            let id = invoice.id ?? UUID()
-            return InvoiceDetailViewModel(
-                id: id,
+            InvoiceDetailViewModel(
+                id: invoice.id ?? UUID(),
                 invoiceNumber: invoice.invoiceNumber ?? "",
                 dueDate: invoice.invoiceDate ?? Date(),
                 currency: Currency(rawValue: invoice.currency ?? "") ?? .USD,
-                total: "\(Int(invoice.total))",
-                isPaid: Binding<Bool>(
-                    get: { invoice.isPaid },
-                    set: { invoice.isPaid = $0 }
-                ),
-                isPresented: Binding<Bool>(
-                    get: { popovers.wrappedValue[id] ?? false },
-                    set: { popovers.wrappedValue[id] = $0 }
-                )
+                total: invoice.total,
+                isPaid: invoice.isPaid
             )
         }
     }

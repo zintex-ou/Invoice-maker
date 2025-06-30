@@ -6,13 +6,11 @@ struct InvoiceDetailsView: View {
     let currency: Currency
     let total: String
     var id: Int
-    let namespace: Namespace.ID
 
     @Binding var isPaid: Bool
-    @Binding var isPopoverShown: Bool
-    @Binding var selectedID: Int?
 
     var isPressed: Bool = false
+    var completion: ((Bool) -> Void)?
 
     private var isDueOrOverdue: Bool {
         let startOfToday = Calendar.current.startOfDay(for: .now)
@@ -26,10 +24,7 @@ struct InvoiceDetailsView: View {
         currency: Currency,
         total: String,
         id: Int = 1,
-        namespace: Namespace.ID,
         isPaid: Binding<Bool>,
-        isPopoverShown: Binding<Bool>,
-        selectedID: Binding<Int?> = .constant(1),
         isPressed: Bool = false
     ) {
         self.clientName = clientName
@@ -37,10 +32,7 @@ struct InvoiceDetailsView: View {
         self.currency = currency
         self.total = total
         self.id = id
-        self.namespace = namespace
         self._isPaid = isPaid
-        self._isPopoverShown = isPopoverShown
-        self._selectedID = selectedID
         self.isPressed = isPressed
     }
 
@@ -73,50 +65,57 @@ struct InvoiceDetailsView: View {
                     .lineLimit(1)
                     .foregroundStyle(.black)
 
-                Button(action: {
-                    withAnimation {
-                        selectedID = id
-                        isPopoverShown.toggle()
+                Menu {
+                    Button {
+                        completion?(true)
+                    } label: {
+                        HStack {
+                            Text("Unpaid")
+                                .foregroundStyle(!isPaid ? .violet4663FF : .black)
+                                .font(.sans(style: .regular, size: 17))
+                            
+                            if !isPaid {
+                                Image(.property1Tick)
+                                    .resizable()
+                                    .frame(width: 12, height: 12)
+                            }
+                        }
                     }
-                }) {
-                    Text(isPaid ? "Paid" : "Unpaid")
+                    
+                    Button {
+                        completion?(false)
+                    } label: {
+                        HStack {
+                            Text("Paid")
+                                .foregroundStyle(isPaid ? .violet4663FF : .black)
+                                .font(.sans(style: .regular, size: 17))
+                            
+                            if isPaid {
+                                Image(.property1Tick)
+                                    .resizable()
+                                    .renderingMode(.template)
+                                    .frame(width: 12, height: 12)
+                                    .foregroundStyle(.violet4663FF)
+                            }
+                        }
+                        
+                    }
+                } label: {
+                    HStack(spacing: 2) {
+                        Text(isPaid ? "Paid" : "Unpaid")
+                            .foregroundStyle(.black)
+                            .font(.sans(style: .regular, size: 12))          
+                        
+                        Image(.discountArrow)
+                            .resizable()
+                            .frame(width: 12, height: 12)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(isPaid ? .green69EB89 : .blueA0C4FF)
+                    .clipShape(Capsule())
                 }
-                .buttonStyle(
-                    .paid(isPaid: $isPaid, isPopoverShown: isPopoverShown && selectedID == id, namespace: namespace, id: id)
-                )
             }
         }
     }
-}
-
-private struct InvoiceDetailsViewDemo: View {
-    @Namespace private var paidPopover
-    @State private var isPaidPopShow = false
-    @State private var isPaid = false
-
-    var body: some View {
-        ZStack {
-            InvoiceDetailsView(
-                clientName: "John Smith",
-                dueDate: .distantPast,
-                currency: .USD,
-                total: "19,570.00",
-                namespace: paidPopover,
-                isPaid: $isPaid,
-                isPopoverShown: $isPaidPopShow
-            )
-        }
-        .padding(.horizontal, 16)
-        .paidPopover(
-            isPaid: $isPaid,
-            isPresented: $isPaidPopShow,
-            namespace: paidPopover
-        ) {
-            print("Action to update CoreData isPaid State")
-        }
-    }
-}
-
-#Preview {
-    InvoiceDetailsViewDemo()
 }

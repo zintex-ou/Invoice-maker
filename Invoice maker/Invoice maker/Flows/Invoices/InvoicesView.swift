@@ -82,7 +82,7 @@ struct InvoicesView: View {
                                 })
                             } label: {
                                 InvoiceViewCell(
-                                    nameOfClient: name,
+                                    title: name,
                                     dueDate: dueDate,
                                     currency: Currency(from: invoice.currency),
                                     totalPrice: total,
