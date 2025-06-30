@@ -289,7 +289,7 @@ struct CreateInvoiceView: View {
                                     ChooseTemplateView(
                                         viewModel: .init(
                                             chooseTemplateInvoiceModel: invoiceModel,
-                                            invoiceType: viewModel.getInvoiceType()
+                                            viewType: viewModel.viewType
                                         )
                                     )
                                 }

@@ -168,7 +168,6 @@ struct PreviewView: View {
                 Spacer()
                 
                 Button("") {
-                    coordinator.popToBack()
                     coordinator.pushTo(id: CreateInvoiceView.navigationID) {
                         let viewModel = CreateInvoiceViewModel(
                             viewType: viewModel.isInvoice ? .editInvoice(viewModel.invoiceEntity) : .editEstimate(viewModel.invoiceEntity)

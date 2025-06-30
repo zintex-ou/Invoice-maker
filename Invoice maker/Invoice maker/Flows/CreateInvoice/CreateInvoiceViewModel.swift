@@ -2,13 +2,6 @@ import Foundation
 import Combine
 
 final class CreateInvoiceViewModel: ObservableObject {
-    enum ViewType {
-        case createInvoice
-        case createEstimate
-        case editInvoice(InvoiceEntity)
-        case editEstimate(InvoiceEntity)
-    }
-    
     @Published var bottomHeight: CGFloat = .zero
     @Published var invoiceNumber: String = "1"
     @Published var currency: Currency = .USD
@@ -26,7 +19,7 @@ final class CreateInvoiceViewModel: ObservableObject {
     @Published var shouldShowDiscountTax: Bool = false
     @Published var isPresenterDiskont: Bool = false
     
-    private(set) var viewType: ViewType
+    private(set) var viewType: InvoiceViewType
     private let dataBaseManager: CoreDataManager = .shared
     private var invoiceId: UUID? = nil
     private var bussinesProfile: BusinessProfileEntity? = nil
@@ -34,7 +27,7 @@ final class CreateInvoiceViewModel: ObservableObject {
     
     var errorText: String = "No items added. To create an invoice, please сlick the “Add item & service” button and fill in the item details."
     
-    init(viewType: ViewType) {
+    init(viewType: InvoiceViewType) {
         self.viewType = viewType
         
         configureInitialValues(from: viewType)
@@ -153,16 +146,7 @@ final class CreateInvoiceViewModel: ObservableObject {
         
         completion(createChooseTemplateInvoiceModel())
     }
-    
-    func getInvoiceType() -> InvoiceType {
-        switch viewType {
-        case .createEstimate, .editEstimate:
-            return .estimate
-        case .createInvoice, .editInvoice:
-            return .invoice
-        }
-    }
-    
+
     private func createChooseTemplateInvoiceModel() -> ChooseTemplateInvoiceModel? {
         guard let client = client else {
             return nil
@@ -288,7 +272,7 @@ final class CreateInvoiceViewModel: ObservableObject {
         }
     }
     
-    private func configureInitialValues(from viewType: ViewType) {
+    private func configureInitialValues(from viewType: InvoiceViewType) {
         switch viewType {
         case let .editInvoice(invoice), let .editEstimate(invoice):
             self.invoiceId = invoice.id

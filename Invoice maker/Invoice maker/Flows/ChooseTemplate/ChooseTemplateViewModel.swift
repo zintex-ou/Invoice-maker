@@ -8,16 +8,24 @@ final class ChooseTemplateViewModel: ObservableObject {
     @Published var shouldShowError: Bool = false
     @Published var isShowDeleteAlert: Bool = false
     
-    var alert: AlertModel = .init(title: "", subtitle: "")
-    let chooseTemplateInvoiceModel: ChooseTemplateInvoiceModel
-    let invoiceType: InvoiceType
-    
     private let dataBaseService = InvoiceDataBaseService.shared
+    private let chooseTemplateInvoiceModel: ChooseTemplateInvoiceModel
+    private let viewType: InvoiceViewType
+    
+    var alert: AlertModel = .init(title: "", subtitle: "")
+    var invoiceType: InvoiceType {
+        switch viewType {
+        case .createInvoice, .editInvoice:
+            return .invoice
+        case .createEstimate, .editEstimate:
+            return .estimate
+        }
+    }
     
     init(chooseTemplateInvoiceModel: ChooseTemplateInvoiceModel,
-         invoiceType: InvoiceType
+         viewType: InvoiceViewType
     ) {
-        self.invoiceType = invoiceType
+        self.viewType = viewType
         self.chooseTemplateInvoiceModel = chooseTemplateInvoiceModel
     }
     
@@ -26,7 +34,16 @@ final class ChooseTemplateViewModel: ObservableObject {
     }
     
     func title() -> String {
-        invoiceType == .invoice ? "New invoice" : "New estimate"
+        switch viewType {
+        case .createInvoice:
+            return "New Invoice"
+        case .createEstimate:
+            return "New Estimate"
+        case .editInvoice:
+            return "Edit Invoice"
+        case .editEstimate:
+            return "Edit Estimate"
+        }
     }
     
     func templateImageWithCustomColor(customColor: CustomColors, type: TemplateType) -> ImageResource {
@@ -85,6 +102,7 @@ final class ChooseTemplateViewModel: ObservableObject {
             )
             
             do {
+                
                 let url = try PDFSaveService().generateAndSave(
                     type: templateType,
                     templateModel: invoiceTemplateModel,
@@ -109,7 +127,8 @@ final class ChooseTemplateViewModel: ObservableObject {
                     isInvoice: invoiceType == .invoice
                 )
                 
-                let coreDataEntity = try await dataBaseService.createInvoice(with: invoiceInput)
+                
+                let coreDataEntity = try await saveToDatabase(invoiceInput)
                 
                 await MainActor.run {
                     completion(coreDataEntity)
@@ -119,6 +138,15 @@ final class ChooseTemplateViewModel: ObservableObject {
             }
         } catch {
             print(error, "error")
+        }
+    }
+    
+    private func saveToDatabase(_ invoiceInput: InvoiceInput) async throws -> InvoiceEntity {
+        switch viewType {
+        case .createInvoice, .createEstimate:
+            return try await dataBaseService.createInvoice(with: invoiceInput)
+        case .editInvoice, .editEstimate:
+            return try await dataBaseService.update(invoice: invoiceInput)
         }
     }
 }
