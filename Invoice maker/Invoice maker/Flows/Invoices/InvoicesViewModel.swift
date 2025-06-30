@@ -19,7 +19,7 @@ final class InvoicesViewModel: ObservableObject {
     func change(isPaid: Bool, for id: UUID) {
         Task {
             do {
-               try await dataBaseService.change(isPaid: isPaid, for: id)
+                try await dataBaseService.change(isPaid: isPaid, for: id)
             } catch {
                 print("Failed to update invoice")
             }

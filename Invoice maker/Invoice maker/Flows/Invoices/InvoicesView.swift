@@ -72,10 +72,7 @@ struct InvoicesView: View {
                         if let id = invoice.id,
                            let name = invoice.client?.clientName,
                            let dueDate = invoice.dueDate {
-                            
-                            let total = invoice.total
-                            let isPaid = invoice.isPaid
-                            
+
                             Button {
                                 coordinator.pushTo(id: PreviewView.navigationID, destination: {
                                     PreviewView(viewModel: .init(invoiceEntity: invoice, isWithStatusChange: true))
@@ -85,9 +82,9 @@ struct InvoicesView: View {
                                     title: name,
                                     dueDate: dueDate,
                                     currency: Currency(from: invoice.currency),
-                                    totalPrice: total,
+                                    totalPrice: invoice.total,
                                     isInvoice: invoice.isInvoice,
-                                    isPaid: isPaid) { isPaid in
+                                    isPaid: invoice.isPaid) { isPaid in
                                         viewModel.change(isPaid: isPaid, for: id)
                                     }
                             }

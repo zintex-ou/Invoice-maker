@@ -74,6 +74,6 @@ final class InvoiceDataBaseService {
             unPaidInvoices.append(invoice)
         }
         
-        try await dataBaseManager.updateIsPaid(for: id, isPaid: isPaid)
+        try? await dataBaseManager.updateIsPaid(for: id, isPaid: isPaid)
     }
 }
