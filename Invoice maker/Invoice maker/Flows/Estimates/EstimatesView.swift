@@ -42,7 +42,7 @@ struct EstimatesView: View {
                             let isPaid = invoice.isPaid
                             
                             InvoiceViewCell(
-                                nameOfClient: name,
+                                title: name,
                                 dueDate: dueDate,
                                 currency: Currency(from: invoice.currency),
                                 totalPrice: total,

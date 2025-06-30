@@ -234,12 +234,11 @@ final class OnboardingViewModel: ObservableObject {
         let price = String(describing: NSDecimalNumber(decimal: product.price).floatValue)
         let currency = product.currencySymbol ?? "$"
         let newSubtitle: LocalizedStringKey = "Generate professional invoices with just a few taps per week for \(currency)\(price)."
-        
-        let subtitle = remoteConfigManager.config.paywallConfig.showPriceTitle ? newSubtitle : "Generate professional invoices with just a few taps — fast, simple, and error-free."
+ 
         metaData[3] = OnboardingModel(
             image: .onboard4,
             title: metaData[3].title,
-            subtitle: subtitle
+            subtitle: newSubtitle
         )
     }
 }

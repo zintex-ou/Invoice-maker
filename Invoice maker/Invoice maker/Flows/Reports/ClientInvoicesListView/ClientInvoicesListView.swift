@@ -16,37 +16,26 @@ struct ClientInvoicesListView: View {
                     segments: SegmentInvoiceType.allCases
                 )
                 .padding(.bottom, 16)
-       
-#warning("Refactor")
+                
                 VStack(spacing: 8) {
-                    ForEach(viewModel.filteredDetailViewModels) { model in
+                    ForEach(viewModel.filteredDetailViewModels, id: \.id) { model in
                         ZStack {
                             RoundedRectangle(cornerRadius: 12)
                                 .fill(.grayF5F5F5)
                             
-                            InvoiceDetailsView(
-                                clientName: model.invoiceNumber,
+                            InvoiceViewCell(
+                                title: model.invoiceNumber,
                                 dueDate: model.dueDate,
                                 currency: model.currency,
-                                total: model.total,
-                                namespace: namespace,
+                                totalPrice: model.total,
+                                isInvoice: true,
                                 isPaid: model.isPaid,
-                                isPopoverShown: model.isPresented
+                                isPaidCompletion: { isPaid in
+                                    viewModel.updateStatus(isPaid: isPaid)
+                                }
                             )
-                            .padding(16)
                         }
-                        .zIndex(100)
-                        .overlay(alignment: .topTrailing) {
-                            VStack { }
-                            .paidPopover(
-                                isPaid: model.isPaid,
-                                isPresented: model.isPresented,
-                                selectedID: .constant(1),
-                                namespace: namespace
-                            ) {
-                                viewModel.updateStatus()
-                            }
-                        }
+                        .frame(height: 85)
                     }
                 }
                 
@@ -70,7 +59,7 @@ struct ClientInvoicesListView: View {
             HStack {
                 Spacer()
                 
-                Text(viewModel.report.name)
+                Text(viewModel.title)
                     .font(.sans(style: .semiBold, size: 20))
                     .foregroundStyle(.black)
                 

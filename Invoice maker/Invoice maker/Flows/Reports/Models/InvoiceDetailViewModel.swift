@@ -5,7 +5,6 @@ struct InvoiceDetailViewModel: Identifiable {
     let invoiceNumber: String
     let dueDate: Date
     let currency: Currency
-    let total: String
-    let isPaid: Binding<Bool>
-    let isPresented: Binding<Bool>
+    let total: Double
+    let isPaid: Bool
 }

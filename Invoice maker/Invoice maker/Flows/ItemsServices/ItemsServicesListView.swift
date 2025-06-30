@@ -40,9 +40,12 @@ struct ItemsServicesListView: View {
             .buttonStyle(.main)
         }
         .padding(.horizontal, 16)
-        .onAppear(perform: {
-            Task { await viewModel.fetchItemsServices() }
-        })
+//        .onAppear(perform: {
+//            Task { await viewModel.fetchItemsServices() }
+//        })
+        .task {
+            await viewModel.fetchItemsServices()
+        }
         .alert(viewModel.alertDeleteTitle(),
                isPresented: $viewModel.isShowDeleteAlert) {
             Button("Cancel", role: .cancel) {

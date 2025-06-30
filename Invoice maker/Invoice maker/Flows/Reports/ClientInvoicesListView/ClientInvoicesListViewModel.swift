@@ -1,17 +1,15 @@
 import SwiftUI
 
 final class ClientInvoicesListViewModel: ObservableObject {
-    let report: ClientInvoiceReport
-    @Published var popovers: [UUID: Bool] = [:]
+    private let report: ClientInvoiceReport
     @Published var invoiceSelection: SegmentInvoiceType = .all
     
     private var allDetailViewModels: [InvoiceDetailViewModel] {
-        report.detailViewModels(
-            popovers: Binding(
-                get: { [weak self] in self?.popovers ?? [:] },
-                set: { [weak self] newValue in self?.popovers = newValue }
-            )
-        )
+        report.detailViewModels()
+    }
+    
+    var title: String {
+        report.name
     }
     
     var filteredDetailViewModels: [InvoiceDetailViewModel] {
@@ -19,23 +17,18 @@ final class ClientInvoicesListViewModel: ObservableObject {
         case .all:
             return allDetailViewModels
         case .paid:
-            return allDetailViewModels.filter { $0.isPaid.wrappedValue }
+            return allDetailViewModels.filter { $0.isPaid }
         case .unpaid:
-            return allDetailViewModels.filter { !$0.isPaid.wrappedValue }
+            return allDetailViewModels.filter { !$0.isPaid }
         }
     }
     
     init(report: ClientInvoiceReport) {
         self.report = report
-        report.detailViewModels(
-            popovers: .constant([:])
-        ).forEach { model in
-            popovers[model.id] = false
-        }
     }
     
     #warning("add update")
-    func updateStatus() {
+    func updateStatus(isPaid: Bool) {
         
     }
 }
