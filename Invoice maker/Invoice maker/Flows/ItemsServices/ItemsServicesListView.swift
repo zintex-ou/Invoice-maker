@@ -19,6 +19,7 @@ struct ItemsServicesListView: View {
                 segments: SegmentOfferType.allCases
             )
             .padding(.top, 24)
+            .padding(.bottom, 4)
             
             if (viewModel.items.isEmpty && viewModel.offerSelection == .items) || (viewModel.services.isEmpty && viewModel.offerSelection == .services) {
                 emptyView
@@ -103,28 +104,33 @@ struct ItemsServicesListView: View {
     }
     
     var list: some View {
-        ScrollView {
-            VStack(spacing: 12) {
-                let model = viewModel.offerSelection == .items ? viewModel.items : viewModel.services
-                
-                ForEach(model, id: \.self) { item in
-                    Button {
-                        tapOnItemsServices(item)
-                    } label: {
-                        ItemServiceViewCell(
-                            itemService: item,
-                            isSelectedCell: viewModel.isSelectedCell(item),
-                            offerSelection: viewModel.offerSelection,
-                            viewType: viewModel.viewType) {
-                                viewModel.deleteItemService(item)
-                            }
+        ZStack(alignment: .top) {
+            ScrollView {
+                VStack(spacing: 12) {
+                    let model = viewModel.offerSelection == .items ? viewModel.items : viewModel.services
+                    
+                    ForEach(model, id: \.self) { item in
+                        Button {
+                            tapOnItemsServices(item)
+                        } label: {
+                            ItemServiceViewCell(
+                                itemService: item,
+                                isSelectedCell: viewModel.isSelectedCell(item),
+                                offerSelection: viewModel.offerSelection,
+                                viewType: viewModel.viewType) {
+                                    viewModel.deleteItemService(item)
+                                }
+                        }
                     }
                 }
+                .animation(.default, value: viewModel.items.count)
+                .animation(.default, value: viewModel.services.count)
+                .padding(.top, 24)
             }
-            .animation(.default, value: viewModel.items.count)
-            .animation(.default, value: viewModel.services.count)
+            .scrollIndicators(.hidden)
+            
+            ListTopShadow()
         }
-        .padding(.top, 24)
     }
     
     private func tapOnItemsServices(_ item: ItemServiceEntity) {

@@ -106,24 +106,29 @@ struct ClientsListView: View {
     }
     
     var list: some View {
-        ScrollView {
-            VStack(spacing: 12) {
-                ForEach(viewModel.clients, id: \.id) { client in
-                    Button {
-                        tapOn(client: client)
-                    } label: {
-                        ClientViewCell(
-                            client: client,
-                            isSelectedCell: viewModel.isSelected(client: client),
-                            viewType: viewModel.viewType,
-                        ) {
-                            viewModel.showDeleteAlert(for: client)
+        ZStack(alignment: .top) {
+            ScrollView {
+                VStack(spacing: 12) {
+                    ForEach(viewModel.clients, id: \.id) { client in
+                        Button {
+                            tapOn(client: client)
+                        } label: {
+                            ClientViewCell(
+                                client: client,
+                                isSelectedCell: viewModel.isSelected(client: client),
+                                viewType: viewModel.viewType,
+                            ) {
+                                viewModel.showDeleteAlert(for: client)
+                            }
                         }
                     }
                 }
+                .padding(.top, 24)
+                .animation(.default, value: viewModel.clients)
             }
-            .padding(.top, 24)
-            .animation(.default, value: viewModel.clients)
+            .scrollIndicators(.hidden)
+            
+            ListTopShadow()
         }
     }
     
