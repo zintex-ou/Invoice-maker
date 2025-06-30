@@ -84,4 +84,9 @@ final class InvoiceDataBaseService {
         
         try await dataBaseManager.deleteInvoice(byID: id)
     }
+    
+    func deleteEstimate(with id: UUID) async throws {
+        self.allEstimates = self.allEstimates.filter { $0.id != id }
+        try await dataBaseManager.deleteInvoice(byID: id)
+    }
 }
