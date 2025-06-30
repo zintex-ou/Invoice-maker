@@ -139,6 +139,8 @@ struct ItemsServicesListView: View {
                     }
                 }
             }
+            .animation(.default, value: viewModel.items.count)
+            .animation(.default, value: viewModel.services.count)
         }
         .padding(.top, 24)
     }

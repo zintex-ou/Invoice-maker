@@ -123,8 +123,7 @@ struct ClientsListView: View {
                 }
             }
             .padding(.top, 24)
-            
-            Spacer()
+            .animation(.default, value: viewModel.clients)
         }
     }
     
