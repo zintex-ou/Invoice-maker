@@ -186,11 +186,9 @@ struct PreviewView: View {
                 }
                 
                 Button("") {
-                    Task {
-                        await viewModel.deleteInvoice(completion: {
-                            coordinator.popTo(id: TabBarView.navigationID)
-                        })
-                    }
+                    viewModel.deleteInvoice(completion: {
+                        coordinator.popTo(id: TabBarView.navigationID)
+                    })
                 }
                 .buttonStyle(.distructiveCircle(.property1Trash, title: "Delete"))
             }

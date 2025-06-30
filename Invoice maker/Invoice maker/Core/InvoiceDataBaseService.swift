@@ -63,7 +63,7 @@ final class InvoiceDataBaseService {
     func change(isPaid: Bool, for id: UUID) async throws {
         guard let index = allInvoices.firstIndex(where: { $0.id == id }) else { return }
         allInvoices[index].isPaid = isPaid
-
+        
         if isPaid {
             guard let unPaidIndex = unPaidInvoices.firstIndex(where: { $0.id == id }) else { return }
             let inPaidInvoice = unPaidInvoices.remove(at: unPaidIndex)
@@ -75,5 +75,13 @@ final class InvoiceDataBaseService {
         }
         
         try? await dataBaseManager.updateIsPaid(for: id, isPaid: isPaid)
+    }
+    
+    func deleteInvoice(with id: UUID) async throws {
+        try await dataBaseManager.deleteInvoice(byID: id)
+        
+        allInvoices = allInvoices.filter { $0.id != id }
+        paidInvoices = paidInvoices.filter { $0.id != id }
+        unPaidInvoices = unPaidInvoices.filter { $0.id != id }
     }
 }

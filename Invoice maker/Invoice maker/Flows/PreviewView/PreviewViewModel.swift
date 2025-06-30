@@ -63,16 +63,19 @@ final class PreviewViewModel: ObservableObject {
         }
     }
     
-    func deleteInvoice(completion: () -> Void) async {
-        do {
-            try await CoreDataManager.shared.deleteInvoice(invoiceEntity)
-            completion()
-        } catch {
-            self.alert = .init(
-                title: "Failed to delete invoice",
-                subtitle: "An error occurred. Please try again later."
-            )
-            shouldShowError = true
+    func deleteInvoice(completion: @escaping () -> Void) {
+        Task {
+            do {
+                guard let id = invoiceEntity.id else { return }
+                try await dataBaseService.deleteInvoice(with: id)
+                completion()
+            } catch {
+                self.alert = .init(
+                    title: "Failed to delete invoice",
+                    subtitle: "An error occurred. Please try again later."
+                )
+                shouldShowError = true
+            }
         }
     }
     

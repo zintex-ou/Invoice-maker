@@ -14,25 +14,10 @@ struct InvoicesView: View {
                 .padding(.top, 24)
                 .padding(.bottom, 4)
                 
-                switch viewModel.invoiceSelection {
-                case .all:
-                    if viewModel.allInvoices.isEmpty {
-                        emptyStateView
-                    } else {
-                        invoiceList
-                    }
-                case .paid:
-                    if viewModel.paidInvoices.isEmpty {
-                        emptyStateView
-                    } else {
-                        invoiceList
-                    }
-                case .unpaid:
-                    if viewModel.unPaidInvoices.isEmpty {
-                        emptyStateView
-                    } else {
-                        invoiceList
-                    }
+                if viewModel.getInvoices().isEmpty {
+                    emptyStateView
+                } else {
+                    invoiceList
                 }
             }
             
@@ -68,7 +53,7 @@ struct InvoicesView: View {
                                     viewModel.change(isPaid: newValue, for: id)
                                 }
                             )
-
+                            
                             Button {
                                 coordinator.pushTo(id: PreviewView.navigationID, destination: {
                                     PreviewView(viewModel: .init(invoiceEntity: invoice, isWithStatusChange: true))
