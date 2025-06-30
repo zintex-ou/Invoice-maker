@@ -43,21 +43,6 @@ struct ItemsServicesListView: View {
         .task {
             await viewModel.fetchItemsServices()
         }
-        .alert(viewModel.alertDeleteTitle(),
-               isPresented: $viewModel.isShowDeleteAlert) {
-            Button("Cancel", role: .cancel) {
-                
-            }
-            
-            Button("Delete", role: .destructive) {
-                if let itemToDelete = viewModel.itemToDelete {
-                    Task { await viewModel.deleteItemService(itemToDelete) }
-                }
-            }
-            
-        } message: {
-            Text(viewModel.alertDeleteMessage())
-        }
         .alert("Error",
                isPresented: $viewModel.showErrorAlert) {
             Button("Cancel", role: .cancel) {
@@ -131,7 +116,7 @@ struct ItemsServicesListView: View {
                             isSelectedCell: viewModel.isSelectedCell(item),
                             offerSelection: viewModel.offerSelection,
                             viewType: viewModel.viewType) {
-                                viewModel.showDeleteAlert(for: item)
+                                viewModel.deleteItemService(item)
                             }
                     }
                 }

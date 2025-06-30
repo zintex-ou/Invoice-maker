@@ -57,6 +57,7 @@ final class AddNewItemServiceViewModel: ObservableObject {
             if case .initial = viewState { return true }
             else { return false }
         }()
+        
         self.title = offerType == .items ? "\(titlePart) item" : "\(titlePart) service"
         self.buttonTitle = isInitial ? (isItem ? "Add new item" : "Add new service") : "Save"
         self.alertLeavewithoutSavingMessage =  "If you close this \(isItem ? "item" : "service"), all changes will be lost."
@@ -103,7 +104,7 @@ final class AddNewItemServiceViewModel: ObservableObject {
                     )
                 )
                 
-                NotificationService.shared.post(event: .updateItemsServices, object: item)
+                NotificationService.shared.post(event: .createItemService, object: item)
             } catch let error {
                 showErrorAlert = true
                 errorAlertSubtitle = error.localizedDescription
@@ -176,7 +177,7 @@ extension AddNewItemServiceViewModel {
        if case let .editing(entity: item) = viewState {
             Task {
                 do {
-                    try await coreDataManager.updateItemOrService(
+                   let item = try await coreDataManager.updateItemOrService(
                         item,
                         input: .init(
                             id: .init(),
@@ -190,6 +191,8 @@ extension AddNewItemServiceViewModel {
                             currency: currency
                         )
                     )
+                    
+                    NotificationService.shared.post(event: .updateItemsServices, object: item)
                 } catch let error {
                     showErrorAlert = true
                     errorAlertSubtitle = error.localizedDescription
@@ -215,7 +218,7 @@ extension AddNewItemServiceViewModel {
                 do {
                     try await coreDataManager.deleteItemOrService(item)
                     
-                    NotificationService.shared.post(event: .updateItemsServices, object: nil)
+                    NotificationService.shared.post(event: .deleteItemService, object: item)
                 } catch let error {
                     showErrorAlert = true
                     errorAlertSubtitle = error.localizedDescription

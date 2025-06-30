@@ -1,6 +1,7 @@
-import SwiftUI
+import Foundation
 import Combine
 
+@MainActor
 final class ItemsServicesListViewModel: ObservableObject {
     @Published var items: [ItemServiceEntity] = []
     @Published var services: [ItemServiceEntity] = []
@@ -17,50 +18,46 @@ final class ItemsServicesListViewModel: ObservableObject {
     init(viewType: ItemServiceViewType, selectedItemService: [ItemServiceEntity] = []) {
         self.viewType = viewType
         self.selectedItemService = selectedItemService
-        setSubscription()
+        setupSubscription()
     }
     
-    @MainActor
     func fetchItemsServices() async {
         do {
             let fetched = try await CoreDataManager.shared.fetchItems()
             
+            let filtered: [ItemServiceEntity]
             switch viewType {
             case .choiseItemsOrServices(let currency):
-                let newFetched = fetched.filter({ $0.currency == currency.rawValue })
-                self.items = newFetched.filter { $0.isItem == true }
-                self.services = newFetched.filter { $0.isItem == false }
+                filtered = fetched.filter { $0.currency == currency.rawValue }
             case .editItemsOrServices:
-                self.items = fetched.filter { $0.isItem == true }
-                self.services = fetched.filter { $0.isItem == false }
+                filtered = fetched
             }
+            
+            self.items = filtered.filter(\.isItem)
+            self.services = filtered.filter { !$0.isItem }
+            
         } catch let error {
             showErrorAlert = true
             errorAlertSubtitle = error.localizedDescription
         }
     }
     
-    func deleteItemService(_ item: ItemServiceEntity) async {
-        do {
-            try await CoreDataManager.shared.deleteItemOrService(item)
-            await updateAfterDelete(item)
-        } catch let error {
-            showErrorAlert = true
-            errorAlertSubtitle = error.localizedDescription
-        }
-    }
-    
-    @MainActor
-    private func updateAfterDelete(_ item: ItemServiceEntity) {
-        withAnimation {
-            if offerSelection == .items {
-                items.removeAll(where: {
-                    $0.id == item.id
-                })
-            } else {
-                services.removeAll(where: {
-                    $0.id == item.id
-                })
+    func deleteItemService(_ item: ItemServiceEntity) {
+        Task {
+            do {
+                try await CoreDataManager.shared.deleteItemOrService(item)
+                if offerSelection == .items {
+                    items.removeAll(where: {
+                        $0.id == item.id
+                    })
+                } else {
+                    services.removeAll(where: {
+                        $0.id == item.id
+                    })
+                }
+            } catch let error {
+                showErrorAlert = true
+                errorAlertSubtitle = error.localizedDescription
             }
         }
     }
@@ -90,17 +87,79 @@ final class ItemsServicesListViewModel: ObservableObject {
         NotificationService.shared.post(event: .selectedItemService, object: item)
     }
     
-    private func setSubscription() {
-        NotificationService.shared.observe(event: .updateItemsServices) { [weak self] object in
+    private func setupSubscription() {
+        NotificationService.shared.observe(event: .createItemService) { [weak self] object in
+            guard let self = self else { return }
+            
             if let object = object as? ItemServiceEntity {
+                switch self.viewType {
+                case .choiseItemsOrServices(let currency):
+                    guard object.currency == currency.rawValue else { return }
+                case .editItemsOrServices:
+                    break
+                }
+                
                 if object.isItem {
-                    self?.items.append(object)
+                    self.items.append(object)
                 } else {
-                    self?.services.append(object)
+                    self.services.append(object)
                 }
             } else {
                 Task {
-                    await self?.fetchItemsServices()
+                    await self.fetchItemsServices()
+                }
+            }
+        }
+        
+        NotificationService.shared.observe(event: .updateItemsServices) { [weak self] object in
+            guard let self = self else { return }
+            
+            if let object = object as? ItemServiceEntity {
+                var currentArray = object.isItem ? self.items : self.services
+                
+                if let index = currentArray.firstIndex(where: { $0.id == object.id }) {
+                    switch self.viewType {
+                    case .choiseItemsOrServices(let currency):
+                        if object.currency == currency.rawValue {
+                            currentArray[index] = object
+                        } else {
+                            currentArray.remove(at: index)
+                        }
+                    case .editItemsOrServices:
+                        currentArray[index] = object
+                    }
+                } else {
+                    switch self.viewType {
+                    case .choiseItemsOrServices(let currency):
+                        if object.currency == currency.rawValue {
+                            currentArray.append(object)
+                        }
+                    case .editItemsOrServices:
+                        currentArray.append(object)
+                    }
+                }
+                
+                if object.isItem {
+                    self.items = currentArray
+                } else {
+                    self.services = currentArray
+                }
+                
+            } else {
+                Task {
+                    await self.fetchItemsServices()
+                }
+            }
+        }
+        
+        NotificationService.shared.observe(event: .deleteItemService) { [weak self] object in
+            guard let self = self else { return }
+            
+            if let object = object as? ItemServiceEntity {
+                selectedItemService.removeAll(where: { $0.id == object.id })
+            } else {
+                Task {
+                    await self.fetchItemsServices()
                 }
             }
         }

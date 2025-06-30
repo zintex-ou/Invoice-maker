@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 final class CreateInvoiceViewModel: ObservableObject {
     enum ViewType {
@@ -28,6 +29,7 @@ final class CreateInvoiceViewModel: ObservableObject {
     private(set) var viewType: ViewType
     private let dataBaseManager: CoreDataManager = .shared
     private var bussinesProfile: BusinessProfileEntity? = nil
+    private var cancellables = Set<AnyCancellable>()
     
     var errorText: String = "No items added. To create an invoice, please сlick the “Add item & service” button and fill in the item details."
     
@@ -209,18 +211,50 @@ final class CreateInvoiceViewModel: ObservableObject {
     
     private func setSubscription() {
         NotificationService.shared.observe(event: .selectedClient) { [weak self] object in
+            guard let self = self else { return }
+            
             if let object = object as? ClientEntity {
-                self?.client = object
+                self.client = object
             }
         }
         
         NotificationService.shared.observe(event: .selectedItemService) { [weak self] object in
+            guard let self = self else { return }
+            
             if let object = object as? ItemServiceEntity {
-                if !(self?.itemServices.contains(where: { $0.id == object.id }) ?? true) {
-                    self?.itemServices.append(object)
+                if !(self.itemServices.contains(where: { $0.id == object.id })) {
+                    self.itemServices.append(object)
                 }
             }
         }
+        
+        NotificationService.shared.observe(event: .updateItemsServices) { [weak self] object in
+            guard let self,
+                  let object = object as? ItemServiceEntity else { return }
+            
+            if let index = self.itemServices.firstIndex(where: { $0.id == object.id }) {
+                if self.currency.rawValue == object.currency {
+                    self.itemServices[index] = object
+                } else {
+                    self.itemServices.remove(at: index)
+                }
+            }
+        }
+        
+        NotificationService.shared.observe(event: .deleteItemService) { [weak self] object in
+            guard let self = self else { return }
+            
+            if let object = object as? ItemServiceEntity {
+                itemServices.removeAll(where: { $0.id == object.id })
+            }
+        }
+        
+        $currency
+            .dropFirst()
+            .sink { [weak self] _ in
+                self?.itemServices.removeAll()
+            }
+            .store(in: &cancellables)
     }
     
     private func showError(_ message: String) {
