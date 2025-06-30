@@ -56,7 +56,7 @@ struct InvoicesView: View {
                             
                             Button {
                                 coordinator.pushTo(id: PreviewView.navigationID, destination: {
-                                    PreviewView(viewModel: .init(invoiceEntity: invoice, isWithStatusChange: true))
+                                    PreviewView(viewModel: .init(invoiceEntity: invoice))
                                 })
                             } label: {
                                 InvoiceViewCell(

@@ -9,19 +9,16 @@ final class PreviewViewModel: ObservableObject {
     
     private(set) var invoiceEntity: InvoiceEntity
     private let dataBaseService = InvoiceDataBaseService.shared
+    private(set) var pdfFilePath: URL
+    private(set) var isInvoice: Bool
     
-    var pdfFilePath: URL
     var alert: AlertModel = .init(title: "", subtitle: "")
-    var isWithStatusChange: Bool
-    let isInvoice: Bool
 
     init(
-        invoiceEntity: InvoiceEntity,
-        isWithStatusChange: Bool = false
+        invoiceEntity: InvoiceEntity
     ) {
         self.invoiceEntity = invoiceEntity
         self.pdfFilePath = invoiceEntity.pdfFilePath ?? .currentDirectory()
-        self.isWithStatusChange = isWithStatusChange
         self.isInvoice = invoiceEntity.isInvoice
         self.isPaid = invoiceEntity.isPaid
     }

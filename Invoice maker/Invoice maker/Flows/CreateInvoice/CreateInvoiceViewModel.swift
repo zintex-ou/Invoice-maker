@@ -51,7 +51,7 @@ final class CreateInvoiceViewModel: ObservableObject {
     
     func getInfoTitle() -> String {
         switch viewType {
-        case .createEstimate:
+        case .createEstimate, .editEstimate:
             return "Estimate info"
         default:
             return "Invoice info"

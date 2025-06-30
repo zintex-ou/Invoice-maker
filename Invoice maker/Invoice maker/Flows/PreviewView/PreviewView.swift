@@ -97,7 +97,7 @@ struct PreviewView: View {
                         .font(.sans(style: .semiBold, size: 16))
                         .foregroundStyle(.black)
                     
-                    if viewModel.isWithStatusChange {
+                    if viewModel.isInvoice {
                         Menu {
                             Button {
                                 viewModel.tapOnMenuButton(false)

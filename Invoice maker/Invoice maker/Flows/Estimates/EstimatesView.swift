@@ -41,13 +41,19 @@ struct EstimatesView: View {
                             let total = invoice.total
                             let isPaid = invoice.isPaid
                             
-                            InvoiceViewCell(
-                                title: name,
-                                dueDate: dueDate,
-                                currency: Currency(from: invoice.currency),
-                                totalPrice: total,
-                                isInvoice: invoice.isInvoice,
-                                isPaid: .constant(isPaid))
+                            Button {
+                                coordinator.pushTo(id: PreviewView.navigationID, destination: {
+                                    PreviewView(viewModel: .init(invoiceEntity: invoice))
+                                })
+                            } label: {
+                                InvoiceViewCell(
+                                    title: name,
+                                    dueDate: dueDate,
+                                    currency: Currency(from: invoice.currency),
+                                    totalPrice: total,
+                                    isInvoice: invoice.isInvoice,
+                                    isPaid: .constant(isPaid))
+                            }
                         }
                     }
                 }

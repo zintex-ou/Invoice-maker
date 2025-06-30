@@ -61,9 +61,13 @@ final class InvoiceDataBaseService {
     }
     
     func update(invoice: InvoiceInput) async throws -> InvoiceEntity {
-        self.allInvoices = self.allInvoices.filter { $0.id != invoice.id }
-        self.paidInvoices = self.paidInvoices.filter { $0.id != invoice.id }
-        self.unPaidInvoices = self.unPaidInvoices.filter { $0.id != invoice.id }
+        if invoice.isInvoice {
+            self.allInvoices = self.allInvoices.filter { $0.id != invoice.id }
+            self.paidInvoices = self.paidInvoices.filter { $0.id != invoice.id }
+            self.unPaidInvoices = self.unPaidInvoices.filter { $0.id != invoice.id }
+        } else {
+            self.allEstimates = self.allEstimates.filter { $0.id != invoice.id }
+        }
         
         let invoice = try await CoreDataManager.shared.updateInvoice(input: invoice)
         if invoice.isInvoice {
