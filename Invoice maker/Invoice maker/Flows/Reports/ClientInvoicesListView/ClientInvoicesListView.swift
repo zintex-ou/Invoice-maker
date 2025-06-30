@@ -6,41 +6,42 @@ struct ClientInvoicesListView: View {
     @Namespace private var namespace
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                navigationBar
-                    .padding(.bottom, 24)
-                
-                SegmentedControl(
-                    selection: $viewModel.invoiceSelection,
-                    segments: SegmentInvoiceType.allCases
-                )
-                .padding(.bottom, 16)
-                
+        VStack(spacing: 0) {
+            navigationBar
+                .padding(.bottom, 24)
+            
+            SegmentedControl(
+                selection: $viewModel.invoiceSelection,
+                segments: SegmentInvoiceType.allCases
+            )
+            .padding(.bottom, 2)
+            
+            ScrollView {
                 VStack(spacing: 8) {
-                    ForEach(viewModel.filteredDetailViewModels, id: \.id) { model in
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(.grayF5F5F5)
+                    ForEach(viewModel.getInvoices(), id: \.id) { invoice in
+                        if let id = invoice.id,
+                           let name = invoice.client?.clientName,
+                           let dueDate = invoice.invoiceDate {
                             
                             let isPaidBinding = Binding<Bool>(
-                                get: { model.isPaid },
+                                get: { invoice.isPaid },
                                 set: { newValue in
-                                    viewModel.change(isPaid: newValue, for: model.id)
+                                    viewModel.change(isPaid: newValue, for: id)
                                 }
                             )
                             
                             InvoiceViewCell(
-                                title: model.invoiceNumber,
-                                dueDate: model.dueDate,
-                                currency: model.currency,
-                                totalPrice: model.total,
-                                isInvoice: true,
-                                isPaid: isPaidBinding)
+                                title: name,
+                                dueDate: dueDate,
+                                currency: Currency(from: invoice.currency),
+                                totalPrice: invoice.total,
+                                isInvoice: invoice.isInvoice,
+                                isPaid: isPaidBinding
+                            )
                         }
-                        .frame(height: 85)
                     }
                 }
+                .padding(.top, 16)
                 
                 Spacer()
             }
