@@ -44,7 +44,7 @@ final class AddNewItemServiceViewModel: ObservableObject {
     ) {
         self.coreDataManager = coreDataManager
         self.nameFieldTitle = offerType == .items ? "Item name" : "Service name"
-       let isItem = offerType == .items
+        let isItem = offerType == .items
         
         var titlePart: String {
             switch viewState {
@@ -100,7 +100,8 @@ final class AddNewItemServiceViewModel: ObservableObject {
                         discountType: discountType,
                         discount: discount,
                         tax: tax,
-                        currency: currency
+                        currency: currency,
+                        total: calculateTotalPrice()
                     )
                 )
                 
@@ -121,7 +122,7 @@ final class AddNewItemServiceViewModel: ObservableObject {
         }
     }
     
-   private func onSaveNewItemTapped(completion: @escaping (() -> Void)) {
+    private func onSaveNewItemTapped(completion: @escaping (() -> Void)) {
         if !validateFields() {
             saveItemService()
             completion()
@@ -173,11 +174,11 @@ extension AddNewItemServiceViewModel {
         ]
     }
     
-   private func updateItemService() {
-       if case let .editing(entity: item) = viewState {
+    private func updateItemService() {
+        if case let .editing(entity: item) = viewState {
             Task {
                 do {
-                   let item = try await coreDataManager.updateItemOrService(
+                    let item = try await coreDataManager.updateItemOrService(
                         item,
                         input: .init(
                             id: .init(),
@@ -188,7 +189,8 @@ extension AddNewItemServiceViewModel {
                             discountType: discountType,
                             discount: discount,
                             tax: tax,
-                            currency: currency
+                            currency: currency,
+                            total: calculateTotalPrice()
                         )
                     )
                     
@@ -201,7 +203,7 @@ extension AddNewItemServiceViewModel {
         }
     }
     
-   private func onSaveEditedTapped(completion: @escaping (() -> Void)) {
+    private func onSaveEditedTapped(completion: @escaping (() -> Void)) {
         if !validateFields() {
             updateItemService()
             completion()
@@ -225,5 +227,32 @@ extension AddNewItemServiceViewModel {
                 }
             }
         }
+    }
+    
+    func calculateTotalPrice() -> String {
+        let priceValue = Double(price) ?? 0
+        let quantityValue = Double(quantity) ?? 0
+        let subtotal = priceValue * quantityValue
+        
+        let discountValue = Double(discount) ?? 0
+        let discountAmount: Double = {
+            switch discountType {
+            case .percentage:
+                return subtotal * discountValue / 100
+            case .flatAmount:
+                return discountValue
+            case .none:
+                return 0
+            }
+        }()
+        
+        let taxableBase = subtotal - discountAmount
+        
+        let taxValue = Double(tax) ?? 0
+        let taxAmount = taxableBase * taxValue / 100
+        
+        let totalValue = taxableBase + taxAmount
+        
+        return String(format: "%.2f", totalValue)
     }
 }
