@@ -53,6 +53,7 @@ final class PreviewViewModel: ObservableObject {
             do {
                 guard let id = invoiceEntity.id else { return }
                 try await dataBaseService.change(isPaid: value, for: id)
+                NotificationService.shared.post(event: .updateIsPaid, object: nil)
             } catch {
                 self.alert = .init(
                     title: "Failed to update invoice",

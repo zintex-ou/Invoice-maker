@@ -14,6 +14,7 @@ final class InvoicesViewModel: ObservableObject {
     
     init() {
         bindToDataBaseService()
+        setupSubscriptions()
     }
     
     func change(isPaid: Bool, for id: UUID) {
@@ -51,5 +52,12 @@ extension InvoicesViewModel {
         dataBaseService.$unPaidInvoices
             .assign(to: \.unPaidInvoices, on: self)
             .store(in: &cancellables)
+    }
+    
+    private func setupSubscriptions() {
+        NotificationService.shared.observe(event: .updateIsPaid) { [weak self] _ in
+            guard let self else { return }
+
+        }
     }
 }
