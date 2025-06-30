@@ -1,12 +1,13 @@
 import SwiftUI
 
+@MainActor
 final class ChooseTemplateViewModel: ObservableObject {
     @Published var templateType: TemplateType = .topDark
     @Published var customColor: CustomColors = .blue
     @Published var templateIndex = 0
     @Published var shouldShowError: Bool = false
     @Published var isShowDeleteAlert: Bool = false
-
+    
     var alert: AlertModel = .init(title: "", subtitle: "")
     let chooseTemplateInvoiceModel: ChooseTemplateInvoiceModel
     let invoiceType: InvoiceType
@@ -34,10 +35,8 @@ final class ChooseTemplateViewModel: ObservableObject {
         return resource
     }
     
-    @MainActor
     func saveTemplate(completion: @escaping (InvoiceEntity) -> Void) async {
         do {
-            let uuid = UUID()
             let bp = try await CoreDataManager.shared.fetchBusinessProfile()
             
             let client = chooseTemplateInvoiceModel.client
@@ -54,7 +53,7 @@ final class ChooseTemplateViewModel: ObservableObject {
             }
             
             let invoiceTemplateModel = InvoiceTemplateModel(
-                id: uuid,
+                id: chooseTemplateInvoiceModel.id,
                 header: .init(
                     logo: bp?.image,
                     businessProfile: .init(
@@ -94,7 +93,7 @@ final class ChooseTemplateViewModel: ObservableObject {
                 )
                 
                 let invoiceInput = InvoiceInput(
-                    id: uuid,
+                    id: chooseTemplateInvoiceModel.id,
                     client: chooseTemplateInvoiceModel.client,
                     number: chooseTemplateInvoiceModel.number,
                     invoiceDate: chooseTemplateInvoiceModel.invoiceDate,

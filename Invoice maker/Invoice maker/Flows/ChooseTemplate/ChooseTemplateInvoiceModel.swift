@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ChooseTemplateInvoiceModel {
+    let id: UUID
     let client: ClientEntity
     let number: String
     let invoiceDate: Date

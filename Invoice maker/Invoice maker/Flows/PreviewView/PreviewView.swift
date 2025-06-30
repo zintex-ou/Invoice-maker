@@ -167,9 +167,14 @@ struct PreviewView: View {
                 
                 Spacer()
                 
-#warning("Add push to edit invoice")
                 Button("") {
-                    
+                    coordinator.popToBack()
+                    coordinator.pushTo(id: CreateInvoiceView.navigationID) {
+                        let viewModel = CreateInvoiceViewModel(
+                            viewType: viewModel.isInvoice ? .editInvoice(viewModel.invoiceEntity) : .editEstimate(viewModel.invoiceEntity)
+                        )
+                        return CreateInvoiceView(viewModel: viewModel)
+                    }
                 }
                 .buttonStyle(.circle(.property1Edit, title: "Edit"))
                 

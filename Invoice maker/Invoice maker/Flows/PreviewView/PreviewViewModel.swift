@@ -7,7 +7,7 @@ final class PreviewViewModel: ObservableObject {
     @Published var isPaid: Bool
     @Published var popoverID: Int = 1
     
-    private var invoiceEntity: InvoiceEntity
+    private(set) var invoiceEntity: InvoiceEntity
     private let dataBaseService = InvoiceDataBaseService.shared
     
     var pdfFilePath: URL

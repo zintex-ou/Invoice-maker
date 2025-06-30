@@ -28,6 +28,7 @@ final class CreateInvoiceViewModel: ObservableObject {
     
     private(set) var viewType: ViewType
     private let dataBaseManager: CoreDataManager = .shared
+    private var invoiceId: UUID? = nil
     private var bussinesProfile: BusinessProfileEntity? = nil
     private var cancellables = Set<AnyCancellable>()
     
@@ -35,6 +36,8 @@ final class CreateInvoiceViewModel: ObservableObject {
     
     init(viewType: ViewType) {
         self.viewType = viewType
+        
+        configureInitialValues(from: viewType)
         setSubscription()
         fetchBussinessProfile()
     }
@@ -166,6 +169,7 @@ final class CreateInvoiceViewModel: ObservableObject {
         }
         
         return ChooseTemplateInvoiceModel(
+            id: invoiceId ?? .init(),
             client: client,
             number: invoiceNumber,
             invoiceDate: invoiceDate,
@@ -281,6 +285,27 @@ final class CreateInvoiceViewModel: ObservableObject {
             } catch {
                 
             }
+        }
+    }
+    
+    private func configureInitialValues(from viewType: ViewType) {
+        switch viewType {
+        case let .editInvoice(invoice), let .editEstimate(invoice):
+            self.invoiceId = invoice.id
+            self.invoiceNumber = invoice.invoiceNumber ?? "1"
+            self.currency = Currency(from: invoice.currency)
+            self.invoiceDate = invoice.invoiceDate ?? Date()
+            self.dueDate = invoice.dueDate ?? Date()
+            self.client = invoice.client
+            if let itemSet = invoice.itemService as? Set<ItemServiceEntity> {
+                self.itemServices = Array(itemSet)
+            } else {
+                self.itemServices = []
+            }
+            self.discount = invoice.discount ?? "0"
+            self.tax = invoice.tax ?? "0"
+        default:
+            break
         }
     }
 }
