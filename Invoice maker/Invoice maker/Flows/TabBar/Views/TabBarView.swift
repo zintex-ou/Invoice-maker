@@ -10,9 +10,9 @@ struct TabBarView: View {
     var body: some View {
         VStack(spacing: .zero) {
             MainHeader(isPremium: $viewModel.isPremium)
-            .padding(.top, 12)
-            .padding(.bottom, 4)
-            
+                .padding(.top, 12)
+                .padding(.bottom, 4)
+
             TabView(selection: $viewModel.selectedIndex) {
                 InvoicesView()
                     .tag(0)
@@ -61,7 +61,7 @@ struct TabBarView: View {
                         viewModel.tapOnTabBarItem(at: item.rawValue)
                     }
                 }) {
-                    HStack(spacing: 4) {
+                    HStack(spacing: isSelected ? 4 : 0) {
                         ZStack {
                             Image(item.icon)
                                 .resizable()
