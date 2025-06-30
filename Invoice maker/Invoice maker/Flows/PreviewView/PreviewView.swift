@@ -179,10 +179,14 @@ struct PreviewView: View {
                 
                 Spacer()
                 
-#warning("Add push to create invoice")
                 if !viewModel.isInvoice {
                     Button("") {
-                        
+                        coordinator.pushTo(id: CreateInvoiceView.navigationID) {
+                            let viewModel = CreateInvoiceViewModel(
+                                viewType: .convertEstimateToInvoice(viewModel.invoiceEntity)
+                            )
+                            return CreateInvoiceView(viewModel: viewModel)
+                        }
                     }
                     .buttonStyle(.circle(.property1Invoices, title: "Convert"))
                     

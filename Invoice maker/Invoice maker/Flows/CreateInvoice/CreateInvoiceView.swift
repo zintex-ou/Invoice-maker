@@ -115,7 +115,7 @@ struct CreateInvoiceView: View {
                         .buttonStyle(.disclosure(title: viewModel.getDateTitle()))
                         
                         switch viewModel.viewType {
-                        case .createInvoice, .editInvoice:
+                        case .createInvoice, .editInvoice, .convertEstimateToInvoice:
                             Button(viewModel.getDueDate()) {
                                 viewModel.tapOnDueDateButton()
                             }

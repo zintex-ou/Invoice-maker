@@ -3,5 +3,6 @@ enum InvoiceViewType {
     case createEstimate
     case editInvoice(InvoiceEntity)
     case editEstimate(InvoiceEntity)
+    case convertEstimateToInvoice(InvoiceEntity)
 }
 

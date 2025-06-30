@@ -84,6 +84,14 @@ final class InvoiceDataBaseService {
         return invoice
     }
     
+    func convertEstimateToInvoice(_ invoice: InvoiceInput) async throws -> InvoiceEntity {
+        self.allEstimates = self.allEstimates.filter { $0.id != invoice.id }
+        try await dataBaseManager.deleteInvoice(byID: invoice.id)
+        
+        let result = try await createInvoice(with: invoice)
+        return result
+    }
+    
     func change(isPaid: Bool, for id: UUID) async throws {
         guard let index = allInvoices.firstIndex(where: { $0.id == id }) else { return }
         allInvoices[index].isPaid = isPaid

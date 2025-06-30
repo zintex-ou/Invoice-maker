@@ -46,6 +46,8 @@ final class CreateInvoiceViewModel: ObservableObject {
             return "Edit Invoice"
         case .editEstimate:
             return "Edit Estimate"
+        case .convertEstimateToInvoice:
+            return "Convert Estimate"
         }
     }
     
@@ -147,7 +149,7 @@ final class CreateInvoiceViewModel: ObservableObject {
         
         completion(createChooseTemplateInvoiceModel())
     }
-
+    
     private func createChooseTemplateInvoiceModel() -> ChooseTemplateInvoiceModel? {
         guard let client = client else {
             return nil
@@ -276,7 +278,10 @@ final class CreateInvoiceViewModel: ObservableObject {
     
     private func configureInitialValues(from viewType: InvoiceViewType) {
         switch viewType {
-        case let .editInvoice(invoice), let .editEstimate(invoice):
+        case let .editInvoice(invoice),
+            let .editEstimate(invoice),
+            let .convertEstimateToInvoice(invoice):
+            
             self.invoiceId = invoice.id
             self.invoiceNumber = invoice.invoiceNumber ?? "1"
             self.currency = Currency(from: invoice.currency)

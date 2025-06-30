@@ -15,7 +15,7 @@ final class ChooseTemplateViewModel: ObservableObject {
     var alert: AlertModel = .init(title: "", subtitle: "")
     var invoiceType: InvoiceType {
         switch viewType {
-        case .createInvoice, .editInvoice:
+        case .createInvoice, .editInvoice, .convertEstimateToInvoice:
             return .invoice
         case .createEstimate, .editEstimate:
             return .estimate
@@ -43,6 +43,8 @@ final class ChooseTemplateViewModel: ObservableObject {
             return "Edit Invoice"
         case .editEstimate:
             return "Edit Estimate"
+        case .convertEstimateToInvoice:
+            return "Convert Estimate"
         }
     }
     
@@ -144,6 +146,8 @@ final class ChooseTemplateViewModel: ObservableObject {
             return try await dataBaseService.createInvoice(with: invoiceInput)
         case .editInvoice, .editEstimate:
             return try await dataBaseService.update(invoice: invoiceInput)
+        case .convertEstimateToInvoice:
+            return try await dataBaseService.convertEstimateToInvoice(invoiceInput)
         }
     }
     
@@ -158,7 +162,7 @@ final class ChooseTemplateViewModel: ObservableObject {
             )
             
             return url
-        case .editInvoice, .editEstimate:
+        case .editInvoice, .editEstimate, .convertEstimateToInvoice:
             let url = try PDFSaveService().updateAndSave(
                 oldURL: oldURL,
                 type: templateType,
