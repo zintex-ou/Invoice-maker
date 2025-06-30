@@ -194,6 +194,7 @@ struct PreviewView: View {
         .padding(.top, 24)
         .padding(.horizontal, 16)
         .padding(.bottom, 30)
+        .animation(.default, value: viewModel.isPaid)
         .background {
             Color.white
                 .clipShape(
