@@ -14,36 +14,40 @@ struct ClientInvoicesListView: View {
                 selection: $viewModel.invoiceSelection,
                 segments: SegmentInvoiceType.allCases
             )
-            .padding(.bottom, 2)
+            .padding(.bottom, 4)
             
-            ScrollView {
-                VStack(spacing: 8) {
-                    ForEach(viewModel.getInvoices(), id: \.id) { invoice in
-                        if let id = invoice.id,
-                           let name = invoice.client?.clientName,
-                           let dueDate = invoice.invoiceDate {
-                            
-                            let isPaidBinding = Binding<Bool>(
-                                get: { invoice.isPaid },
-                                set: { newValue in
-                                    viewModel.change(isPaid: newValue, for: id)
-                                }
-                            )
-                            
-                            InvoiceViewCell(
-                                title: name,
-                                dueDate: dueDate,
-                                currency: Currency(from: invoice.currency),
-                                totalPrice: invoice.total,
-                                isInvoice: invoice.isInvoice,
-                                isPaid: isPaidBinding
-                            )
+            ZStack(alignment: .top) {
+                ScrollView {
+                    VStack(spacing: 8) {
+                        ForEach(viewModel.getInvoices(), id: \.id) { invoice in
+                            if let id = invoice.id,
+                               let name = invoice.client?.clientName,
+                               let dueDate = invoice.invoiceDate {
+                                
+                                let isPaidBinding = Binding<Bool>(
+                                    get: { invoice.isPaid },
+                                    set: { newValue in
+                                        viewModel.change(isPaid: newValue, for: id)
+                                    }
+                                )
+                                
+                                InvoiceViewCell(
+                                    title: name,
+                                    dueDate: dueDate,
+                                    currency: Currency(from: invoice.currency),
+                                    totalPrice: invoice.total,
+                                    isInvoice: invoice.isInvoice,
+                                    isPaid: isPaidBinding
+                                )
+                            }
                         }
+                        
                     }
+                    .padding(.top, 24)
                 }
-                .padding(.top, 16)
+                .scrollIndicators(.hidden)
                 
-                Spacer()
+                ListTopShadow()
             }
         }
         .padding(.horizontal, 16)
