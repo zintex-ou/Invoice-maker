@@ -5,8 +5,8 @@ final class CreateInvoiceViewModel: ObservableObject {
     enum ViewType {
         case createInvoice
         case createEstimate
-        case editInvoice
-        case editEstimate
+        case editInvoice(InvoiceEntity)
+        case editEstimate(InvoiceEntity)
     }
     
     @Published var bottomHeight: CGFloat = .zero
@@ -121,11 +121,14 @@ final class CreateInvoiceViewModel: ObservableObject {
     }
     
     func tapOnCreateInvoiceButton(completion: @escaping (ChooseTemplateInvoiceModel?) -> Void) {
-        if viewType == .createInvoice || viewType == .editInvoice {
+        switch viewType {
+        case .createInvoice, .editInvoice:
             guard dueDate.isSameOrAfterDateIgnoringTime(invoiceDate) else {
                 showError("The due date must be the same or later than the invoice date.")
                 return
             }
+        default:
+            break
         }
         
         guard let bussinesProfile = bussinesProfile,
@@ -149,8 +152,12 @@ final class CreateInvoiceViewModel: ObservableObject {
     }
     
     func getInvoiceType() -> InvoiceType {
-        let type = (viewType == .createEstimate || viewType == .editEstimate) ? InvoiceType.estimate : InvoiceType.invoice
-        return type
+        switch viewType {
+        case .createEstimate, .editEstimate:
+            return .estimate
+        case .createInvoice, .editInvoice:
+            return .invoice
+        }
     }
     
     private func createChooseTemplateInvoiceModel() -> ChooseTemplateInvoiceModel? {

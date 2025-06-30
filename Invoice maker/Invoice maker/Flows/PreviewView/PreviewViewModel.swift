@@ -1,20 +1,20 @@
-import SwiftUI
+import Foundation
 import MessageUI
 
 @MainActor
 final class PreviewViewModel: ObservableObject {
-    var pdfFilePath: URL
-    var alert: AlertModel = .init(title: "", subtitle: "")
-    var isWithStatusChange: Bool
-    private var invoiceEntity: InvoiceEntity
-    let isInvoice: Bool
-    
     @Published var shouldShowError: Bool = false
     @Published var isPaid: Bool
     @Published var popoverID: Int = 1
     
+    private var invoiceEntity: InvoiceEntity
     private let dataBaseService = InvoiceDataBaseService.shared
     
+    var pdfFilePath: URL
+    var alert: AlertModel = .init(title: "", subtitle: "")
+    var isWithStatusChange: Bool
+    let isInvoice: Bool
+
     init(
         invoiceEntity: InvoiceEntity,
         isWithStatusChange: Bool = false
