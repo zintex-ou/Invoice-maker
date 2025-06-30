@@ -55,20 +55,9 @@ struct InvoicesView: View {
     
     private var invoiceList: some View {
         ZStack(alignment: .top) {
-            var model: [InvoiceEntity] {
-                switch viewModel.invoiceSelection {
-                case .all:
-                    return viewModel.allInvoices
-                case .paid:
-                    return viewModel.paidInvoices
-                case .unpaid:
-                    return viewModel.unPaidInvoices
-                }
-            }
-            
             ScrollView {
                 VStack(spacing: 12) {
-                    ForEach(model, id: \.id) { invoice in
+                    ForEach(viewModel.getInvoices(), id: \.id) { invoice in
                         if let id = invoice.id,
                            let name = invoice.client?.clientName,
                            let dueDate = invoice.dueDate {
