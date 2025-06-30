@@ -1,4 +1,5 @@
-import Foundation
+import SwiftUI
+import MessageUI
 
 @MainActor
 final class PreviewViewModel: ObservableObject {
@@ -75,10 +76,15 @@ final class PreviewViewModel: ObservableObject {
         }
     }
     
-    func sendInvoice() {
+    func sendInvoice(completion: @escaping ((Bool) -> Void)) {
         do {
             let data = try Data(contentsOf: pdfFilePath)
-            ContactSheet.shared.presentContactSheetWithPdf(pdfData: data, fileName: "Invoice.pdf")
+            ContactSheet.shared.presentContactSheetWithPdf(pdfData: data, fileName: "Invoice.pdf", completion: { result in
+                if result == .sent {
+                    completion(true)
+                    NotificationService.shared.post(event: .sentMailSuccessfully, object: true)
+                }
+            })
         } catch {
             self.alert = .init(
                 title: "Failed to send invoice",

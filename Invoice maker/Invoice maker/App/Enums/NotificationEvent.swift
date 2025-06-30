@@ -5,4 +5,5 @@ enum NotificationEvent: String {
     case updateItemsServices
     case selectedClient
     case selectedItemService
+    case sentMailSuccessfully
 }
