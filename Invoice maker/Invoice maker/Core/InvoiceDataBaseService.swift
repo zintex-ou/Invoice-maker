@@ -78,10 +78,10 @@ final class InvoiceDataBaseService {
     }
     
     func deleteInvoice(with id: UUID) async throws {
-        try await dataBaseManager.deleteInvoice(byID: id)
+        self.allInvoices = self.allInvoices.filter { $0.id != id }
+        self.paidInvoices = self.paidInvoices.filter { $0.id != id }
+        self.unPaidInvoices = self.unPaidInvoices.filter { $0.id != id }
         
-        allInvoices = allInvoices.filter { $0.id != id }
-        paidInvoices = paidInvoices.filter { $0.id != id }
-        unPaidInvoices = unPaidInvoices.filter { $0.id != id }
+        try await dataBaseManager.deleteInvoice(byID: id)
     }
 }
