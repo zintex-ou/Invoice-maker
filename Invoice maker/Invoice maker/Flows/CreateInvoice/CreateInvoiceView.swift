@@ -114,13 +114,14 @@ struct CreateInvoiceView: View {
                         }
                         .buttonStyle(.disclosure(title: viewModel.getDateTitle()))
                         
-                        
-                        if viewModel.viewType == .createInvoice ||
-                            viewModel.viewType == .editInvoice {
+                        switch viewModel.viewType {
+                        case .createInvoice, .editInvoice:
                             Button(viewModel.getDueDate()) {
                                 viewModel.tapOnDueDateButton()
                             }
                             .buttonStyle(.disclosure(title: "Due date"))
+                        default:
+                            EmptyView()
                         }
                     }
                     
@@ -171,9 +172,9 @@ struct CreateInvoiceView: View {
                 VStack(spacing: 12) {
                     ForEach(viewModel.itemServices, id: \.self) { item in
                         Button {
-
+                            
                         } label: {
-
+                            
                             ItemServiceViewCell(
                                 itemService: item,
                                 offerSelection: item.isItem ? SegmentOfferType.items : SegmentOfferType.services,
