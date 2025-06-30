@@ -176,11 +176,7 @@ extension ReportsViewModel {
             )
         }
         .sorted { $0.totalAmount > $1.totalAmount }
-     
-        (clientInvoiceReport.forEach({ ClientInvoiceReport in
-            print(ClientInvoiceReport.paidAmount, ClientInvoiceReport.unpaidAmount, ClientInvoiceReport.name, "erfsgvserfg")
-        }))
-        
+    
         invoiceReportModel = InvoiceReportModel(
             total: allInvoicesTotal,
             totalInvoiceCount: totalInvoices,
