@@ -27,18 +27,22 @@ struct ItemsServicesListView: View {
                 list
             }
             
-            Button(viewModel.buttonTitle()) {
-                coordinator.pushTo(
-                    id: AddNewItemServiceView.navigationID,
-                    destination: { AddNewItemServiceView(
-                        viewModel: .init(
-                            offerType: viewModel.offerSelection,
-                            viewState: .initial
+            HStack {
+                Button(viewModel.buttonTitle()) {
+                    coordinator.pushTo(
+                        id: AddNewItemServiceView.navigationID,
+                        destination: { AddNewItemServiceView(
+                            viewModel: .init(
+                                offerType: viewModel.offerSelection,
+                                viewState: .initial
+                            )
                         )
-                    )
-                    })
+                        })
+                }
+                .buttonStyle(.main)
             }
-            .buttonStyle(.main)
+            .padding(.vertical, 8)
+            .background(.white)
         }
         .padding(.horizontal, 16)
         .task {
@@ -126,6 +130,7 @@ struct ItemsServicesListView: View {
                 .animation(.default, value: viewModel.items.count)
                 .animation(.default, value: viewModel.services.count)
                 .padding(.top, 24)
+                .padding(.bottom, 70)
             }
             .scrollIndicators(.hidden)
             

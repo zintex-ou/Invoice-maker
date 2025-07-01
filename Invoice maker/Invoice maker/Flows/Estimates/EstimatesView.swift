@@ -58,6 +58,7 @@ struct EstimatesView: View {
                     }
                 }
                 .padding(.top, 24)
+                .padding(.bottom, 70)
             }
             .scrollIndicators(.hidden)
             

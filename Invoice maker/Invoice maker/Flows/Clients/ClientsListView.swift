@@ -19,14 +19,18 @@ struct ClientsListView: View {
                 list
             }
             
-            Button("Add new client") {
-                coordinator
-                    .pushTo(
-                        id: AddNewClientView.navigationID,
-                        destination: { AddNewClientView(viewModel: .init(viewState: .initial))
-                        })
+            HStack {
+                Button("Add new client") {
+                    coordinator
+                        .pushTo(
+                            id: AddNewClientView.navigationID,
+                            destination: { AddNewClientView(viewModel: .init(viewState: .initial))
+                            })
+                }
+                .buttonStyle(.main)
             }
-            .buttonStyle(.main)
+            .padding(.vertical, 8)
+            .background(.white)
         }
         .padding(.horizontal, 16)
         .task {
@@ -124,6 +128,7 @@ struct ClientsListView: View {
                     }
                 }
                 .padding(.top, 24)
+                .padding(.bottom, 70)
                 .animation(.default, value: viewModel.clients)
             }
             .scrollIndicators(.hidden)
