@@ -48,9 +48,13 @@ extension CoreDataManager {
     
     func updateBusinessProfile(input: BusinessProfileInput) async throws {
         guard let profile = try await fetchBusinessProfile() else {
-            throw NSError(domain: "BusinessProfileError", code: 404, userInfo: [
-                NSLocalizedDescriptionKey: "Business profile not found."
-            ])
+            do {
+                try await createBusinessProfile(input: input)
+            } catch {
+                throw NSError(domain: "BusinessProfileError", code: 404, userInfo: [
+                    NSLocalizedDescriptionKey: "Business profile not found."
+                ])
+            }
         }
         
         try await viewContext.perform {
@@ -73,7 +77,7 @@ extension CoreDataManager {
             try self.viewContext.save()
         }
     }
-
+    
 }
 
 // MARK: - Client
@@ -197,7 +201,7 @@ extension CoreDataManager {
             return try self.viewContext.fetch(request)
         }
     }
-
+    
     func createInvoice(input: InvoiceInput) async throws -> InvoiceEntity {
         try await viewContext.perform {
             let request: NSFetchRequest<ClientEntity> = ClientEntity.fetchRequest()
@@ -285,13 +289,13 @@ extension CoreDataManager {
             let request: NSFetchRequest<InvoiceEntity> = InvoiceEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             request.fetchLimit = 1
-
+            
             guard let invoice = try self.viewContext.fetch(request).first else {
                 throw NSError(domain: "InvoiceError", code: 404, userInfo: [
                     NSLocalizedDescriptionKey: "Invoice not found with id \(id)"
                 ])
             }
-
+            
             invoice.isPaid = isPaid
             try self.viewContext.save()
         }
@@ -310,7 +314,7 @@ extension CoreDataManager {
             let req: NSFetchRequest<InvoiceEntity> = InvoiceEntity.fetchRequest()
             req.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             req.fetchLimit = 1
-
+            
             if let toDelete = try self.viewContext.fetch(req).first {
                 self.viewContext.delete(toDelete)
                 try self.viewContext.save()
