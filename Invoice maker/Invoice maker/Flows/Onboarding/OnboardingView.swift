@@ -127,12 +127,12 @@ struct OnboardingView: View {
             await viewModel.fetchPayWall()
         }
         .alert(
-            viewModel.title,
+            viewModel.alert.title,
             isPresented: $viewModel.shouldShowAlert) {} message: {
-            Text(viewModel.subTitle)
+                Text(viewModel.alert.subtitle)
         }
         .alert(
-            viewModel.title,
+            viewModel.alert.title,
             isPresented: $viewModel.shouldShowTryAgainAlert)
         {
             Button("Cancel", role: .cancel) {}
@@ -148,7 +148,7 @@ struct OnboardingView: View {
             }
                     
         } message: {
-            Text(viewModel.subTitle)
+            Text(viewModel.alert.subtitle)
         }
         .loading(isPresented: $viewModel.isLoading)
     }

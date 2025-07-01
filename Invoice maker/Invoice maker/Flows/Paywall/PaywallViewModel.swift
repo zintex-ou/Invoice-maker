@@ -17,8 +17,8 @@ final class PaywallViewModel: ObservableObject {
                           period: "\(NSLocalizedString("week", comment: ""))",
                           price: 6.99,
                           currency: "$",
-                          badgeText: nil,
-                          isFreeTrial: false,
+                          badgeText: "3 days free trial",
+                          isFreeTrial: true,
                           trialDays: 0),
         SubscriptionModel(productId: UUID().uuidString,
                           nameProduct: NSLocalizedString("Monthly", comment: ""),
@@ -114,8 +114,7 @@ final class PaywallViewModel: ObservableObject {
                 
                 self.products = products
                     .enumerated()
-                    .map(
-                        {
+                    .map({
                             index,
                             product in
                             
