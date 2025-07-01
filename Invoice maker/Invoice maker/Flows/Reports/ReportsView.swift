@@ -34,28 +34,6 @@ struct ReportsView: View {
                 CurrencyPickerView(currency: $viewModel.currency)
                     .presentationDetents([.large])
             }
-            .overlay(alignment: .center) {
-                if viewModel.showCalendar {
-                    ZStack {
-                        Color.black767676.opacity(0.3)
-                            .ignoresSafeArea()
-                            .onTapGesture {
-                                withAnimation {
-                                    viewModel.showCalendar = false
-                                }
-                            }
-                        CustomCalendar(range: $viewModel.draftDates)
-                            .onAppear {
-                                viewModel.draftDates = viewModel.dateRange
-                            }
-                            .transition(.scale.combined(with: .opacity))
-                    }
-                }
-            }
-            .onChange(of: viewModel.showCalendar) { isShowing in
-                guard !isShowing else { return }
-                viewModel.commitDraft()
-            }
             .task {
                 await viewModel.refreshReports()
             }
@@ -84,7 +62,7 @@ struct ReportsView: View {
             }
             .onTapGesture {
                 withAnimation {
-                    viewModel.showCalendar = true
+                    viewModel.showCalendar()
                 }
             }
             
@@ -103,9 +81,7 @@ struct ReportsView: View {
                 if #available(iOS 17.0, *) {
                     VStack {
                         Chart {
-                            let safeSegments = viewModel.chartSegment
-                            
-                            ForEach(safeSegments, id: \.self) { item in
+                            ForEach(viewModel.chartSegment, id: \.self) { item in
                                 SectorMark(
                                     angle: .value("Total", item.value),
                                     innerRadius: .ratio(0.8),

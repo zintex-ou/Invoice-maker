@@ -7,15 +7,12 @@ final class ReportsViewModel: ObservableObject {
     @Published var currency: Currency
     @Published var shouldShowCurrencyPicker: Bool = false
     @Published var invoiceReportModel: InvoiceReportModel
-    @Published var showCalendar = false
     @Published var clientInvoiceReport: [ClientInvoiceReport] = []
     
     @Published var dateRange: ClosedRange<Date> = {
         let today = Calendar.current.startOfDay(for: Date())
         return today...today
     }()
-    
-    @Published var draftDates: ClosedRange<Date>? = nil
     
     @Published var chartSegment: [InvoiceReportChartSegment] = []
     
@@ -73,19 +70,15 @@ final class ReportsViewModel: ObservableObject {
     func chartButtonUnpaidTitle() -> String {
         "\(currency.rawValue) \(String(format: "%.2f", invoiceReportModel.unpaidInvoicesTotal))"
     }
+    
+    func showCalendar() {
+        NotificationService.shared.post(event: .showCalendar, object: dateRange)
+    }
 }
 
 extension ReportsViewModel {
     func onCurrencyButtonTapped() {
         shouldShowCurrencyPicker = true
-    }
-    
-    func commitDraft() {
-        guard let draftDates else { return }
-        
-        if dateRange != draftDates {
-            dateRange = draftDates
-        }
     }
     
     func setSubscriptions() {
@@ -104,6 +97,12 @@ extension ReportsViewModel {
                 }
             }
             .store(in: &cancellables)
+        
+        NotificationService.shared.observe(event: .hideCalendar) { [weak self] object in
+            if let object = object as? ClosedRange<Date> {
+                self?.dateRange = object
+            }
+        }
     }
 
     func fetchInvoicesGroupedByPaidStatus(

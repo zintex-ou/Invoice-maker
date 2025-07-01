@@ -1,5 +1,6 @@
 import SafariServices
 import UIKit
+import SwiftUI
 
 extension UIApplication {
     var appName: String {
@@ -65,5 +66,29 @@ private extension UIApplication {
         config.entersReaderIfAvailable = true
         let vc = SFSafariViewController(url: url, configuration: config)
         topViewController?.present(vc, animated: true)
+    }
+}
+
+extension UIApplication {
+    private static var overlayWindow: UIWindow?
+
+    func presentOverlay<Content: View>(@ViewBuilder content: () -> Content) {
+        guard Self.overlayWindow == nil else { return }
+
+        let hostingController = UIHostingController(rootView: content())
+        hostingController.view.backgroundColor = .clear
+
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            let window = UIWindow(windowScene: windowScene)
+            window.rootViewController = hostingController
+            window.windowLevel = .alert + 1
+            window.makeKeyAndVisible()
+            Self.overlayWindow = window
+        }
+    }
+    
+    func dismissOverlay() {
+        Self.overlayWindow?.isHidden = true
+        Self.overlayWindow = nil
     }
 }

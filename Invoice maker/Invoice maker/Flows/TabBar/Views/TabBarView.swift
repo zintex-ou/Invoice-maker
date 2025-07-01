@@ -35,6 +35,24 @@ struct TabBarView: View {
             message: "Invoice is send!",
             lottie: "PlaneLottie"
         )
+        .overlay(alignment: .center) {
+            if viewModel.showCalendar {
+                ZStack {
+                    Color.black767676.opacity(0.3)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation {
+                                viewModel.showCalendar = false
+                            }
+                        }
+                    CustomCalendar(range: $viewModel.dateRange)
+                }
+            }
+        }
+        .onChange(of: viewModel.showCalendar) { isShowing in
+            guard !isShowing else { return }
+            viewModel.hideCalendar()
+        }
     }
 
     private var tabBar: some View {
