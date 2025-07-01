@@ -4,8 +4,7 @@ struct PaywallView: View {
     @StateObject private var viewModel = PaywallViewModel()
     @Environment(\.dismiss) var dismiss
     @State private var size: CGSize = .zero
-    @Device private var device
-    
+
     var body: some View {
         ZStack(alignment: .top) {
             VStack(spacing: .zero) {
@@ -94,7 +93,7 @@ struct PaywallView: View {
                     .foregroundStyle(.black767676)
                     .padding(.top, 16)
                 }
-                .frame(maxWidth: device == .iPhone ? .infinity : 390)
+                .frame(maxWidth: .infinity)
             }
             .padding(.horizontal, 16)
             .multilineTextAlignment(.center)
@@ -115,7 +114,6 @@ struct PaywallView: View {
                     Spacer()
                 }
                 .padding(.horizontal, 16)
-                .padding(.top, device == .iPhone ? 0 : 24)
             }
         }
         .task {

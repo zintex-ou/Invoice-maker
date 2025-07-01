@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 @MainActor
 final class ChooseTemplateViewModel: ObservableObject {
@@ -7,10 +8,23 @@ final class ChooseTemplateViewModel: ObservableObject {
     @Published var templateIndex = 0
     @Published var shouldShowError: Bool = false
     @Published var isShowDeleteAlert: Bool = false
+    @Published var isPremium: Bool = false
     
     private let dataBaseService = InvoiceDataBaseService.shared
     private let chooseTemplateInvoiceModel: ChooseTemplateInvoiceModel
     private let viewType: InvoiceViewType
+    private let keychainManager = KeychainManager()
+    private let purchaseManager: PurchaseManager = .shared
+    private var cancellable: AnyCancellable?
+    
+    var isFreeGeneratedInvoice: Bool {
+        get {
+            return keychainManager.isFreeGeneratedInvoice ?? true
+        }
+        set {
+            keychainManager.isFreeGeneratedInvoice = newValue
+        }
+    }
     
     var alert: AlertModel = .init(title: "", subtitle: "")
     var invoiceType: InvoiceType {
@@ -27,6 +41,8 @@ final class ChooseTemplateViewModel: ObservableObject {
     ) {
         self.viewType = viewType
         self.chooseTemplateInvoiceModel = chooseTemplateInvoiceModel
+        
+        setupSubscriptions()
     }
     
     func onCancelTapped() {
@@ -130,6 +146,7 @@ final class ChooseTemplateViewModel: ObservableObject {
                 let coreDataEntity = try await saveToDatabase(invoiceInput)
                 
                 await MainActor.run {
+                    isFreeGeneratedInvoice = false
                     completion(coreDataEntity)
                 }
             } catch {
@@ -138,6 +155,12 @@ final class ChooseTemplateViewModel: ObservableObject {
         } catch {
             print(error, "error")
         }
+    }
+    
+    private func setupSubscriptions() {
+        cancellable = purchaseManager.isPremium
+            .receive(on: RunLoop.main)
+            .assign(to: \.isPremium, on: self)
     }
     
     private func saveToDatabase(_ invoiceInput: InvoiceInput) async throws -> InvoiceEntity {

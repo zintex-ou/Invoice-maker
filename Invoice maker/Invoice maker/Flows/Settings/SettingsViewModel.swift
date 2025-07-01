@@ -1,5 +1,6 @@
 import SwiftUI
 import Reachability
+import Combine
 
 final class SettingsViewModel: ObservableObject {
     @Published var isPremium: Bool = false
@@ -8,13 +9,16 @@ final class SettingsViewModel: ObservableObject {
     
     private let purchaseManager: PurchaseManager = .shared
     private var reachibility: Reachability?
+    private var cancellable: AnyCancellable?
     
     var title: LocalizedStringKey = ""
     var subTitle: LocalizedStringKey = ""
 
     private let feedbackGenerator = FeedbackGenerator.shared
 
-    init() {}
+    init() {
+        setupSubscribers()
+    }
 }
 
 extension SettingsViewModel {
@@ -99,5 +103,11 @@ private extension SettingsViewModel {
         await MainActor.run {
             self.isLoading = false
         }
+    }
+    
+    private func setupSubscribers() {
+        cancellable = purchaseManager.isPremium
+            .receive(on: RunLoop.main)
+            .assign(to: \.isPremium, on: self)
     }
 }

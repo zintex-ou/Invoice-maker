@@ -7,9 +7,7 @@ struct OnboardingView: View {
     @Environment(\.requestReview) var requestReview
     @EnvironmentObject private var coordinator: Coordinator
     @AppStorage(Constants.isOnboardingCompleted) var isOnboardingCompleted: Bool = false
-    
-    @Device private var device
-    
+
     var body: some View {
         ZStack(alignment: .top) {
             Image(viewModel.metaData[tabSelection].image)

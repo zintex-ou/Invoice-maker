@@ -35,18 +35,21 @@ struct ChooseTemplateView: View {
             }
             
             Button("Save") {
-                Task {
-                    await viewModel.saveTemplate(completion: { invoiceEntity in
-                        coordinator
-                            .pushTo(
+                if viewModel.isPremium || viewModel.isFreeGeneratedInvoice {
+                    Task {
+                        await viewModel.saveTemplate { invoiceEntity in
+                            coordinator.pushTo(
                                 id: PreviewView.navigationID,
-                                destination: { PreviewView(
-                                    viewModel: .init(
-                                        invoiceEntity: invoiceEntity
-                                    )
-                                )
-                                })
-                    })
+                                destination: {
+                                    PreviewView(viewModel: .init(invoiceEntity: invoiceEntity))
+                                }
+                            )
+                        }
+                    }
+                } else {
+                    coordinator.presentFullScreenCover(id: PaywallView.navigationID) {
+                        PaywallView()
+                    }
                 }
             }
             .buttonStyle(.main)

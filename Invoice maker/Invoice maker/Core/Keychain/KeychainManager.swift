@@ -5,6 +5,7 @@ final class KeychainManager {
     private enum Keys: String, CodingKey {
         case userIdKey
         case purchasesExpiresAt
+        case isFreeGeneratedInvoice
     }
     
     @KeychainManager.Value(
@@ -20,10 +21,18 @@ final class KeychainManager {
         decoder: .basic
     )
     var purchasesExpiresAt: Date?
+    
+    @KeychainManager.Value(
+        key: Keys.isFreeGeneratedInvoice,
+        encoder: .basic,
+        decoder: .basic
+    )
+    var isFreeGeneratedInvoice: Bool?
 
     func clear() {
         _userIdKey.clear()
         _purchasesExpiresAt.clear()
+        _isFreeGeneratedInvoice.clear()
     }
 }
 

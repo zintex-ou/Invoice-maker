@@ -11,8 +11,6 @@ final class OnboardingViewModel: ObservableObject {
     @Published var shouldShowTryAgainAlert: Bool = false
     @Published var product: AdaptyPaywallProduct?
     
-    @Device private var device
-    
     private var reachibility: Reachability?
     private let keychainManager: KeychainManager = .init()
     private let purchasesManager: PurchaseManager = .shared
@@ -71,7 +69,7 @@ final class OnboardingViewModel: ObservableObject {
             
             if let subscriptionOffer = product.subscriptionOffer,
                subscriptionOffer.offerType == .introductory {
-                return "With 3 day trial, then \(product.currencySymbol ?? "$")\(price)/\(duration)"
+                return "With 3 days trial, then \(product.currencySymbol ?? "$")\(price)/\(duration)"
             } else {
                 return "Subscribe for \(product.currencySymbol ?? "$")\(price)/\(duration)"
                 
@@ -233,7 +231,7 @@ final class OnboardingViewModel: ObservableObject {
         
         let price = String(describing: NSDecimalNumber(decimal: product.price).floatValue)
         let currency = product.currencySymbol ?? "$"
-        let newSubtitle: LocalizedStringKey = "Generate professional invoices with just a few taps per week for \(currency)\(price) with free trial."
+        let newSubtitle: LocalizedStringKey = "Generate professional invoices with just a few taps per week for \(currency)\(price) with 3 days free trial."
  
         metaData[3] = OnboardingModel(
             image: .onboard4,
