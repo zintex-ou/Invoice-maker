@@ -46,9 +46,10 @@ extension CoreDataManager {
         }
     }
     
-    func updateBusinessProfile(input: BusinessProfileInput) async throws {
+    @discardableResult
+    func updateBusinessProfile(input: BusinessProfileInput) async throws -> BusinessProfileEntity {
         if let profile = try await fetchBusinessProfile() {
-            try await viewContext.perform {
+            return try await viewContext.perform {
                 guard let businessProfile = try? self.viewContext.existingObject(with: profile.objectID) as? BusinessProfileEntity else {
                     throw NSError(domain: "BusinessProfileError", code: 500, userInfo: [
                         NSLocalizedDescriptionKey: "Failed to retrieve existing BusinessProfileEntity."
@@ -66,9 +67,10 @@ extension CoreDataManager {
                 businessProfile.image = input.imageData
 
                 try self.viewContext.save()
+                return businessProfile
             }
         } else {
-            try await createBusinessProfile(input: input)
+            return try await createBusinessProfile(input: input)
         }
     }
     

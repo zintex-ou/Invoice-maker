@@ -248,6 +248,14 @@ final class CreateInvoiceViewModel: ObservableObject {
             }
         }
         
+        NotificationService.shared.observe(event: .cretaeOrUpdateBusinessProfile) { [weak self] object in
+            guard let self = self else { return }
+            
+            if let object = object as? BusinessProfileEntity {
+                self.bussinesProfile = object
+            }
+        }
+        
         $currency
             .dropFirst()
             .sink { [weak self] _ in

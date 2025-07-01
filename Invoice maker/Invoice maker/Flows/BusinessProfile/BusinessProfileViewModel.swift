@@ -146,11 +146,15 @@ final class BusinessProfileViewModel: ObservableObject {
             )
             
             do {
+                let businessProfileEntity: BusinessProfileEntity
+                
                 if stateView == .editing {
-                    try await dataBaseManager.updateBusinessProfile(input: input)
+                    businessProfileEntity = try await dataBaseManager.updateBusinessProfile(input: input)
                 } else {
-                    try await dataBaseManager.createBusinessProfile(input: input)
+                    businessProfileEntity = try await dataBaseManager.createBusinessProfile(input: input)
                 }
+                
+                NotificationService.shared.post(event: .cretaeOrUpdateBusinessProfile, object: businessProfileEntity)
                 completion()
             } catch {
                 self.alert = .init(

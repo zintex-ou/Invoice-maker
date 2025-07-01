@@ -8,4 +8,5 @@ enum NotificationEvent: String {
     case selectedClient
     case selectedItemService
     case sentMailSuccessfully
+    case cretaeOrUpdateBusinessProfile
 }
