@@ -12,7 +12,6 @@ struct EstimatesView: View {
                 } else {
                     estimateList
                 }
-                
             }
             
             HStack {
@@ -27,6 +26,13 @@ struct EstimatesView: View {
             .background(.white)
         }
         .padding(.horizontal, 16)
+        .alert(
+            viewModel.alert.title,
+            isPresented: $viewModel.shouldShowAlert) {
+                
+            } message: {
+                Text(viewModel.alert.subtitle)
+            }
     }
     
     private var estimateList: some View {

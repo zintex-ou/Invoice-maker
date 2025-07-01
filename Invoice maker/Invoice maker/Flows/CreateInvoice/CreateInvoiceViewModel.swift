@@ -279,7 +279,7 @@ final class CreateInvoiceViewModel: ObservableObject {
                 guard let result = try await dataBaseManager.fetchBusinessProfile() else { return }
                 self.bussinesProfile = result
             } catch {
-                
+                print("Error fetching bussiness profile: \(error)")
             }
         }
     }

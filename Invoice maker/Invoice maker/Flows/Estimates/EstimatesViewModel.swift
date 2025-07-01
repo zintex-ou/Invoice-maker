@@ -1,13 +1,16 @@
-import SwiftUI
+import Foundation
 import Combine
 
 @MainActor
 final class EstimatesViewModel: ObservableObject {
     @Published var isPremium: Bool = false
     @Published var allEstimates: [InvoiceEntity] = []
+    @Published var shouldShowAlert: Bool = false
     
     private let dataBaseService = InvoiceDataBaseService.shared
     private var cancellables = Set<AnyCancellable>()
+    
+    var alert: AlertModel = .init(title: "", subtitle: "")
     
     init() {
         bindToDataBaseService()
@@ -18,7 +21,11 @@ final class EstimatesViewModel: ObservableObject {
             do {
                 try await dataBaseService.change(isPaid: isPaid, for: id)
             } catch {
-                print("Failed to update invoice")
+                alert = .init(
+                    title: "Failed to Update Status",
+                    subtitle: "An error occurred while changing the payment status."
+                )
+                shouldShowAlert = true
             }
         }
     }

@@ -36,6 +36,13 @@ struct InvoicesView: View {
         .animation(.default, value: viewModel.allInvoices.count)
         .animation(.default, value: viewModel.paidInvoices.count)
         .animation(.default, value: viewModel.unPaidInvoices.count)
+        .alert(
+            viewModel.alert.title,
+            isPresented: $viewModel.shouldShowAlert) {
+                
+            } message: {
+                Text(viewModel.alert.subtitle)
+            }
     }
     
     private var invoiceList: some View {
