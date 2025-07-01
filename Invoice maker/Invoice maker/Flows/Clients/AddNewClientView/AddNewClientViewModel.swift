@@ -22,9 +22,9 @@ final class AddNewClientViewModel: ObservableObject {
     @Published var isExpanded: Bool = false
     @Published var showLeaveWithoutSavingAlert = false
     @Published var showErrorAlert = false
-    @Published var errorAlertSubtitle = ""
     @Published var isShowDeleteAlert: Bool = false
     
+    var alert: AlertModel = .init(title: "", subtitle: "")
     let viewState: ViewState
     let title: String
     let buttonTitle: String
@@ -67,12 +67,6 @@ final class AddNewClientViewModel: ObservableObject {
         postalCode = client.postalCode ?? ""
     }
     
-    private func validateFields() -> Bool {
-        nameError = clientName.isEmpty
-        eMailError = email.isEmpty
-        return nameError || eMailError
-    }
-    
     private func saveClient() {
         Task {
             do {
@@ -92,18 +86,19 @@ final class AddNewClientViewModel: ObservableObject {
                 )
                 
                 NotificationService.shared.post(event: .updateClients, object: client)
-            } catch let error {
+            } catch {
+                self.alert = .init(
+                    title: "Failed to Save Client",
+                    subtitle: "An error occurred while saving your client. Please try again later."
+                )
                 showErrorAlert = true
-                errorAlertSubtitle = error.localizedDescription
             }
         }
     }
     
     private func onSaveNewClientTapped(completion: @escaping (() -> Void)) {
-        if !validateFields() {
-            saveClient()
-            completion()
-        }
+        saveClient()
+        completion()
     }
     
     func onCloseTapped(completion: @escaping (() -> Void)) {
@@ -159,9 +154,12 @@ extension AddNewClientViewModel {
                             postalCode: postalCode
                         )
                     )
-                } catch let error {
+                } catch {
+                    self.alert = .init(
+                        title: "Failed to Update Client",
+                        subtitle: "An error occurred while updating your client. Please try again later."
+                    )
                     showErrorAlert = true
-                    errorAlertSubtitle = error.localizedDescription
                 }
             }
         }
@@ -174,20 +172,72 @@ extension AddNewClientViewModel {
         }
     }
     
-    func onSaveTapped(completion: @escaping (() -> Void)) {
-        switch viewState {
-        case .editing(_):
-            onSaveEditedTapped(completion: completion)
-        case .initial:
-            onSaveNewClientTapped(completion: completion)
+    @MainActor
+    func onSaveTapped(completion: @escaping () -> Void) {
+        guard !clientName.isEmpty else {
+            nameError = true
+            return
+        }
+
+        guard !email.isEmpty else {
+            eMailError = true
+            return
+        }
+
+        guard !clientName.isValidPunctuationAndNewlinesOnly() else {
+            alert = .init(
+                title: "Invalid Name",
+                subtitle: "The name you entered contains only punctuation or spacing characters. Please enter a valid name using letters or numbers."
+            )
+            showErrorAlert = true
+            return
+        }
+
+        guard email.isValidEmail() else {
+            alert = .init(
+                title: "Invalid Email",
+                subtitle: "The email address you provided doesn't match the required format. Please enter a valid email (e.g. name@example.com)."
+            )
+            showErrorAlert = true
+            return
+        }
+
+        Task {
+            let input = ClientInput(
+                id: .init(),
+                clientName: clientName,
+                email: email,
+                phoneNumber: phoneNumber,
+                fax: fax,
+                country: country,
+                city: city,
+                street: street,
+                apartment: apartment,
+                postalCode: postalCode
+            )
+
+            do {
+                switch viewState {
+                case .editing(let client):
+                    try await coreDataManager.updateClient(client, input: input)
+                case .initial:
+                    let client = try await coreDataManager.createClient(input: input)
+                    NotificationService.shared.post(event: .updateClients, object: client)
+                }
+                completion()
+            } catch {
+                self.alert = .init(
+                    title: "Failed to Save Client",
+                    subtitle: "An error occurred while saving your client. Please try again later."
+                )
+                showErrorAlert = true
+            }
         }
     }
     
     private func onSaveEditedTapped(completion: @escaping (() -> Void)) {
-        if !validateFields() {
-            updateClient()
-            completion()
-        }
+        updateClient()
+        completion()
     }
     
     func showDeleteAlert() {
@@ -201,9 +251,12 @@ extension AddNewClientViewModel {
                     let id = client.id
                     try await coreDataManager.deleteClient(client)
                     NotificationService.shared.post(event: .updateClients, object: id)
-                } catch let error {
+                } catch {
+                    self.alert = .init(
+                        title: "Failed to Delete Client",
+                        subtitle: "An error occurred while deleting your client. Please try again later."
+                    )
                     showErrorAlert = true
-                    errorAlertSubtitle = error.localizedDescription
                 }
             }
         }
