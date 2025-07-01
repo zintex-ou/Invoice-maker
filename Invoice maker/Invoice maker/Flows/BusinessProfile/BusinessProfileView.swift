@@ -40,7 +40,7 @@ struct BusinessProfileView: View {
         })
         .alert(
             viewModel.alert.title,
-            isPresented: $viewModel.shouldShowError) {
+            isPresented: $viewModel.shouldShowAlert) {
                 
             } message: {
                 Text(viewModel.alert.subtitle)

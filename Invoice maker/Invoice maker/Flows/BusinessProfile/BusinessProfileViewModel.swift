@@ -40,7 +40,7 @@ final class BusinessProfileViewModel: ObservableObject {
     @Published var shouldShowOwnerNameError: Bool = false
     @Published var shouldShowMailError: Bool = false
     @Published var shouldShowPhoneNumberError: Bool = false
-    @Published var shouldShowError: Bool = false
+    @Published var shouldShowAlert: Bool = false
     
     private var isFromGallerySelection = false
     private let dataBaseManager: CoreDataManager = .shared
@@ -106,12 +106,29 @@ final class BusinessProfileViewModel: ObservableObject {
         }
         
         guard !ownerName.isValidPunctuationAndNewlinesOnly() else {
-            alert = .init(title: "Error", subtitle: "Name must contain letters or numbers")
+            alert = .init(
+                title: "Invalid Name",
+                subtitle: "The name you entered contains only punctuation or spacing characters. Please enter a valid name using letters or numbers."
+            )
+            shouldShowAlert = true
             return
         }
         
         guard mail.isValidEmail() else {
-            alert = .init(title: "Error", subtitle: "Invalid email format")
+            alert = .init(
+                title: "Invalid Email",
+                subtitle: "The email address you provided doesn't match the required format. Please enter a valid email (e.g. name@example.com)."
+            )
+            shouldShowAlert = true
+            return
+        }
+        
+        guard !phoneNumber.isValidPunctuationAndNewlinesOnly() else {
+            alert = .init(
+                title: "Invalid Phone Number",
+                subtitle: "The phone number you entered contains only punctuation or empty characters. Please provide a valid phone number with digits."
+            )
+            shouldShowAlert = true
             return
         }
         
@@ -140,7 +157,7 @@ final class BusinessProfileViewModel: ObservableObject {
                     title: "Failed to Save Profile",
                     subtitle: "An error occurred while saving your business profile. Please try again later."
                 )
-                shouldShowError = true
+                shouldShowAlert = true
             }
         }
     }
@@ -163,7 +180,7 @@ final class BusinessProfileViewModel: ObservableObject {
                     title: "Failed to Fetch Profile",
                     subtitle: "An error occurred while fetching your business profile. Please try again later."
                 )
-                shouldShowError = true
+                shouldShowAlert = true
             }
         }
     }
