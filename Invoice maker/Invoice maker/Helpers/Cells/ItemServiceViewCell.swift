@@ -14,7 +14,7 @@ struct ItemServiceViewCell: View {
         isSelectedCell: Bool = false,
         offerSelection: SegmentOfferType,
         viewType: ItemServiceViewType,
-        deleteAction: (() -> Void)? = nil,
+        deleteAction: (() -> Void)? = nil
     ) {
         self.itemService = itemService
         self.isSelectedCell = isSelectedCell

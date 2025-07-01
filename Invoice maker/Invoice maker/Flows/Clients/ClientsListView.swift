@@ -118,7 +118,7 @@ struct ClientsListView: View {
                             ClientViewCell(
                                 client: client,
                                 isSelectedCell: viewModel.isSelected(client: client),
-                                viewType: viewModel.viewType,
+                                viewType: viewModel.viewType
                             ) {
                                 viewModel.showDeleteAlert(for: client)
                             }
