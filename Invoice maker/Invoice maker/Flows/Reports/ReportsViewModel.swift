@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 
+@MainActor
 final class ReportsViewModel: ObservableObject {
     @Published var isPremium: Bool = false
     @Published var currency: Currency
@@ -9,32 +10,23 @@ final class ReportsViewModel: ObservableObject {
     @Published var showCalendar = false
     @Published var clientInvoiceReport: [ClientInvoiceReport] = []
     
-    @Published var dates: Set<DateComponents> = {
-        let calendar = Calendar.current
-        let today = Date()
-        let oneMonthAgo = calendar.date(
-            byAdding: .month,
-            value: -1,
-            to: today
-        )!
-        
-        let todayComp = calendar.dateComponents(
-            [.year, .month, .day],
-            from: today
-        )
-        let pastComp = calendar.dateComponents(
-            [.year, .month, .day],
-            from: oneMonthAgo
-        )
-        return [pastComp, todayComp]
+    @Published var dateRange: ClosedRange<Date> = {
+        let today = Calendar.current.startOfDay(for: Date())
+        return today...today
     }()
-    @Published var draftDates: Set<DateComponents> = []
+    
+    @Published var draftDates: ClosedRange<Date>? = nil
     
     @Published var chartSegment: [InvoiceReportChartSegment] = []
     
     let gradientMap: [String: LinearGradient] = [
         "Paid": .greenGradient,
-        "Unpaid": .blueGradient
+        "Unpaid": .blueGradient,
+        "No Data": LinearGradient(
+            colors: [.grayF5F5F5],
+            startPoint: .top,
+            endPoint: .bottom
+        )
     ]
     
     private var cancellables = Set<AnyCancellable>()
@@ -60,23 +52,14 @@ final class ReportsViewModel: ObservableObject {
     }()
     
     var formattedDateRange: String {
-        let calendar = Calendar.current
-        let sortedDates = dates
-            .compactMap { calendar.date(from: $0) }
-            .sorted()
+        let startString = fullFormatter.string(from: dateRange.lowerBound)
+        let endString = fullFormatter.string(from: dateRange.upperBound)
         
-        guard let first = sortedDates.first else {
-            return ""
+        if Calendar.current.isDate(dateRange.lowerBound, inSameDayAs: dateRange.upperBound) {
+            return startString
+        } else {
+            return "\(startString) – \(endString)"
         }
-        
-        if sortedDates.count == 1 {
-            return fullFormatter.string(from: first)
-        }
-        
-        let last = sortedDates.last!
-        let startString = fullFormatter.string(from: first)
-        let endString = fullFormatter.string(from: last)
-        return "\(startString) – \(endString)"
     }
     
     func chartCenterOverlayTitle() -> String {
@@ -98,22 +81,21 @@ extension ReportsViewModel {
     }
     
     func commitDraft() {
-        guard draftDates.count >= 2 else { return }
-        let sorted = draftDates
-            .sorted {
-                ($0.date ?? .distantFuture) < ($1.date ?? .distantFuture)
-            }
-        dates = Set(sorted.prefix(2))
+        guard let draftDates else { return }
+        
+        if dateRange != draftDates {
+            dateRange = draftDates
+        }
     }
     
     func setSubscriptions() {
-        Publishers.CombineLatest($currency, $dates)
+        Publishers.CombineLatest($currency, $dateRange)
+            .dropFirst()
             .sink { [weak self] currency, dates in
                 Task {
                     guard let self else { return }
-                    let calendar = Calendar.current
-                    let startDate = dates.compactMap { calendar.date(from: $0) }.min() ?? .now
-                    let endDate = dates.compactMap { calendar.date(from: $0) }.max() ?? .distantFuture
+                    let startDate = self.dateRange.lowerBound
+                    let endDate = self.dateRange.upperBound
                     try await self.fetchInvoicesGroupedByPaidStatus(
                         currency: currency,
                         from: startDate,
@@ -123,8 +105,7 @@ extension ReportsViewModel {
             }
             .store(in: &cancellables)
     }
-    
-    @MainActor
+
     func fetchInvoicesGroupedByPaidStatus(
         currency: Currency,
         from startDate: Date,
@@ -141,7 +122,7 @@ extension ReportsViewModel {
             .filter { invoice in
                 guard
                     let invoiceCurrency = invoice.currency,
-                    let invoiceDate = invoice.invoiceDate
+                    let invoiceDate = invoice.dueDate
                 else {
                     return false
                 }
@@ -159,12 +140,7 @@ extension ReportsViewModel {
         let paidTotal = paid.reduce(0.0) { $0 + $1.total }
         let unpaidTotal = unpaid.reduce(0.0) { $0 + $1.total }
         
-        let invoicesWithClient = allInvoices.filter { $0.client != nil }
-        
-        let grouped: [ClientEntity: [InvoiceEntity]] = Dictionary(
-            grouping: invoicesWithClient,
-            by: { $0.client! }
-        )
+        let grouped = Dictionary(grouping: allInvoices.filter { $0.client != nil }, by: { $0.client! })
         
         clientInvoiceReport = grouped.map { client, invoices in
             ClientInvoiceReport(
@@ -185,16 +161,20 @@ extension ReportsViewModel {
             unpaidInvoicesTotal: unpaidTotal
         )
         
-        chartSegment = [.init(label: "Paid", value: invoiceReportModel.paidInvoicesTotal),
-                        .init(label: "Unpaid", value: invoiceReportModel.unpaidInvoicesTotal)]
+        if allInvoicesTotal == 0 {
+            chartSegment = [.init(label: "No Data", value: 100),
+                            .init(label: "No Data", value: 100)]
+        } else {
+            chartSegment = [.init(label: "Paid", value: paidTotal),
+                            .init(label: "Unpaid", value: unpaidTotal)]
+        }
     }
     
     @MainActor
     func refreshReports() async {
         do {
-            let calendar = Calendar.current
-            let startDate = dates.compactMap { calendar.date(from: $0) }.min() ?? .now
-            let endDate = dates.compactMap { calendar.date(from: $0) }.max() ?? .distantFuture
+            let startDate = dateRange.lowerBound
+            let endDate = dateRange.upperBound
             try await fetchInvoicesGroupedByPaidStatus(currency: currency, from: startDate, to: endDate)
         } catch {
             print("Failed to refresh reports")

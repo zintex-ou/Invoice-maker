@@ -25,7 +25,6 @@ struct ReportsView: View {
                             )
                         }
                     }
-                    .id(UUID())
                 }
                 .padding(.bottom, 8)
             }
@@ -35,22 +34,21 @@ struct ReportsView: View {
                 CurrencyPickerView(currency: $viewModel.currency)
                     .presentationDetents([.large])
             }
-            .overlay {
+            .overlay(alignment: .center) {
                 if viewModel.showCalendar {
                     ZStack {
-                        Color
-                            .black767676.opacity(0.3)
+                        Color.black767676.opacity(0.3)
                             .ignoresSafeArea()
                             .onTapGesture {
                                 withAnimation {
                                     viewModel.showCalendar = false
                                 }
                             }
-                        
-                        calendarView
+                        CustomCalendar(range: $viewModel.draftDates)
                             .onAppear {
-                                viewModel.draftDates = viewModel.dates
+                                viewModel.draftDates = viewModel.dateRange
                             }
+                            .transition(.scale.combined(with: .opacity))
                     }
                 }
             }
@@ -105,33 +103,25 @@ struct ReportsView: View {
                 if #available(iOS 17.0, *) {
                     VStack {
                         Chart {
-                            if viewModel.chartSegment.reduce(0, { $0 + $1.value }) == 0 {
+                            let safeSegments = viewModel.chartSegment
+                            
+                            ForEach(safeSegments, id: \.self) { item in
                                 SectorMark(
-                                    angle: .value("Total", 100),
+                                    angle: .value("Total", item.value),
                                     innerRadius: .ratio(0.8),
                                     angularInset: 4
                                 )
                                 .cornerRadius(8)
-                                .foregroundStyle(.grayF5F5F5)
-                            } else {
-                                ForEach(viewModel.chartSegment, id: \.id) { item in
-                                    SectorMark(
-                                        angle: .value("Total", item.value),
-                                        innerRadius: .ratio(0.8),
-                                        angularInset: 4
-                                    )
-                                    .cornerRadius(8)
-                                    .foregroundStyle(
-                                        viewModel.gradientMap[
-                                            item.label,
-                                            default: LinearGradient(
-                                                colors: [.gray],
-                                                startPoint: .top,
-                                                endPoint: .bottom
-                                            )
-                                        ]
-                                    )
-                                }
+                                .foregroundStyle(
+                                    viewModel.gradientMap[
+                                        item.label,
+                                        default: LinearGradient(
+                                            colors: [.gray],
+                                            startPoint: .top,
+                                            endPoint: .bottom
+                                        )
+                                    ]
+                                )
                             }
                         }
                         .frame(maxWidth: .infinity, minHeight: 330)
@@ -209,31 +199,6 @@ struct ReportsView: View {
                 Text(viewModel.chartButtonUnpaidTitle())
                     .lineLimit(1)
             }
-        }
-    }
-    
-    @ViewBuilder
-    private var calendarView: some View {
-        if #available(iOS 17.0, *) {
-            VStack(spacing: 7) {
-                MultiDatePicker("Time period", selection: $viewModel.draftDates)
-                    .datePickerStyle(.graphical)
-                    .padding(.bottom, 2)
-                    .onChange(of: viewModel.draftDates) { new in
-                        if new.count > 2 {
-                            let sorted = new.sorted {
-                                ($0.date ?? .distantFuture) < ($1.date ?? .distantFuture)
-                            }
-                            viewModel.draftDates = Set(sorted.prefix(2))
-                        }
-                    }
-            }
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .frame(height: 300)
-            .padding(.horizontal, 6)
-        } else {
-            CustomCalendarWithTimePicker(dates: $viewModel.draftDates)
         }
     }
 }
