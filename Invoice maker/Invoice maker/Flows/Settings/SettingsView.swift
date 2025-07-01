@@ -61,11 +61,11 @@ struct SettingsView: View {
             ListTopShadow()
         }
         .alert(
-            viewModel.title,
+            viewModel.alert.title,
             isPresented: $viewModel.shouldShowAlert) {
                 
             } message: {
-                Text(viewModel.subTitle)
+                Text(viewModel.alert.subtitle)
             }
     }
 }

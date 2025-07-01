@@ -60,10 +60,8 @@ struct AddNewClientView: View {
             Text("If you close this client, all changes will be lost.")
         }
         .alert(viewModel.alert.title,
-               isPresented: $viewModel.showErrorAlert) {
-            Button("Cancel", role: .cancel) {
-                
-            }
+               isPresented: $viewModel.shouldShowAlert) {
+
         } message: {
             Text(viewModel.alert.subtitle)
         }

@@ -50,13 +50,11 @@ struct ClientsListView: View {
         } message: {
             Text("Are you sure you want to delete this client? ")
         }
-        .alert("Error",
-               isPresented: $viewModel.showErrorAlert) {
-            Button("Cancel", role: .cancel) {
-                
-            }
+        .alert(viewModel.alert.title,
+               isPresented: $viewModel.shouldShowAlert) {
+
         } message: {
-            Text(viewModel.errorAlertSubtitle)
+            Text(viewModel.alert.title)
         }
     }
     

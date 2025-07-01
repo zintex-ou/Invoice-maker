@@ -1,16 +1,18 @@
-import SwiftUI
+import Foundation
 import Combine
 
+@MainActor
 final class ClientsListViewModel: ObservableObject {
     @Published var clients: [ClientEntity] = []
     @Published var isShowDeleteAlert = false
-    @Published var showErrorAlert = false
-    @Published var errorAlertSubtitle = ""
+    @Published var shouldShowAlert = false
     @Published var clientToDelete: ClientEntity? = nil
     @Published var selectedClient: ClientEntity?
     
     private(set) var viewType: ClientViewType
     private var cancellables = Set<AnyCancellable>()
+    
+    var alert: AlertModel = .init(title: "", subtitle: "")
     
     init(viewType: ClientViewType, selectedClient: ClientEntity? = nil) {
         self.viewType = viewType
@@ -18,33 +20,32 @@ final class ClientsListViewModel: ObservableObject {
         setSubscription()
     }
     
-    @MainActor
     func fetchClients() async {
         do {
             let fetched = try await CoreDataManager.shared.fetchClients()
             self.clients = fetched
         } catch let error {
-            showErrorAlert = true
-            errorAlertSubtitle = error.localizedDescription
+            alert = .init(
+                title: "Failed to Fetch Clients",
+                subtitle: "An error occurred while trying to load the client list."
+            )
+
+            shouldShowAlert = true
         }
     }
     
     func deleteClient(_ client: ClientEntity) async {
         do {
             try await CoreDataManager.shared.deleteClient(client)
-            await updateAfterDelete(client)
+            clients.removeAll { $0.id == client.id }
+            clientToDelete = nil
         } catch {
-            showErrorAlert = true
-            errorAlertSubtitle = error.localizedDescription
-        }
-    }
-    
-    @MainActor
-    private func updateAfterDelete(_ item: ClientEntity) {
-        withAnimation {
-            clients.removeAll {
-                $0.id == item.id
-            }
+            alert = .init(
+                title: "Failed to Delete Client",
+                subtitle: "An error occurred while trying to delete the selected client."
+            )
+
+            shouldShowAlert = true
         }
     }
     

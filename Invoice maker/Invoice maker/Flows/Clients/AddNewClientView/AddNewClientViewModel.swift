@@ -1,4 +1,4 @@
-import SwiftUI
+import Foundation
 
 final class AddNewClientViewModel: ObservableObject {
     enum ViewState {
@@ -21,7 +21,7 @@ final class AddNewClientViewModel: ObservableObject {
     
     @Published var isExpanded: Bool = false
     @Published var showLeaveWithoutSavingAlert = false
-    @Published var showErrorAlert = false
+    @Published var shouldShowAlert = false
     @Published var isShowDeleteAlert: Bool = false
     
     var alert: AlertModel = .init(title: "", subtitle: "")
@@ -91,7 +91,7 @@ final class AddNewClientViewModel: ObservableObject {
                     title: "Failed to Save Client",
                     subtitle: "An error occurred while saving your client. Please try again later."
                 )
-                showErrorAlert = true
+                shouldShowAlert = true
             }
         }
     }
@@ -159,7 +159,7 @@ extension AddNewClientViewModel {
                         title: "Failed to Update Client",
                         subtitle: "An error occurred while updating your client. Please try again later."
                     )
-                    showErrorAlert = true
+                    shouldShowAlert = true
                 }
             }
         }
@@ -189,7 +189,7 @@ extension AddNewClientViewModel {
                 title: "Invalid Name",
                 subtitle: "The name you entered contains only punctuation or spacing characters. Please enter a valid name using letters or numbers."
             )
-            showErrorAlert = true
+            shouldShowAlert = true
             return
         }
 
@@ -198,7 +198,7 @@ extension AddNewClientViewModel {
                 title: "Invalid Email",
                 subtitle: "The email address you provided doesn't match the required format. Please enter a valid email (e.g. name@example.com)."
             )
-            showErrorAlert = true
+            shouldShowAlert = true
             return
         }
 
@@ -230,7 +230,7 @@ extension AddNewClientViewModel {
                     title: "Failed to Save Client",
                     subtitle: "An error occurred while saving your client. Please try again later."
                 )
-                showErrorAlert = true
+                shouldShowAlert = true
             }
         }
     }
@@ -256,7 +256,7 @@ extension AddNewClientViewModel {
                         title: "Failed to Delete Client",
                         subtitle: "An error occurred while deleting your client. Please try again later."
                     )
-                    showErrorAlert = true
+                    shouldShowAlert = true
                 }
             }
         }

@@ -1,4 +1,4 @@
-import SwiftUI
+import Foundation
 import Combine
 
 @MainActor
@@ -8,6 +8,7 @@ final class ChooseTemplateViewModel: ObservableObject {
     @Published var templateIndex = 0
     @Published var shouldShowError: Bool = false
     @Published var isShowDeleteAlert: Bool = false
+    @Published var shouldShowAlert: Bool = false
     @Published var isPremium: Bool = false
     
     private let dataBaseService = InvoiceDataBaseService.shared
@@ -72,91 +73,98 @@ final class ChooseTemplateViewModel: ObservableObject {
     
     func saveTemplate(completion: @escaping (InvoiceEntity) -> Void) async {
         do {
-            let bp = try await CoreDataManager.shared.fetchBusinessProfile()
-            
-            let client = chooseTemplateInvoiceModel.client
-            
-            let items = chooseTemplateInvoiceModel.itemOrServices.map {
-                InvoiceItemRowModel(
-                    name: $0.name ?? "",
-                    pricePerUnit: $0.price ?? "",
-                    quantity: $0.quantity ?? "1",
-                    discountPercentage: $0.discount ?? "0",
-                    taxPercentage: $0.tax ?? "0",
-                    total: $0.total ?? ""
-                )
+            guard let bp = try await CoreDataManager.shared.fetchBusinessProfile() else {
+                alert = .init(title: "Error", subtitle: "Business profile not found.")
+                shouldShowAlert = true
+                return
             }
             
-            let invoiceTemplateModel = InvoiceTemplateModel(
-                id: chooseTemplateInvoiceModel.id,
-                header: .init(
-                    logo: bp?.image,
-                    businessProfile: .init(
-                        name: bp?.ownerName ?? "",
-                        email: bp?.email ?? "",
-                        phone: bp?.phoneNumber ?? "",
-                        address: bp?.country ?? ""
-                    ),
-                    billTo: .init(
-                        name: client.clientName ?? "",
-                        email: client.email ?? "",
-                        phone: client.phoneNumber ?? "",
-                        address: client.country ?? ""
-                    ),
-                    invoiceInfo: .init(
-                        number: chooseTemplateInvoiceModel.number,
-                        date: chooseTemplateInvoiceModel.invoiceDate.formatedDateString,
-                        dueDate: chooseTemplateInvoiceModel.dueDate.formatedDateString
-                    )
-                ),
-                summary: .init(
-                    currency: chooseTemplateInvoiceModel.currency,
-                    subtotal: chooseTemplateInvoiceModel.subtotal,
-                    discountPercentage: chooseTemplateInvoiceModel.discount,
-                    taxPercentage: chooseTemplateInvoiceModel.tax,
-                    total: chooseTemplateInvoiceModel.total
-                ),
-                items: items
+            let invoiceTemplateModel = buildInvoiceTemplateModel(bp: bp)
+            
+            let pdfURL = try await generateURL(
+                templateModel: invoiceTemplateModel,
+                oldURL: chooseTemplateInvoiceModel.pdfPath
             )
             
-            do {
-                let pdfURL = try await generateURL(
-                    templateModel: invoiceTemplateModel,
-                    oldURL: chooseTemplateInvoiceModel.pdfPath
-                )
-                
-                let invoiceInput = InvoiceInput(
-                    id: chooseTemplateInvoiceModel.id,
-                    client: chooseTemplateInvoiceModel.client,
-                    number: chooseTemplateInvoiceModel.number,
-                    invoiceDate: chooseTemplateInvoiceModel.invoiceDate,
-                    dueDate: chooseTemplateInvoiceModel.dueDate,
-                    currency: chooseTemplateInvoiceModel.currency,
-                    discount: chooseTemplateInvoiceModel.discount,
-                    tax: chooseTemplateInvoiceModel.tax,
-                    isPaid: false,
-                    total: chooseTemplateInvoiceModel.total,
-                    itemOrServices: chooseTemplateInvoiceModel.itemOrServices,
-                    pdfFilePath: pdfURL,
-                    type: templateType,
-                    isInvoice: invoiceType == .invoice
-                )
-                
-                
-                let coreDataEntity = try await saveToDatabase(invoiceInput)
-                
-                await MainActor.run {
-                    isFreeGeneratedInvoice = false
-                    completion(coreDataEntity)
-                }
-            } catch {
-                print(error, "error")
+            let invoiceInput = buildInvoiceInput(pdfURL: pdfURL)
+            let coreDataEntity = try await saveToDatabase(invoiceInput)
+            
+            await MainActor.run {
+                isFreeGeneratedInvoice = false
+                completion(coreDataEntity)
             }
         } catch {
-            print(error, "error")
+            alert = .init(title: "Failed to Save", subtitle: "An error occurred while saving the template.")
+            shouldShowAlert = true
         }
     }
     
+    private func buildInvoiceTemplateModel(bp: BusinessProfileEntity) -> InvoiceTemplateModel {
+        let client = chooseTemplateInvoiceModel.client
+        
+        let items = chooseTemplateInvoiceModel.itemOrServices.map {
+            InvoiceItemRowModel(
+                name: $0.name ?? "",
+                pricePerUnit: $0.price ?? "",
+                quantity: $0.quantity ?? "1",
+                discountPercentage: $0.discount ?? "0",
+                taxPercentage: $0.tax ?? "0",
+                total: $0.total ?? ""
+            )
+        }
+        
+        return InvoiceTemplateModel(
+            id: chooseTemplateInvoiceModel.id,
+            header: .init(
+                logo: bp.image,
+                businessProfile: .init(
+                    name: bp.ownerName ?? "",
+                    email: bp.email ?? "",
+                    phone: bp.phoneNumber ?? "",
+                    address: bp.country ?? ""
+                ),
+                billTo: .init(
+                    name: client.clientName ?? "",
+                    email: client.email ?? "",
+                    phone: client.phoneNumber ?? "",
+                    address: client.country ?? ""
+                ),
+                invoiceInfo: .init(
+                    number: chooseTemplateInvoiceModel.number,
+                    date: chooseTemplateInvoiceModel.invoiceDate.formatedDateString,
+                    dueDate: chooseTemplateInvoiceModel.dueDate.formatedDateString
+                )
+            ),
+            summary: .init(
+                currency: chooseTemplateInvoiceModel.currency,
+                subtotal: chooseTemplateInvoiceModel.subtotal,
+                discountPercentage: chooseTemplateInvoiceModel.discount,
+                taxPercentage: chooseTemplateInvoiceModel.tax,
+                total: chooseTemplateInvoiceModel.total
+            ),
+            items: items
+        )
+    }
+    
+    private func buildInvoiceInput(pdfURL: URL) -> InvoiceInput {
+        InvoiceInput(
+            id: chooseTemplateInvoiceModel.id,
+            client: chooseTemplateInvoiceModel.client,
+            number: chooseTemplateInvoiceModel.number,
+            invoiceDate: chooseTemplateInvoiceModel.invoiceDate,
+            dueDate: chooseTemplateInvoiceModel.dueDate,
+            currency: chooseTemplateInvoiceModel.currency,
+            discount: chooseTemplateInvoiceModel.discount,
+            tax: chooseTemplateInvoiceModel.tax,
+            isPaid: false,
+            total: chooseTemplateInvoiceModel.total,
+            itemOrServices: chooseTemplateInvoiceModel.itemOrServices,
+            pdfFilePath: pdfURL,
+            type: templateType,
+            isInvoice: invoiceType == .invoice
+        )
+    }
+
     private func setupSubscriptions() {
         cancellable = purchaseManager.isPremium
             .receive(on: RunLoop.main)
