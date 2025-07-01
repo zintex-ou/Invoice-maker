@@ -27,7 +27,7 @@ struct ClientReportCell: ButtonStyle {
                         .fill(.green69EB89)
                         .frame(width: 8, height: 8)
                     
-                    Text("\(model.currency) \(model.paidAmount)")
+                    Text("\(model.currency) \(String(format: "%.2f", model.paidAmount))")
                         .font(.sans(style: .semiBold, size: 16))
                         .multilineTextAlignment(.leading)
                         .lineLimit(1)
@@ -39,7 +39,7 @@ struct ClientReportCell: ButtonStyle {
                         .fill(.violet4663FF)
                         .frame(width: 8, height: 8)
                     
-                    Text("\(model.currency) \(model.unpaidAmount)")
+                    Text("\(model.currency) \(String(format: "%.2f", model.unpaidAmount))")
                         .font(.sans(style: .semiBold, size: 16))
                         .multilineTextAlignment(.leading)
                         .lineLimit(1)

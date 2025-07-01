@@ -80,15 +80,15 @@ final class ReportsViewModel: ObservableObject {
     }
     
     func chartCenterOverlayTitle() -> String {
-        "\(currency.rawValue) \(invoiceReportModel.total.formattedWithoutDecimals)"
+        "\(currency.rawValue) \(String(format: "%.2f", invoiceReportModel.total))"
     }
     
     func chartBottomPaidTitle() -> String {
-        "\(currency.rawValue) \(invoiceReportModel.paidInvoicesTotal.formattedWithoutDecimals)"
+        "\(currency.rawValue) \(String(format: "%.2f", invoiceReportModel.paidInvoicesTotal))"
     }
     
     func chartButtonUnpaidTitle() -> String {
-        "\(currency.rawValue) \(invoiceReportModel.unpaidInvoicesTotal.formattedWithoutDecimals)"
+        "\(currency.rawValue) \(String(format: "%.2f", invoiceReportModel.unpaidInvoicesTotal))"
     }
 }
 

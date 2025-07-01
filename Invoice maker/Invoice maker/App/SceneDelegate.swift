@@ -1,9 +1,8 @@
 import UIKit
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-//    private let coreDataManager = CoreDataManager.shared
+    private let coreDataManager = CoreDataManager.shared
     private let dataBaseService = InvoiceDataBaseService.shared
-    
     
     var shortcutItem: UIApplicationShortcutItem!
     
@@ -25,14 +24,14 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         handle(shortcutItem: shortcutItem)
     }
     
-//    func sceneDidEnterBackground(_ scene: UIScene) {
-//        switch coreDataManager.saveContext() {
-//        case .success():
-//            print("Saved context successfully.")
-//        case .failure(let error):
-//            print("Failed save context, with error: \(error)")
-//        }
-//    }
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        do {
+            try coreDataManager.saveContext()
+            print("Saved context successfully.")
+        } catch let error {
+            print("Failed save context, with error: \(error)")
+        }
+    }
     
     func sceneWillResignActive(_ scene: UIScene) {}
     
@@ -49,14 +48,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func handle(shortcutItem: UIApplicationShortcutItem) -> Bool {
         guard let shortcutType = ShortCutType(rawValue: shortcutItem.type) else { return false }
         
-//        switch shortcutType {
-//        case .mail:
-//            MailPresenter.shared.present(
-//                errorTitle: "Email Client",
-//                errorMessage: "You need to login in your native apple mail app ",
-//                supportEmail: EnvironmentValues.getValue().email
-//            )
-//        }
+        switch shortcutType {
+        case .mail:
+            ContactSheet.shared.presentContactSheet()
+        }
         return true
     }
 }

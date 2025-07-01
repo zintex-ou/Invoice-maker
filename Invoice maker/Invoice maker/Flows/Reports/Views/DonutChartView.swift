@@ -34,7 +34,7 @@ struct DonutChartView: View {
                     .trim(from: 0, to: 1)
                     .stroke(
                         Color.grayF5F5F5,
-                        style: StrokeStyle(lineWidth: 35, lineCap: .butt)
+                        style: StrokeStyle(lineWidth: 25, lineCap: .butt)
                     )
                     .rotationEffect(.degrees(-90))
             } else {
@@ -44,7 +44,7 @@ struct DonutChartView: View {
                         .stroke(
                             gradients[index],
                             style: StrokeStyle(
-                                lineWidth: 35,
+                                lineWidth: 25,
                                 lineCap: .round
                             )
                         )

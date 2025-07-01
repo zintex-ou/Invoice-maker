@@ -108,7 +108,7 @@ struct ReportsView: View {
                             if viewModel.chartSegment.reduce(0, { $0 + $1.value }) == 0 {
                                 SectorMark(
                                     angle: .value("Total", 100),
-                                    innerRadius: .ratio(0.7),
+                                    innerRadius: .ratio(0.8),
                                     angularInset: 4
                                 )
                                 .cornerRadius(8)
@@ -117,7 +117,7 @@ struct ReportsView: View {
                                 ForEach(viewModel.chartSegment, id: \.id) { item in
                                     SectorMark(
                                         angle: .value("Total", item.value),
-                                        innerRadius: .ratio(0.7),
+                                        innerRadius: .ratio(0.8),
                                         angularInset: 4
                                     )
                                     .cornerRadius(8)
@@ -136,13 +136,20 @@ struct ReportsView: View {
                         }
                         .frame(maxWidth: .infinity, minHeight: 330)
                     }
+                    .chartOverlay { proxy in
+                        chartCenterOverlay
+                            .frame(width: proxy.plotSize.width, height: proxy.plotSize.height)
+                            .position(x: proxy.plotSize.width / 2, y: proxy.plotSize.height / 2)
+                    }
+                    .clipped()
                 } else {
                     let values = viewModel.chartSegment.compactMap { $0.value }
                     DonutChartView(values: values)
                         .padding(.horizontal, 47)
+                        .overlay {
+                            chartCenterOverlay
+                        }
                 }
-                
-                chartCenterOverlay
             }
             
             chartBottomView
@@ -152,14 +159,22 @@ struct ReportsView: View {
     }
     
     private var chartCenterOverlay: some View {
-        VStack {
-            Text(viewModel.chartCenterOverlayTitle())
-                .font(.sans(style: .semiBold, size: 26))
-                .foregroundStyle(.black)
-            
-            Text("\(viewModel.invoiceReportModel.totalInvoiceCount) invoices")
-                .font(.sans(style: .regular, size: 16))
-                .foregroundStyle(.black767676)
+        GeometryReader { geometry in
+            VStack {
+                Text(viewModel.chartCenterOverlayTitle())
+                    .font(.sans(style: .semiBold, size: 26))
+                    .foregroundStyle(.black)
+                    .frame(maxWidth: geometry.size.width * 0.6)
+                
+                Text("\(viewModel.invoiceReportModel.totalInvoiceCount) invoices")
+                    .font(.sans(style: .regular, size: 16))
+                    .foregroundStyle(.black767676)
+                    .frame(maxWidth: geometry.size.width * 0.6)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
+            .multilineTextAlignment(.center)
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
     }
     
@@ -177,6 +192,7 @@ struct ReportsView: View {
                 }
                 
                 Text(viewModel.chartBottomPaidTitle())
+                    .lineLimit(1)
             }
             
             VStack {
@@ -191,6 +207,7 @@ struct ReportsView: View {
                 }
                 
                 Text(viewModel.chartButtonUnpaidTitle())
+                    .lineLimit(1)
             }
         }
     }

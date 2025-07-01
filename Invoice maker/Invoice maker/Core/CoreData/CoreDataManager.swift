@@ -16,6 +16,12 @@ final class CoreDataManager: ObservableObject {
     }
     
     private var viewContext: NSManagedObjectContext { container.viewContext }
+    
+    func saveContext() throws {
+        if viewContext.hasChanges {
+            try viewContext.save()
+        }
+    }
 }
 
 // MARK: - Business Profile
