@@ -4,6 +4,7 @@ import SwiftUI
 import Combine
 import Adapty
 
+@MainActor
 final class OnboardingViewModel: ObservableObject {
     @Published var shouldShowCloseButton: Bool = false
     @Published var isLoading: Bool = false
@@ -20,8 +21,7 @@ final class OnboardingViewModel: ObservableObject {
     
     var metaData: [OnboardingModel] = []
     
-    var title: LocalizedStringKey = ""
-    var subTitle: LocalizedStringKey = ""
+    var alert: AlertModel = .init(title: "", subtitle: "")
     
     init() {
         metaData = [
@@ -72,27 +72,26 @@ final class OnboardingViewModel: ObservableObject {
                 return "With 3 days trial, then \(product.currencySymbol ?? "$")\(price)/\(duration)"
             } else {
                 return "Subscribe for \(product.currencySymbol ?? "$")\(price)/\(duration)"
-                
             }
-            
         } else {
             return "Continue"
         }
     }
     
     func fetchPayWall() async {
-        await MainActor.run {
-            self.isLoading = true
+        self.isLoading = true
+        
+        defer {
+            self.isLoading = false
         }
+        
         do {
             let paywall = try await purchasesManager.fetchPaywall()
             await fetchPayWallProducts(paywall: paywall)
         }  catch {
-            await MainActor.run {
-                self.isLoading = false
-            }
             if let error = AdaptyErrorManager.init(error: error).error {
-                showAlert(title: error.title, subTitle: error.subTitle)
+                alert = .init(title: error.title, subtitle: error.subTitle)
+                self.shouldShowAlert = true
             }
         }
     }
@@ -104,24 +103,22 @@ final class OnboardingViewModel: ObservableObject {
     }
     
     func makePurchase(completion: @escaping () -> Void) async {
+        self.isLoading = true
+        
+        defer {
+            self.isLoading = false
+        }
+        
         guard reachibility?.connection != .unavailable else {
-            showAlert(
-                title: "Bad Connection",
-                subTitle: "Please, turn on the internet to get full access to the features"
-            )
+            alert = .init(title: "Bad Connection", subtitle: "Please, turn on the internet to get full access to the features")
+            self.shouldShowAlert = true
             return
         }
         
         guard let product else {
-            showAlert(
-                title: "Ooops...",
-                subTitle: "Something went wrong.\nPlease try again."
-            )
+            alert = .init(title: "Ooops...", subtitle: "Something went wrong.\nPlease try again.")
+            self.shouldShowAlert = true
             return
-        }
-        
-        await MainActor.run {
-            self.isLoading = true
         }
         
         do {
@@ -129,73 +126,61 @@ final class OnboardingViewModel: ObservableObject {
             
             switch result {
             case .userCancelled:
+                alert = .init(title: "Ooops...", subtitle: "Something went wrong.\nPlease try again.")
                 if remoteConfigManager.config.paywallConfig.showAlertAfterCanceledPurchase {
-                    title = "Ooops..."
-                    subTitle = "Something went wrong.\nPlease try again."
-                    
-                    await MainActor.run {
-                        shouldShowTryAgainAlert = true
-                    }
+                    shouldShowTryAgainAlert = true
                 } else {
-                    showAlert(title: "Ooops...", subTitle: "Something went wrong.\nPlease try again.")
+                    self.shouldShowAlert = true
                 }
             case .pending:
                 break
             case .success:
-                await MainActor.run {
-                    completion()
-                }
+                completion()
             }
         } catch {
             if let error = AdaptyErrorManager.init(error: error).error {
-                showAlert(title: error.title, subTitle: error.subTitle)
+                alert = .init(title: error.title, subtitle: error.subTitle)
+                self.shouldShowAlert = true
             }
-        }
-        await MainActor.run {
-            self.isLoading = false
         }
     }
     
     private func tapOnRestore(completion: @escaping () -> Void) async {
-        guard reachibility?.connection != .unavailable else {
-            showAlert(
-                title: "Bad Connection",
-                subTitle: "Please, turn on the internet to get full access to the features"
-            )
-            return
+        self.isLoading = true
+        
+        defer {
+            self.isLoading = false
         }
         
-        await MainActor.run {
-            self.isLoading = true
+        guard reachibility?.connection != .unavailable else {
+            alert = .init(title: "Bad Connection", subtitle: "Please, turn on the internet to get full access to the features")
+            self.shouldShowAlert = true
+            return
         }
         
         do {
             try await purchasesManager.restorePurchases()
-            await MainActor.run {
-                if isActiveSubscription {
-                    completion()
-                } else {
-                    showAlert(
-                        title: "No active subscription",
-                        subTitle: "You have no active subscriptions, please check your subscription status."
-                    )
-                }
+            if isActiveSubscription {
+                completion()
+            } else {
+                alert = .init(title: "No active subscription", subtitle: "You have no active subscriptions, please check your subscription status.")
+                self.shouldShowAlert = true
             }
         } catch {
             if let error = AdaptyErrorManager.init(error: error).error {
-                showAlert(title: error.title, subTitle: error.subTitle)
+                alert = .init(title: error.title, subtitle: error.subTitle)
+                self.shouldShowAlert = true
             }
-        }
-        
-        await MainActor.run {
-            self.isLoading = false
         }
     }
     
     private func fetchPayWallProducts(paywall: AdaptyPaywall) async {
-        await MainActor.run {
-            self.isLoading = true
+        self.isLoading = true
+        
+        defer {
+            self.isLoading = false
         }
+        
         do {
             let products = try await purchasesManager.fetchPaywallProducts(paywall: paywall)
             await MainActor.run {
@@ -204,11 +189,9 @@ final class OnboardingViewModel: ObservableObject {
             }
         } catch {
             if let error = AdaptyErrorManager.init(error: error).error {
-                showAlert(title: error.title, subTitle: error.subTitle)
+                alert = .init(title: error.title, subtitle: error.subTitle)
+                self.shouldShowAlert = true
             }
-        }
-        await MainActor.run {
-            self.isLoading = false
         }
     }
     
@@ -218,21 +201,13 @@ final class OnboardingViewModel: ObservableObject {
             .assign(to: \.isActiveSubscription, on: self)
     }
     
-    private func showAlert(title: LocalizedStringKey, subTitle: LocalizedStringKey) {
-        DispatchQueue.main.async {
-            self.title = title
-            self.subTitle = subTitle
-            self.shouldShowAlert = true
-        }
-    }
-    
     private func updateSubtileInOnboarding() {
         guard let product else { return }
         
         let price = String(describing: NSDecimalNumber(decimal: product.price).floatValue)
         let currency = product.currencySymbol ?? "$"
         let newSubtitle: LocalizedStringKey = "Generate professional invoices with just a few taps per week for \(currency)\(price) with 3 days free trial."
- 
+        
         metaData[3] = OnboardingModel(
             image: .onboard4,
             title: metaData[3].title,
