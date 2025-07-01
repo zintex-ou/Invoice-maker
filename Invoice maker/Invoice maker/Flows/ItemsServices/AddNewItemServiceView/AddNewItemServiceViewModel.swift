@@ -1,4 +1,4 @@
-import SwiftUI
+import Foundation
 
 final class AddNewItemServiceViewModel: ObservableObject {
     enum ViewState {
@@ -24,25 +24,25 @@ final class AddNewItemServiceViewModel: ObservableObject {
     @Published var isDiscountPopShow = false
     @Published var isShowDeleteAlert = false
     
+    private let coreDataManager: CoreDataManager = .shared
+    
     var alert: AlertModel = .init(title: "", subtitle: "")
+    
     let nameFieldTitle: String
     let title: String
     let buttonTitle: String
     let alertLeavewithoutSavingMessage: String
     let subtitle1: String
     let subtitle2: String
-    let coreDataManager: CoreDataManager
     let viewState: ViewState
     let offerType: SegmentOfferType
     let deleteAlertTitle: String
     let deleteAlertMassage: String
     
     init(
-        coreDataManager: CoreDataManager = .shared,
         offerType: SegmentOfferType,
         viewState: ViewState
     ) {
-        self.coreDataManager = coreDataManager
         self.nameFieldTitle = offerType == .items ? "Item name" : "Service name"
         let isItem = offerType == .items
         
@@ -122,7 +122,7 @@ final class AddNewItemServiceViewModel: ObservableObject {
             priceError = true
             return
         }
-
+        
         guard !name.isValidPunctuationAndNewlinesOnly() else {
             alert = .init(
                 title: "Invalid Name",

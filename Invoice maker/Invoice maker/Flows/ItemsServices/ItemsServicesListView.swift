@@ -48,13 +48,11 @@ struct ItemsServicesListView: View {
         .task {
             await viewModel.fetchItemsServices()
         }
-        .alert("Error",
-               isPresented: $viewModel.showErrorAlert) {
-            Button("Cancel", role: .cancel) {
-                
-            }
+        .alert(viewModel.alert.title,
+               isPresented: $viewModel.shouldShowAlert) {
+
         } message: {
-            Text(viewModel.errorAlertSubtitle)
+            Text(viewModel.alert.subtitle)
         }
     }
     

@@ -6,14 +6,15 @@ final class ItemsServicesListViewModel: ObservableObject {
     @Published var items: [ItemServiceEntity] = []
     @Published var services: [ItemServiceEntity] = []
     @Published var isShowDeleteAlert = false
-    @Published var showErrorAlert = false
-    @Published var errorAlertSubtitle = ""
+    @Published var shouldShowAlert = false
     @Published var itemToDelete: ItemServiceEntity? = nil
     @Published var offerSelection: SegmentOfferType = .items
     @Published var selectedItemService: [ItemServiceEntity] = []
     
     private(set) var viewType: ItemServiceViewType
     private var cancellables = Set<AnyCancellable>()
+    
+    var alert: AlertModel = .init(title: "", subtitle: "")
     
     init(viewType: ItemServiceViewType, selectedItemService: [ItemServiceEntity] = []) {
         self.viewType = viewType
@@ -37,8 +38,11 @@ final class ItemsServicesListViewModel: ObservableObject {
             self.services = filtered.filter { !$0.isItem }
             
         } catch let error {
-            showErrorAlert = true
-            errorAlertSubtitle = error.localizedDescription
+            alert = AlertModel(
+                title: "Failed to Load Data",
+                subtitle: "Unable to fetch items and services. Please try again."
+            )
+            shouldShowAlert = true
         }
     }
     
@@ -56,8 +60,11 @@ final class ItemsServicesListViewModel: ObservableObject {
                     })
                 }
             } catch let error {
-                showErrorAlert = true
-                errorAlertSubtitle = error.localizedDescription
+                alert = AlertModel(
+                    title: "Deletion Failed",
+                    subtitle: "Unable to delete the \(offerSelection == .items ? "item" : "service"). Please try again."
+                )
+                shouldShowAlert = true
             }
         }
     }
