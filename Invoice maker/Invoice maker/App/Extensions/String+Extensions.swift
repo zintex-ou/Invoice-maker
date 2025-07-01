@@ -6,4 +6,9 @@ extension String {
         let emailPredicate = NSPredicate(format: "SELF MATCHES[c] %@", emailRegex)
         return emailPredicate.evaluate(with: self)
     }
+    
+    func isValidPunctuationAndNewlinesOnly() -> Bool {
+        let pattern = "^[\\p{P}\\s\\n\\r]*$"
+        return self.range(of: pattern, options: [.regularExpression]) != nil
+    }
 }

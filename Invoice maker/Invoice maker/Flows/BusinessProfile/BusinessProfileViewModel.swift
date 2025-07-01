@@ -100,13 +100,18 @@ final class BusinessProfileViewModel: ObservableObject {
             return
         }
         
-        guard mail.isValidEmail() else {
-            alert = .init(title: "Error", subtitle: "Invalid email format")
+        guard !phoneNumber.isEmpty else {
+            shouldShowPhoneNumberError = true
             return
         }
         
-        guard !phoneNumber.isEmpty else {
-            shouldShowPhoneNumberError = true
+        guard !ownerName.isValidPunctuationAndNewlinesOnly() else {
+            alert = .init(title: "Error", subtitle: "Name must contain letters or numbers")
+            return
+        }
+        
+        guard mail.isValidEmail() else {
+            alert = .init(title: "Error", subtitle: "Invalid email format")
             return
         }
         
