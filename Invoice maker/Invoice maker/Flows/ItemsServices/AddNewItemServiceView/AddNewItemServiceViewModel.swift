@@ -21,10 +21,10 @@ final class AddNewItemServiceViewModel: ObservableObject {
     @Published var showLeaveWithoutSavingAlert = false
     
     @Published var showErrorAlert = false
-    @Published var errorAlertSubtitle = ""
     @Published var isDiscountPopShow = false
     @Published var isShowDeleteAlert = false
     
+    var alert: AlertModel = .init(title: "", subtitle: "")
     let nameFieldTitle: String
     let title: String
     let buttonTitle: String
@@ -77,12 +77,6 @@ final class AddNewItemServiceViewModel: ObservableObject {
         !name.isEmpty && !price.isEmpty
     }
     
-    func validateFields() -> Bool {
-        nameError = name.isEmpty
-        priceError = price.isEmpty
-        return nameError || priceError
-    }
-    
     func tapOnCurrencyButton() {
         sholdShowCurrencyPicker = true
     }
@@ -106,14 +100,38 @@ final class AddNewItemServiceViewModel: ObservableObject {
                 )
                 
                 NotificationService.shared.post(event: .createItemService, object: item)
-            } catch let error {
+            } catch {
+                let item = offerType == .items ? "Item" : "Service"
+                self.alert = .init(
+                    title: "Failed to Save \(item)",
+                    subtitle: "An error occurred while saving your \(item). Please try again later."
+                )
+                
                 showErrorAlert = true
-                errorAlertSubtitle = error.localizedDescription
             }
         }
     }
     
     func onSaveTapped(completion: @escaping (() -> Void)) {
+        guard !name.isEmpty else {
+            nameError = true
+            return
+        }
+        
+        guard !price.isEmpty else {
+            priceError = true
+            return
+        }
+
+        guard !name.isValidPunctuationAndNewlinesOnly() else {
+            alert = .init(
+                title: "Invalid Name",
+                subtitle: "The name you entered contains only punctuation or spacing characters. Please enter a valid name using letters or numbers."
+            )
+            showErrorAlert = true
+            return
+        }
+        
         switch viewState {
         case .editing(_):
             onSaveEditedTapped(completion: completion)
@@ -123,10 +141,8 @@ final class AddNewItemServiceViewModel: ObservableObject {
     }
     
     private func onSaveNewItemTapped(completion: @escaping (() -> Void)) {
-        if !validateFields() {
-            saveItemService()
-            completion()
-        }
+        saveItemService()
+        completion()
     }
     
     private var hasAnyChanges: Bool {
@@ -195,19 +211,21 @@ extension AddNewItemServiceViewModel {
                     )
                     
                     NotificationService.shared.post(event: .updateItemsServices, object: item)
-                } catch let error {
+                } catch {
+                    let item = offerType == .items ? "Item" : "Service"
+                    self.alert = .init(
+                        title: "Failed to update \(item)",
+                        subtitle: "An error occurred while updating your \(item). Please try again later."
+                    )
                     showErrorAlert = true
-                    errorAlertSubtitle = error.localizedDescription
                 }
             }
         }
     }
     
     private func onSaveEditedTapped(completion: @escaping (() -> Void)) {
-        if !validateFields() {
-            updateItemService()
-            completion()
-        }
+        updateItemService()
+        completion()
     }
     
     func showDeleteAlert() {
@@ -221,9 +239,13 @@ extension AddNewItemServiceViewModel {
                     try await coreDataManager.deleteItemOrService(item)
                     
                     NotificationService.shared.post(event: .deleteItemService, object: item)
-                } catch let error {
+                } catch {
+                    let item = offerType == .items ? "Item" : "Service"
+                    self.alert = .init(
+                        title: "Failed to Delete \(item)",
+                        subtitle: "An error occurred while deleting your \(item). Please try again later."
+                    )
                     showErrorAlert = true
-                    errorAlertSubtitle = error.localizedDescription
                 }
             }
         }

@@ -62,13 +62,13 @@ struct AddNewItemServiceView: View {
         } message: {
             Text(viewModel.alertLeavewithoutSavingMessage)
         }
-        .alert("Error",
+        .alert(viewModel.alert.title,
                isPresented: $viewModel.showErrorAlert) {
             Button("Cancel", role: .cancel) {
                 
             }
         } message: {
-            Text(viewModel.errorAlertSubtitle)
+            Text(viewModel.alert.subtitle)
         }
         .sheet(isPresented: $viewModel.sholdShowCurrencyPicker) {
             CurrencyPickerView(currency: $viewModel.currency)
