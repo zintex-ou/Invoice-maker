@@ -100,6 +100,11 @@ final class BusinessProfileViewModel: ObservableObject {
             return
         }
         
+        guard mail.isValidEmail() else {
+            alert = .init(title: "Error", subtitle: "Invalid email format")
+            return
+        }
+        
         guard !phoneNumber.isEmpty else {
             shouldShowPhoneNumberError = true
             return
