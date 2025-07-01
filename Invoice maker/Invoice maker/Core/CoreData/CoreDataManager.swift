@@ -203,7 +203,7 @@ extension CoreDataManager {
             let request: NSFetchRequest<ClientEntity> = ClientEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", input.id as CVarArg)
             request.fetchLimit = 1
-            
+
             let invoice = InvoiceEntity(context: self.viewContext)
             invoice.id = input.id
             invoice.invoiceNumber = input.number
@@ -218,20 +218,7 @@ extension CoreDataManager {
             invoice.pdfFilePath = input.pdfFilePath
             invoice.type = input.type.rawValue
             invoice.isInvoice = input.isInvoice
-            
-            for itemInput in input.itemOrServices {
-                let item = ItemServiceEntity(context: self.viewContext)
-                item.id = itemInput.id
-                item.isItem = itemInput.isItem
-                item.name = itemInput.name
-                item.price = itemInput.price
-                item.quantity = itemInput.quantity
-                item.discountType = itemInput.discountType
-                item.discount = itemInput.discount
-                item.tax = itemInput.tax
-                
-                invoice.addToItemService(item)
-            }
+            invoice.itemService = NSSet(array: input.itemOrServices)
             
             try self.viewContext.save()
             return invoice
@@ -271,6 +258,7 @@ extension CoreDataManager {
                 item.discountType = itemInput.discountType
                 item.discount = itemInput.discount
                 item.tax = itemInput.tax
+                item.total = itemInput.total
                 
                 invoice.addToItemService(item)
             }
