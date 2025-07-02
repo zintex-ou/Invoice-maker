@@ -278,7 +278,7 @@ final class PaywallViewModel: ObservableObject {
             if !product.isFreeTrial {
                 continueButtonText = "Subscribe for \(product.currency)\(price)/\(duration)"
             } else {
-                continueButtonText = "With 3 day trial, then \(product.currency)\(price)/\(duration)"
+                continueButtonText = "With 3 days trial, then \(product.currency)\(price)/\(duration)"
             }
             
         } else {
