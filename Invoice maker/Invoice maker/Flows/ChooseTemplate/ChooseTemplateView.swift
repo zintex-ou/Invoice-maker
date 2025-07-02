@@ -131,23 +131,17 @@ struct ChooseTemplateView: View {
             ForEach(Array(TemplateType.allCases.enumerated()), id: \.1.rawValue) { index, type in
                 Image(viewModel.templateImageWithCustomColor(customColor: viewModel.customColor, type: type))
                     .resizable()
-                    .overlay(
-                        Rectangle().stroke(.violet4663FF, lineWidth: viewModel.templateType == type ? 2 : 0)
-                    )
                     .shadow(color: Color(red: 0.15, green: 0.19, blue: 0.3).opacity(0.15), radius: 4.61176, x: 0, y: 4.61176)
-                    .onTapGesture {
-                        withAnimation {
-                            viewModel.templateType = type
-                        }
-                    }
                     .frame(width: viewModel.invoiceType == .invoice ? 240 : nil, height: viewModel.invoiceType == .invoice ? 340 : nil)
                     .tag(index)
             }
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
         .padding(.top, 24)
-        .padding(.horizontal, 24)
         .padding(.bottom, 16)
+        .onChange(of: viewModel.templateIndex) { newIndex in
+            viewModel.templateType = TemplateType.allCases[newIndex]
+        }
     }
     
     private var colorPicker: some View {
