@@ -19,6 +19,7 @@ struct AddButton: ButtonStyle {
         .minimumScaleFactor(0.8)
         .overlay(
             Capsule()
+                .inset(by: 0.5)
                 .stroke(.violet4663FF, lineWidth: 1)
         )
         .scaleEffect(configuration.isPressed ? 0.98 : 1.0)

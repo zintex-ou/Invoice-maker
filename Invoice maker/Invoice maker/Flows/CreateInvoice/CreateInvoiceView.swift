@@ -156,7 +156,7 @@ struct CreateInvoiceView: View {
                             )
                         }
                     }
-                    .buttonStyle(.disclosure(title: "Boll to", isRequired: true))
+                    .buttonStyle(.disclosure(title: "Bill to", isRequired: true))
                 }
                 
                 Text("Item info*") { string in
@@ -174,7 +174,6 @@ struct CreateInvoiceView: View {
                         Button {
                             
                         } label: {
-                            
                             ItemServiceViewCell(
                                 itemService: item,
                                 offerSelection: item.isItem ? SegmentOfferType.items : SegmentOfferType.services,
@@ -217,7 +216,7 @@ struct CreateInvoiceView: View {
                 )
                 .overlay(alignment: .top) {
                     Capsule()
-                        .fill(.grayF5F5F5)
+                        .fill(.greyC5C5C6)
                         .frame(width: 36, height: 5)
                         .padding(.top, 6)
                 }

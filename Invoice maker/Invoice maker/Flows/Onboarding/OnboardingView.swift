@@ -48,7 +48,7 @@ struct OnboardingView: View {
                     .padding(.top, 24)
                     
                     HStack {
-                        Text("by continuining, you agree to:")
+                        Text("by continuing, you agree to:")
                         
                         Spacer()
                         

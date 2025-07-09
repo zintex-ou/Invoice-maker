@@ -56,7 +56,7 @@ struct PaywallView: View {
                     .padding(.top, 32)
                     
                     HStack {
-                        Text("by continuining, you agree to:")
+                        Text("by continuing, you agree to:")
                         
                         Spacer()
                         
