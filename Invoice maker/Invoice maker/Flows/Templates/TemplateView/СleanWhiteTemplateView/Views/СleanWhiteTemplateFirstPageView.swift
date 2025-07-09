@@ -11,7 +11,7 @@ struct СleanWhiteTemplateFirstPageView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Text(templateModel.header.businessProfile.name)
                         .font(.sans(style: .semiBold, size: 26))
-                        .foregroundStyle(.black767676)
+                        .foregroundStyle(.black)
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Due Date:")

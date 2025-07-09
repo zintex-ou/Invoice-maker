@@ -51,6 +51,7 @@ final class ContactSheet: NSObject, MFMailComposeViewControllerDelegate {
     func presentContactSheetWithPdf(
         pdfData: Data? = nil,
         fileName: String = "",
+        mail: String,
         completion: ((MFMailComposeResult) -> Void)? = nil
     ) {
         guard !isContactsShown else { return }
@@ -73,7 +74,7 @@ final class ContactSheet: NSObject, MFMailComposeViewControllerDelegate {
         }
         
         let picker = MFMailComposeViewController()
-        picker.setToRecipients([AppConstants.getValue(.mailAppUrl)])
+        picker.setToRecipients([mail, AppConstants.getValue(.mailAppUrl)])
         picker.setSubject(application.appName)
         picker.mailComposeDelegate = self
         

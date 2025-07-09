@@ -6,6 +6,7 @@ final class PreviewViewModel: ObservableObject {
     @Published var shouldShowError: Bool = false
     @Published var isPaid: Bool
     @Published var popoverID: Int = 1
+    @Published var isShowDeleteAlert = false
     
     private(set) var invoiceEntity: InvoiceEntity
     private let dataBaseService = InvoiceDataBaseService.shared
@@ -60,6 +61,10 @@ final class PreviewViewModel: ObservableObject {
         }
     }
     
+    func showDeleteAlert() {
+        isShowDeleteAlert = true
+    }
+    
     func deleteInvoice(completion: @escaping () -> Void) {
         Task {
             do {
@@ -83,7 +88,11 @@ final class PreviewViewModel: ObservableObject {
     func sendInvoice(completion: @escaping ((Bool) -> Void)) {
         do {
             let data = try Data(contentsOf: pdfFilePath)
-            ContactSheet.shared.presentContactSheetWithPdf(pdfData: data, fileName: "Invoice.pdf", completion: { result in
+            ContactSheet.shared.presentContactSheetWithPdf(
+                pdfData: data,
+                fileName: "Invoice.pdf",
+                mail: invoiceEntity.client?.email ?? "",
+                completion: { result in
                 if result == .sent {
                     completion(true)
                     NotificationService.shared.post(event: .sentMailSuccessfully, object: true)

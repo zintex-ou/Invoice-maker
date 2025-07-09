@@ -19,6 +19,10 @@ final class ItemsServicesListViewModel: ObservableObject {
     init(viewType: ItemServiceViewType, selectedItemService: [ItemServiceEntity] = []) {
         self.viewType = viewType
         self.selectedItemService = selectedItemService
+        
+        Task {
+            await fetchItemsServices()
+        }
         setupSubscription()
     }
     
@@ -37,7 +41,7 @@ final class ItemsServicesListViewModel: ObservableObject {
             self.items = filtered.filter(\.isItem)
             self.services = filtered.filter { !$0.isItem }
             
-        } catch let error {
+        } catch {
             alert = AlertModel(
                 title: "Failed to Load Data",
                 subtitle: "Unable to fetch items and services. Please try again."
@@ -59,7 +63,7 @@ final class ItemsServicesListViewModel: ObservableObject {
                         $0.id == item.id
                     })
                 }
-            } catch let error {
+            } catch {
                 alert = AlertModel(
                     title: "Deletion Failed",
                     subtitle: "Unable to delete the \(offerSelection == .items ? "item" : "service"). Please try again."

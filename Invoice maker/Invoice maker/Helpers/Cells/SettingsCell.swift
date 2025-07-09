@@ -10,7 +10,7 @@ struct SettingsCell: ButtonStyle {
                 .frame(width: 24, height: 24)
 
             configuration.label
-                .font(.sans(style: .semiBold, size: 16))
+                .font(.sans(style: .regular, size: 16))
                 .foregroundStyle(configuration.isPressed ? .black.opacity(0.5) : .black)
 
             Spacer()

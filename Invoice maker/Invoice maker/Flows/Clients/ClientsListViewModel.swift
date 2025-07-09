@@ -17,6 +17,10 @@ final class ClientsListViewModel: ObservableObject {
     init(viewType: ClientViewType, selectedClient: ClientEntity? = nil) {
         self.viewType = viewType
         self.selectedClient = selectedClient
+        
+        Task {
+            await fetchClients()
+        }
         setSubscription()
     }
     

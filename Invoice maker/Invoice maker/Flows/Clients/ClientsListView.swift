@@ -33,9 +33,6 @@ struct ClientsListView: View {
             .background(.white)
         }
         .padding(.horizontal, 16)
-        .task {
-            await viewModel.fetchClients()
-        }
         .alert("Delete Client",
                isPresented: $viewModel.isShowDeleteAlert) {
             Button("Cancel", role: .cancel) {

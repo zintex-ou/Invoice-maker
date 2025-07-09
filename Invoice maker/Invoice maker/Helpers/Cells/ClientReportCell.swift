@@ -21,7 +21,7 @@ struct ClientReportCell: ButtonStyle {
 
             Spacer()
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .trailing, spacing: 2) {
                 HStack {
                     Circle()
                         .fill(.green69EB89)

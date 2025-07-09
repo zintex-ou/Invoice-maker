@@ -32,6 +32,21 @@ struct PreviewView: View {
             } message: {
                 Text(viewModel.alert.subtitle)
             }
+            .alert("Delete client",
+                   isPresented: $viewModel.isShowDeleteAlert) {
+                Button("Cancel", role: .cancel) {
+                    
+                }
+                
+                Button("Delete", role: .destructive) {
+                    viewModel.deleteInvoice(completion: {
+                        coordinator.popTo(id: TabBarView.navigationID)
+                    })
+                }
+                
+            } message: {
+                Text("Are you sure you want to delete this client? ")
+            }
             .ignoresSafeArea(.container, edges: .bottom)
     }
     
@@ -194,9 +209,7 @@ struct PreviewView: View {
                 }
                 
                 Button("") {
-                    viewModel.deleteInvoice(completion: {
-                        coordinator.popTo(id: TabBarView.navigationID)
-                    })
+                    viewModel.showDeleteAlert()
                 }
                 .buttonStyle(.distructiveCircle(.property1Trash, title: "Delete"))
             }

@@ -45,9 +45,6 @@ struct ItemsServicesListView: View {
             .background(.white)
         }
         .padding(.horizontal, 16)
-        .task {
-            await viewModel.fetchItemsServices()
-        }
         .alert(viewModel.alert.title,
                isPresented: $viewModel.shouldShowAlert) {
 
