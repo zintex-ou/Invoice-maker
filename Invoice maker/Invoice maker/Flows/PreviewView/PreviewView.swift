@@ -143,7 +143,7 @@ struct PreviewView: View {
                             }
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
-                            .background(viewModel.isPaid ? .green69EB89 : .blueA0C4FF)
+                            .background(viewModel.isPaid ? .greenB4F5C4 : .blueDAE0FF)
                             .clipShape(Capsule())
                         }
                     }
