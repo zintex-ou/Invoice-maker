@@ -61,18 +61,17 @@ struct InvoicesView: View {
                                 }
                             )
                             
-                            Button {
+                            InvoiceViewCell(
+                                title: name,
+                                dueDate: dueDate,
+                                currency: Currency(from: invoice.currency),
+                                totalPrice: invoice.total,
+                                isInvoice: invoice.isInvoice,
+                                isPaid: isPaidBinding)
+                            .onTapGesture {
                                 coordinator.pushTo(id: PreviewView.navigationID, destination: {
                                     PreviewView(viewModel: .init(invoiceEntity: invoice))
                                 })
-                            } label: {
-                                InvoiceViewCell(
-                                    title: name,
-                                    dueDate: dueDate,
-                                    currency: Currency(from: invoice.currency),
-                                    totalPrice: invoice.total,
-                                    isInvoice: invoice.isInvoice,
-                                    isPaid: isPaidBinding)
                             }
                         }
                     }

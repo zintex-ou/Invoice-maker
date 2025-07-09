@@ -84,7 +84,7 @@ struct InvoiceViewCell: View {
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(isPaid ? .green69EB89 : .blueA0C4FF)
+                        .background(isPaid ? .greenB4F5C4 : .blueDAE0FF)
                         .clipShape(Capsule())
                     }
                 }
@@ -93,7 +93,7 @@ struct InvoiceViewCell: View {
         .lineLimit(1)
         .padding(.all, 16)
         .background(.grayF5F5F5)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: 32))
         .animation(.default, value: isPaid)
     }
     
@@ -117,7 +117,7 @@ struct InvoiceViewCell: View {
                 currency: .USD,
                 totalPrice: 100,
                 isInvoice: true,
-                isPaid: .constant(false))
+                isPaid: .constant(true))
         }
     }
     .padding(.horizontal, 16)

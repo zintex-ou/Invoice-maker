@@ -40,25 +40,23 @@ struct EstimatesView: View {
             ScrollView {
                 VStack(spacing: 12) {
                     ForEach(viewModel.allEstimates, id: \.id) { invoice in
-                        if let id = invoice.id,
-                           let name = invoice.client?.clientName,
+                        if let name = invoice.client?.clientName,
                            let dueDate = invoice.dueDate {
                             
                             let total = invoice.total
                             let isPaid = invoice.isPaid
                             
-                            Button {
+                            InvoiceViewCell(
+                                title: name,
+                                dueDate: dueDate,
+                                currency: Currency(from: invoice.currency),
+                                totalPrice: total,
+                                isInvoice: invoice.isInvoice,
+                                isPaid: .constant(isPaid))
+                            .onTapGesture {
                                 coordinator.pushTo(id: PreviewView.navigationID, destination: {
                                     PreviewView(viewModel: .init(invoiceEntity: invoice))
                                 })
-                            } label: {
-                                InvoiceViewCell(
-                                    title: name,
-                                    dueDate: dueDate,
-                                    currency: Currency(from: invoice.currency),
-                                    totalPrice: total,
-                                    isInvoice: invoice.isInvoice,
-                                    isPaid: .constant(isPaid))
                             }
                         }
                     }
