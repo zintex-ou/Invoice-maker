@@ -28,7 +28,7 @@ final class ContactSheet: NSObject, MFMailComposeViewControllerDelegate {
         isContactsShown = true
         
         let picker = MFMailComposeViewController()
-        picker.setToRecipients([AppConstants.getValue(.mailAppUrl)])
+        picker.setToRecipients([AppConstants.getValue(.email)])
         picker.setSubject(application.appName)
         picker.mailComposeDelegate = self
         UIApplication.shared.topViewController?.present(picker, animated: true)
