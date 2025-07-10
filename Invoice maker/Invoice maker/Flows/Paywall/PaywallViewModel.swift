@@ -50,9 +50,10 @@ final class PaywallViewModel: ObservableObject {
 
     var title: LocalizedStringKey = ""
     var subTitle: LocalizedStringKey = ""
-    
+
     init() {
         self.reachibility = try? Reachability()
+        
         selectedProduct = products.first
         
         setupSubscribers()
@@ -157,6 +158,10 @@ final class PaywallViewModel: ObservableObject {
                         })
                 
                 selectedProduct = self.products.first
+                
+                if let selectedProduct {
+                    continueButtonText(product: selectedProduct)
+                }
             }
         } catch {
             if let error = AdaptyErrorManager.init(error: error).error {
