@@ -30,16 +30,16 @@ final class ItemsServicesListViewModel: ObservableObject {
         do {
             let fetched = try await CoreDataManager.shared.fetchItems()
             
-            let filtered: [ItemServiceEntity]
-            switch viewType {
-            case .choiseItemsOrServices(let currency):
-                filtered = fetched.filter { $0.currency == currency.rawValue }
-            case .editItemsOrServices:
-                filtered = fetched
-            }
+//            let filtered: [ItemServiceEntity]
+//            switch viewType {
+//            case .choiseItemsOrServices(let currency):
+//                filtered = fetched.filter { $0.currency == currency.rawValue }
+//            case .editItemsOrServices:
+//                filtered = fetched
+//            }
             
-            self.items = filtered.filter(\.isItem)
-            self.services = filtered.filter { !$0.isItem }
+            self.items = fetched.filter(\.isItem)
+            self.services = fetched.filter { !$0.isItem }
             
         } catch {
             alert = AlertModel(
@@ -173,6 +173,24 @@ final class ItemsServicesListViewModel: ObservableObject {
                     await self.fetchItemsServices()
                 }
             }
+        }
+    }
+    
+    func tapOnItemService(_ item: ItemServiceEntity) -> Bool {
+        switch viewType {
+        case .choiseItemsOrServices(let currency):
+            guard item.currency == currency.rawValue else {
+                alert = AlertModel(
+                    title: "Currency mismatch",
+                    subtitle: "This item has \(item.currency ?? "-") currency, but invoice currency is \(currency.rawValue)."
+                )
+                shouldShowAlert = true
+                return false
+            }
+            return true
+
+        case .editItemsOrServices:
+            return true
         }
     }
 }

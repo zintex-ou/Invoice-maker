@@ -30,7 +30,7 @@ final class PurchaseManager {
 
         Adapty.delegate = self
         
-        isPremiumSubject.send(isActivityPurchases())
+        isPremiumSubject.send(currentPremiumValue())
         
         Task {
             await fetchProfile()
@@ -51,8 +51,7 @@ final class PurchaseManager {
         saveExpiresPurchasesToStorage(profile: purchasesResult.profile)
 
         await MainActor.run {
-            let isPremium = purchasesResult.profile?.accessLevels.contains(where: { $0.value.isActive }) ?? false
-            self.isPremiumSubject.send(isPremium)
+            self.isPremiumSubject.send(self.currentPremiumValue(from: purchasesResult.profile))
         }
         
         return purchasesResult
@@ -61,22 +60,27 @@ final class PurchaseManager {
     func restorePurchases() async throws {
         let profile = try await Adapty.restorePurchases()
         saveExpiresPurchasesToStorage(profile: profile)
+        
         await MainActor.run {
-            let isPremium = profile.accessLevels.contains(where: { $0.value.isActive })
-            self.isPremiumSubject.send(isPremium)
+            self.isPremiumSubject.send(self.currentPremiumValue(from: profile))
         }
     }
     
     func isActivityPurchases() -> Bool {
+        #if DEBUG
+        return true
+        #else
         guard let expiresAt = keychainManager.purchasesExpiresAt else { return false }
         return Date() < expiresAt
+        #endif
     }
 }
 
 extension PurchaseManager: AdaptyDelegate {
     func didLoadLatestProfile(_ profile: AdaptyProfile) {
         saveExpiresPurchasesToStorage(profile: profile)
-        let isPremium = profile.accessLevels.contains(where: { $0.value.isActive })
+        
+        let isPremium = currentPremiumValue(from: profile)
         isPremiumSubject.send(isPremium)
         
         if !isPremium {
@@ -102,13 +106,19 @@ extension PurchaseManager {
         do {
             let profile = try await Adapty.getProfile()
             saveExpiresPurchasesToStorage(profile: profile)
+            
             await MainActor.run {
-                let isPremium = profile.accessLevels.contains(where: { $0.value.isActive })
-                self.isPremiumSubject.send(isPremium)
+                self.isPremiumSubject.send(self.currentPremiumValue(from: profile))
             }
         } catch {
             guard let adaptyError = error as? AdaptyError else { return }
             print(adaptyError.description)
+            
+            #if DEBUG
+            await MainActor.run {
+                self.isPremiumSubject.send(true)
+            }
+            #endif
         }
     }
     
@@ -126,5 +136,17 @@ extension PurchaseManager {
             userInfo: nil
         )
         UIApplication.shared.shortcutItems = [shortcutItem]
+    }
+    
+    private func currentPremiumValue(from profile: AdaptyProfile? = nil) -> Bool {
+        #if DEBUG
+        return true
+        #else
+        if let profile {
+            return profile.accessLevels.contains(where: { $0.value.isActive })
+        } else {
+            return isActivityPurchases()
+        }
+        #endif
     }
 }

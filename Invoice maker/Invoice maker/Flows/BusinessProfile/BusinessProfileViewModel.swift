@@ -31,6 +31,7 @@ final class BusinessProfileViewModel: ObservableObject {
     @Published var ownerName: String = ""
     @Published var mail: String = ""
     @Published var phoneNumber: String = ""
+    @Published var bankDetails: String = ""
     @Published var country: String = ""
     @Published var city: String = ""
     @Published var street: String = ""
@@ -137,6 +138,7 @@ final class BusinessProfileViewModel: ObservableObject {
                 ownerName: ownerName,
                 email: mail,
                 phoneNumber: phoneNumber,
+                bankDetails: bankDetails,
                 country: country,
                 city: city,
                 street: street,
@@ -173,6 +175,7 @@ final class BusinessProfileViewModel: ObservableObject {
                 self.ownerName = result.ownerName ?? ""
                 self.mail = result.email ?? ""
                 self.phoneNumber = result.phoneNumber ?? ""
+                self.bankDetails = result.bankDetails ?? ""
                 self.country = result.country ?? ""
                 self.city = result.city ?? ""
                 self.selectedImageData = result.image

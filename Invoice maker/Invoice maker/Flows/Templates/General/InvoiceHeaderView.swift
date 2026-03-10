@@ -22,6 +22,10 @@ struct InvoiceHeaderView: View {
                 labeledField("Phone", value: model.businessProfile.phone)
                 
                 labeledField("Adress", value: model.businessProfile.address)
+                
+                if !model.businessProfile.bankDetails.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    labeledMultilineField("Bank details", value: model.businessProfile.bankDetails)
+                }
             }
             
             if type == .cleanWhite || type == .corporate || type == .minimal {
@@ -43,6 +47,10 @@ struct InvoiceHeaderView: View {
                 labeledField("Phone", value: model.billTo.phone)
                 
                 labeledField("Adress", value: model.billTo.address)
+                
+                if !model.billTo.bankDetails.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    labeledMultilineField("Bank details", value: model.billTo.bankDetails)
+                }
             }
             
             if type == .cleanWhite || type == .corporate || type == .minimal {
@@ -79,6 +87,19 @@ struct InvoiceHeaderView: View {
                 .font(.sans(style: .regular, size: 8))
                 .foregroundStyle(Color(red: 0.65, green: 0.65, blue: 0.65))
                 .lineLimit(1)
+        }
+    }
+    
+    private func labeledMultilineField(_ title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(.sans(style: .bold, size: 8))
+                .foregroundStyle(titleColor)
+            
+            Text(value)
+                .font(.sans(style: .regular, size: 8))
+                .foregroundStyle(Color(red: 0.65, green: 0.65, blue: 0.65))
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

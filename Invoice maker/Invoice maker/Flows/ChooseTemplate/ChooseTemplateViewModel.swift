@@ -121,13 +121,15 @@ final class ChooseTemplateViewModel: ObservableObject {
                     name: bp.ownerName ?? "",
                     email: bp.email ?? "",
                     phone: bp.phoneNumber ?? "",
-                    address: bp.country ?? ""
+                    address: bp.country ?? "",
+                    bankDetails: bp.bankDetails ?? ""
                 ),
                 billTo: .init(
                     name: client.clientName ?? "",
                     email: client.email ?? "",
                     phone: client.phoneNumber ?? "",
-                    address: client.country ?? ""
+                    address: client.country ?? "",
+                    bankDetails: client.bankDetails ?? ""
                 ),
                 invoiceInfo: .init(
                     number: chooseTemplateInvoiceModel.number,
@@ -140,6 +142,7 @@ final class ChooseTemplateViewModel: ObservableObject {
                 subtotal: chooseTemplateInvoiceModel.subtotal,
                 discountPercentage: chooseTemplateInvoiceModel.discount,
                 taxPercentage: chooseTemplateInvoiceModel.tax,
+                freeField: chooseTemplateInvoiceModel.freeField,
                 total: chooseTemplateInvoiceModel.total
             ),
             items: items
@@ -153,6 +156,7 @@ final class ChooseTemplateViewModel: ObservableObject {
             number: chooseTemplateInvoiceModel.number,
             invoiceDate: chooseTemplateInvoiceModel.invoiceDate,
             dueDate: chooseTemplateInvoiceModel.dueDate,
+            freeField: chooseTemplateInvoiceModel.freeField,
             currency: chooseTemplateInvoiceModel.currency,
             discount: chooseTemplateInvoiceModel.discount,
             tax: chooseTemplateInvoiceModel.tax,

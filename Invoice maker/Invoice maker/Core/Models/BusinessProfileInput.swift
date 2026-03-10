@@ -4,6 +4,7 @@ struct BusinessProfileInput {
     let ownerName: String
     let email: String
     let phoneNumber: String?
+    let bankDetails: String?
     let country: String?
     let city: String?
     let street: String?

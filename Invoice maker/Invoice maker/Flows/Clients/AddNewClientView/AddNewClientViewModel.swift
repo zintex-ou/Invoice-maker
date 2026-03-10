@@ -13,6 +13,7 @@ final class AddNewClientViewModel: ObservableObject {
     @Published var email = ""
     @Published var phoneNumber = ""
     @Published var fax = ""
+    @Published var bankDetails = ""
     @Published var country = ""
     @Published var city = ""
     @Published var street = ""
@@ -60,6 +61,7 @@ final class AddNewClientViewModel: ObservableObject {
         email = client.email ?? ""
         phoneNumber = client.phoneNumber ?? ""
         fax = client.fax ?? ""
+        bankDetails = client.bankDetails ?? ""
         country = client.country ?? ""
         city = client.city ?? ""
         street = client.street ?? ""
@@ -77,6 +79,7 @@ final class AddNewClientViewModel: ObservableObject {
                         email: email,
                         phoneNumber: phoneNumber,
                         fax: fax,
+                        bankDetails: bankDetails,
                         country: country,
                         city: city,
                         street: street,
@@ -117,6 +120,7 @@ extension AddNewClientViewModel {
             email,
             phoneNumber,
             fax,
+            bankDetails,
             country,
             city,
             street,
@@ -127,6 +131,7 @@ extension AddNewClientViewModel {
             email,
             phoneNumber,
             fax,
+            bankDetails,
             country,
             city,
             street,
@@ -147,6 +152,7 @@ extension AddNewClientViewModel {
                             email: email,
                             phoneNumber: phoneNumber,
                             fax: fax,
+                            bankDetails: bankDetails,
                             country: country,
                             city: city,
                             street: street,
@@ -209,6 +215,7 @@ extension AddNewClientViewModel {
                 email: email,
                 phoneNumber: phoneNumber,
                 fax: fax,
+                bankDetails: bankDetails,
                 country: country,
                 city: city,
                 street: street,

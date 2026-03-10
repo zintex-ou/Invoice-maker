@@ -6,6 +6,10 @@ final class CoreDataManager: ObservableObject {
     
     private init() {
         container = NSPersistentContainer(name: "CoreDataModel")
+        if let storeDescription = container.persistentStoreDescriptions.first {
+            storeDescription.shouldMigrateStoreAutomatically = true
+            storeDescription.shouldInferMappingModelAutomatically = true
+        }
         container.viewContext.automaticallyMergesChangesFromParent = true
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         container.loadPersistentStores { _, error in
@@ -41,6 +45,7 @@ extension CoreDataManager {
             businessProfile.ownerName = input.ownerName
             businessProfile.email = input.email
             businessProfile.phoneNumber = input.phoneNumber
+            businessProfile.bankDetails = input.bankDetails
             businessProfile.country = input.country
             businessProfile.city = input.city
             businessProfile.street = input.street
@@ -65,6 +70,7 @@ extension CoreDataManager {
                 businessProfile.ownerName = input.ownerName
                 businessProfile.email = input.email
                 businessProfile.phoneNumber = input.phoneNumber
+                businessProfile.bankDetails = input.bankDetails
                 businessProfile.country = input.country
                 businessProfile.city = input.city
                 businessProfile.street = input.street
@@ -100,6 +106,7 @@ extension CoreDataManager {
             client.email = input.email
             client.phoneNumber = input.phoneNumber
             client.fax = input.fax
+            client.bankDetails = input.bankDetails
             client.country = input.country
             client.city = input.city
             client.street = input.street
@@ -119,6 +126,7 @@ extension CoreDataManager {
             client.email = input.email
             client.phoneNumber = input.phoneNumber
             client.fax = input.fax
+            client.bankDetails = input.bankDetails
             client.country = input.country
             client.city = input.city
             client.street = input.street
@@ -215,6 +223,7 @@ extension CoreDataManager {
             invoice.invoiceNumber = input.number
             invoice.invoiceDate = input.invoiceDate
             invoice.dueDate = input.dueDate
+            invoice.freeField = input.freeField
             invoice.currency = input.currency
             invoice.discount = input.discount
             invoice.tax = input.tax
@@ -245,6 +254,7 @@ extension CoreDataManager {
             invoice.invoiceNumber = input.number
             invoice.invoiceDate = input.invoiceDate
             invoice.dueDate = input.dueDate
+            invoice.freeField = input.freeField
             invoice.currency = input.currency
             invoice.discount = input.discount
             invoice.tax = input.tax
@@ -253,21 +263,8 @@ extension CoreDataManager {
             invoice.pdfFilePath = input.pdfFilePath
             invoice.type = input.type.rawValue
             invoice.client = input.client
-            
-            for itemInput in input.itemOrServices {
-                let item = ItemServiceEntity(context: self.viewContext)
-                item.id = itemInput.id
-                item.isItem = itemInput.isItem
-                item.name = itemInput.name
-                item.price = itemInput.price
-                item.quantity = itemInput.quantity
-                item.discountType = itemInput.discountType
-                item.discount = itemInput.discount
-                item.tax = itemInput.tax
-                item.total = itemInput.total
-                
-                invoice.addToItemService(item)
-            }
+            // Replace invoice items on edit to avoid duplicating entities.
+            invoice.itemService = NSSet(array: input.itemOrServices)
             
             try self.viewContext.save()
             return invoice

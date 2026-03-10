@@ -14,7 +14,7 @@ struct CreateInvoiceView: View {
     @FocusState private var focusedField: FocusedField?
     
     enum FocusedField {
-        case invoiceNumber, currency, discount, tax
+        case invoiceNumber, currency, freeField, discount, tax
     }
     
     var gesture: some Gesture {
@@ -129,6 +129,17 @@ struct CreateInvoiceView: View {
                         viewModel.tapOnCurrencyButton()
                     }
                     .buttonStyle(.disclosure(title: "Currency"))
+
+                    CustomTextField(
+                        focused: $focusedField,
+                        equals: .freeField,
+                        title: "Additional details",
+                        placeholder: "",
+                        isRequired: false,
+                        keyboardType: .default,
+                        text: $viewModel.freeField,
+                        callError: .constant(false)
+                    )
                 }
                 .padding(.top, 16)
                 

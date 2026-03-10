@@ -134,10 +134,13 @@ struct ItemsServicesListView: View {
     }
     
     private func tapOnItemsServices(_ item: ItemServiceEntity) {
+        guard viewModel.tapOnItemService(item) else { return }
+
         switch viewModel.viewType {
         case .choiseItemsOrServices:
             viewModel.postSelectedItemService(item)
             coordinator.popToBack()
+
         case .editItemsOrServices:
             coordinator.pushTo(
                 id: AddNewItemServiceView.navigationID,
@@ -148,7 +151,8 @@ struct ItemsServicesListView: View {
                             viewState: .editing(entity: item)
                         )
                     )
-                })
+                }
+            )
         }
     }
 }

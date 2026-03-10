@@ -3,5 +3,6 @@ struct InvoiceSummaryModel {
     var subtotal: Double
     var discountPercentage: String
     var taxPercentage: String
+    var freeField: String
     var total: Double
 }

@@ -8,7 +8,7 @@ struct AddNewClientView: View {
     @FocusState private var focusedField: FocusedField?
     
     enum FocusedField {
-        case clientName, mail, phoneNumber, fax, contry, city, street, postalCode, appartment
+        case clientName, mail, phoneNumber, fax, bankDetails, contry, city, street, postalCode, appartment
     }
     
     var body: some View {
@@ -141,6 +141,15 @@ struct AddNewClientView: View {
                         text: $viewModel.fax,
                         showError: .constant(false),
                         equals: FocusedField.fax
+                    ),
+                    FormFieldSettings(
+                        title: "Bank details",
+                        placeholder: "",
+                        isRequired: false,
+                        keyboardType: .default,
+                        text: $viewModel.bankDetails,
+                        showError: .constant(false),
+                        equals: FocusedField.bankDetails
                     )
                 ],
                 extraFields: [

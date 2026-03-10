@@ -2,11 +2,14 @@ import Foundation
 import Combine
 
 final class CreateInvoiceViewModel: ObservableObject {
+    private static let defaultFreeField = "Thank you for your business."
+
     @Published var bottomHeight: CGFloat = .zero
     @Published var invoiceNumber: String = "1"
     @Published var currency: Currency = .USD
     @Published var invoiceDate: Date = .now
     @Published var dueDate: Date = .now
+    @Published var freeField: String = CreateInvoiceViewModel.defaultFreeField
     @Published var client: ClientEntity?
     @Published var itemServices: [ItemServiceEntity] = []
     @Published var discount: String = "0"
@@ -161,6 +164,7 @@ final class CreateInvoiceViewModel: ObservableObject {
             number: invoiceNumber,
             invoiceDate: invoiceDate,
             dueDate: dueDate,
+            freeField: freeField,
             currency: currency.rawValue,
             discount: discount,
             tax: tax,
@@ -303,6 +307,7 @@ final class CreateInvoiceViewModel: ObservableObject {
             }
             self.discount = invoice.discount ?? "0"
             self.tax = invoice.tax ?? "0"
+            self.freeField = invoice.freeField ?? Self.defaultFreeField
             self.pdfPath = invoice.pdfFilePath
         default:
             break

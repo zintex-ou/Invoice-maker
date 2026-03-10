@@ -10,6 +10,7 @@ final class PreviewViewModel: ObservableObject {
     
     private(set) var invoiceEntity: InvoiceEntity
     private let dataBaseService = InvoiceDataBaseService.shared
+    private let fileManagerPDFService = FileManagerPDFService()
     private(set) var pdfFilePath: URL
     private(set) var isInvoice: Bool
     
@@ -19,9 +20,14 @@ final class PreviewViewModel: ObservableObject {
         invoiceEntity: InvoiceEntity
     ) {
         self.invoiceEntity = invoiceEntity
-        self.pdfFilePath = invoiceEntity.pdfFilePath ?? .currentDirectory()
         self.isInvoice = invoiceEntity.isInvoice
         self.isPaid = invoiceEntity.isPaid
+        
+        let type: InvoiceType = invoiceEntity.isInvoice ? .invoice : .estimate
+        self.pdfFilePath = fileManagerPDFService.resolvePDFURL(
+            storedURL: invoiceEntity.pdfFilePath,
+            for: type
+        ) ?? (invoiceEntity.pdfFilePath ?? .currentDirectory())
     }
     
     func title() -> String {
@@ -87,7 +93,9 @@ final class PreviewViewModel: ObservableObject {
     
     func sendInvoice(completion: @escaping ((Bool) -> Void)) {
         do {
-            let data = try Data(contentsOf: pdfFilePath)
+            let type: InvoiceType = isInvoice ? .invoice : .estimate
+            let resolvedURL = fileManagerPDFService.resolvePDFURL(storedURL: pdfFilePath, for: type) ?? pdfFilePath
+            let data = try Data(contentsOf: resolvedURL)
             ContactSheet.shared.presentContactSheetWithPdf(
                 pdfData: data,
                 fileName: "Invoice.pdf",

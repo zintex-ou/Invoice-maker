@@ -202,11 +202,19 @@ final class OnboardingViewModel: ObservableObject {
     }
     
     private func updateSubtileInOnboarding() {
-        guard let product else { return }
+        guard let product else {
+            return
+        }
         
         let price = String(describing: NSDecimalNumber(decimal: product.price).floatValue)
         let currency = product.currencySymbol ?? "$"
-        let newSubtitle: LocalizedStringKey = "Generate professional invoices with just a few taps per week for \(currency)\(price) with 3 days free trial."
+        
+        let hasTrial = product.subscriptionOffer?.offerType == .introductory
+        
+        let newSubtitle: LocalizedStringKey =
+            hasTrial
+            ? "Generate professional invoices with just a few taps per week for \(currency)\(price) with 3 days free trial."
+            : "Generate professional invoices with just a few taps per week for \(currency)\(price)."
         
         metaData[3] = OnboardingModel(
             image: .onboard4,

@@ -12,6 +12,7 @@ struct ContactInfo {
     var email: String
     var phone: String
     var address: String
+    var bankDetails: String
 }
 
 struct InvoiceMeta {

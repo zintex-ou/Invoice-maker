@@ -4,7 +4,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private let coreDataManager = CoreDataManager.shared
     private let dataBaseService = InvoiceDataBaseService.shared
     
-    var shortcutItem: UIApplicationShortcutItem!
+    private var pendingShortcutItem: UIApplicationShortcutItem?
     
     func scene(
         _ scene: UIScene,
@@ -12,7 +12,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         options connectionOptions: UIScene.ConnectionOptions
     ) {
         guard let shortcut = connectionOptions.shortcutItem else { return }
-        shortcutItem = shortcut
+        pendingShortcutItem = shortcut
     }
     
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -20,7 +20,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             await dataBaseService.fetchInvoices()
         }
         
-        guard let shortcutItem else { return }
+        guard let shortcutItem = pendingShortcutItem else { return }
+        pendingShortcutItem = nil
         handle(shortcutItem: shortcutItem)
     }
     

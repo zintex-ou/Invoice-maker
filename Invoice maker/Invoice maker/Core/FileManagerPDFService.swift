@@ -33,9 +33,29 @@ final class FileManagerPDFService {
         }
     }
     
+    func resolvePDFURL(storedURL: URL?, for type: InvoiceType) -> URL? {
+        guard let storedURL else { return nil }
+        
+        if fileManager.fileExists(atPath: storedURL.path) {
+            return storedURL
+        }
+        
+        guard !storedURL.lastPathComponent.isEmpty,
+              let folderURL = try? ensureFolderExists(for: type) else {
+            return nil
+        }
+        
+        let rebuiltURL = folderURL.appendingPathComponent(storedURL.lastPathComponent)
+        if fileManager.fileExists(atPath: rebuiltURL.path) {
+            return rebuiltURL
+        }
+        
+        return nil
+    }
+    
     private func generateNewPDFPath(for type: InvoiceType) throws -> URL {
         let folderURL = try ensureFolderExists(for: type)
-        let filename = "\(type.rawValue)_\(Int(Date().timeIntervalSince1970)).pdf"
+        let filename = "\(type.rawValue)_\(UUID().uuidString).pdf"
         return folderURL.appendingPathComponent(filename)
     }
     

@@ -275,17 +275,15 @@ final class PaywallViewModel: ObservableObject {
     }
     
     func continueButtonText(product: SubscriptionModel) {
-        if self.remoteConfigManager.config.paywallConfig.showPriceTitle {
-            
+        if remoteConfigManager.config.paywallConfig.showPriceTitle {
             let price = String(describing: product.price)
             let duration = product.period
             
-            if !product.isFreeTrial {
-                continueButtonText = "Subscribe for \(product.currency)\(price)/\(duration)"
+            if product.isFreeTrial {
+                continueButtonText = "With \(product.trialDays) days trial, then \(product.currency)\(price)/\(duration)"
             } else {
-                continueButtonText = "With 3 days trial, then \(product.currency)\(price)/\(duration)"
+                continueButtonText = "Subscribe for \(product.currency)\(price)/\(duration)"
             }
-            
         } else {
             continueButtonText = "Continue"
         }

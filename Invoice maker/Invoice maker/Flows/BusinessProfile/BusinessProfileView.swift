@@ -8,7 +8,7 @@ struct BusinessProfileView: View {
     @FocusState private var focusedField: FocusedField?
     
     enum FocusedField {
-        case ownerName, mail, phoneNumber, contry, city, street, apatment, postalCode
+        case ownerName, mail, phoneNumber, bankDetails, contry, city, street, apatment, postalCode
     }
     
     init(viewModel: BusinessProfileViewModel) {
@@ -154,6 +154,17 @@ struct BusinessProfileView: View {
                             keyboardType: .phonePad,
                             text: $viewModel.phoneNumber,
                             callError: $viewModel.shouldShowPhoneNumberError
+                        )
+                        
+                        CustomTextField(
+                            focused: $focusedField,
+                            equals: .bankDetails,
+                            title: "Bank details",
+                            placeholder: "",
+                            isRequired: false,
+                            keyboardType: .default,
+                            text: $viewModel.bankDetails,
+                            callError: .constant(false)
                         )
                         
                         HStack {

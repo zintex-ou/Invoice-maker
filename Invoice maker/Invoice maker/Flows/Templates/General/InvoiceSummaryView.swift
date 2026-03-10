@@ -3,6 +3,10 @@ import SwiftUI
 struct InvoiceSummaryView: View {
     var model: InvoiceSummaryModel
     
+    private var trimmedFreeField: String {
+        model.freeField.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
     var body: some View {
         VStack {
             divider
@@ -16,6 +20,12 @@ struct InvoiceSummaryView: View {
             divider
             
             SummaryRow(label: "TOTAL", value: "\(model.currency) \(model.total)", isBold: true, color: .black, fontSize: 12)
+            
+            if !trimmedFreeField.isEmpty {
+                divider
+                    .padding(.top, 6)
+                SummaryTextRow(label: "Additional details", value: trimmedFreeField)
+            }
         }
     }
     
@@ -23,6 +33,25 @@ struct InvoiceSummaryView: View {
         Rectangle()
             .fill(.black.opacity(0.3))
             .frame(height: 1)
+    }
+}
+
+private struct SummaryTextRow: View {
+    let label: String
+    let value: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.sans(style: .regular, size: 8))
+                .foregroundStyle(.black767676)
+            
+            Text(value)
+                .font(.sans(style: .regular, size: 8))
+                .foregroundStyle(.black)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.top, 6)
     }
 }
 

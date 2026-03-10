@@ -8,5 +8,7 @@
 		<string>RethinkSans-Regular.ttf</string>
 		<string>RethinkSans-SemiBold.ttf</string>
 	</array>
+	<key>UIDesignRequiresCompatibility</key>
+	<true/>
 </dict>
 </plist>
