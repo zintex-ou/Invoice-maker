@@ -11,10 +11,10 @@
 		7C672E622E0183CB00A0F37C /* CropViewController in Frameworks */ = {isa = PBXBuildFile; productRef = 7C672E612E0183CB00A0F37C /* CropViewController */; };
 		7C672E642E0183CB00A0F37C /* TOCropViewController in Frameworks */ = {isa = PBXBuildFile; productRef = 7C672E632E0183CB00A0F37C /* TOCropViewController */; };
 		95DFCF0A2DFAB97B0076D2B2 /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 95DFCF092DFAB97B0076D2B2 /* Reachability */; };
-		95DFCF0D2DFAB9880076D2B2 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 95DFCF0C2DFAB9880076D2B2 /* KeychainAccess */; };
 		95DFCF102DFAB9D40076D2B2 /* Adapty in Frameworks */ = {isa = PBXBuildFile; productRef = 95DFCF0F2DFAB9D40076D2B2 /* Adapty */; };
 		95DFCF132DFABA150076D2B2 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 95DFCF122DFABA150076D2B2 /* FirebaseCore */; };
 		95DFCF152DFABA150076D2B2 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 95DFCF142DFABA150076D2B2 /* FirebaseRemoteConfig */; };
+		AE2AEE7C2F62ECDC007108E6 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = AE2AEE7B2F62ECDC007108E6 /* KeychainAccess */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,11 +47,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				95DFCF0D2DFAB9880076D2B2 /* KeychainAccess in Frameworks */,
 				95DFCF0A2DFAB97B0076D2B2 /* Reachability in Frameworks */,
 				7C672E642E0183CB00A0F37C /* TOCropViewController in Frameworks */,
 				95DFCF132DFABA150076D2B2 /* FirebaseCore in Frameworks */,
 				95DFCF102DFAB9D40076D2B2 /* Adapty in Frameworks */,
+				AE2AEE7C2F62ECDC007108E6 /* KeychainAccess in Frameworks */,
 				95DFCF152DFABA150076D2B2 /* FirebaseRemoteConfig in Frameworks */,
 				0A3160592DFE20BF00D3FA9D /* Lottie in Frameworks */,
 				7C672E622E0183CB00A0F37C /* CropViewController in Frameworks */,
@@ -98,13 +98,13 @@
 			name = "Invoice maker";
 			packageProductDependencies = (
 				95DFCF092DFAB97B0076D2B2 /* Reachability */,
-				95DFCF0C2DFAB9880076D2B2 /* KeychainAccess */,
 				95DFCF0F2DFAB9D40076D2B2 /* Adapty */,
 				95DFCF122DFABA150076D2B2 /* FirebaseCore */,
 				95DFCF142DFABA150076D2B2 /* FirebaseRemoteConfig */,
 				0A3160582DFE20BF00D3FA9D /* Lottie */,
 				7C672E612E0183CB00A0F37C /* CropViewController */,
 				7C672E632E0183CB00A0F37C /* TOCropViewController */,
+				AE2AEE7B2F62ECDC007108E6 /* KeychainAccess */,
 			);
 			productName = "Invoice maker";
 			productReference = 7C7A6FC62DEEDE2300127AEC /* Invoice maker.app */;
@@ -136,11 +136,11 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				95DFCF082DFAB97B0076D2B2 /* XCRemoteSwiftPackageReference "Reachability" */,
-				95DFCF0B2DFAB9880076D2B2 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				95DFCF0E2DFAB9D40076D2B2 /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */,
 				95DFCF112DFABA150076D2B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				0A3160572DFE20BF00D3FA9D /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				7C672E602E0183CB00A0F37C /* XCRemoteSwiftPackageReference "TOCropViewController" */,
+				AE2AEE7A2F62ECDC007108E6 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7C7A6FC72DEEDE2300127AEC /* Products */;
@@ -429,14 +429,6 @@
 				kind = branch;
 			};
 		};
-		95DFCF0B2DFAB9880076D2B2 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess?tab=readme-ov-file";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 		95DFCF0E2DFAB9D40076D2B2 /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/adaptyteam/AdaptySDK-iOS";
@@ -451,6 +443,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 11.14.0;
+			};
+		};
+		AE2AEE7A2F62ECDC007108E6 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess";
+			requirement = {
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -476,11 +476,6 @@
 			package = 95DFCF082DFAB97B0076D2B2 /* XCRemoteSwiftPackageReference "Reachability" */;
 			productName = Reachability;
 		};
-		95DFCF0C2DFAB9880076D2B2 /* KeychainAccess */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 95DFCF0B2DFAB9880076D2B2 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
-			productName = KeychainAccess;
-		};
 		95DFCF0F2DFAB9D40076D2B2 /* Adapty */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 95DFCF0E2DFAB9D40076D2B2 /* XCRemoteSwiftPackageReference "AdaptySDK-iOS" */;
@@ -495,6 +490,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 95DFCF112DFABA150076D2B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseRemoteConfig;
+		};
+		AE2AEE7B2F62ECDC007108E6 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AE2AEE7A2F62ECDC007108E6 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
