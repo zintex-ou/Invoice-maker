@@ -13,16 +13,25 @@ workflows:
         bundle_identifier: com.make.your.invoice
       vars:
         XCODE_PROJECT: "Invoice maker/Invoice maker.xcodeproj"
-        XCODE_SCHEME:  "Invoice maker"
+        XCODE_SCHEME: "Invoice maker"
         APP_STORE_APPLE_ID: "6747164323"
-      xcode: latest
-      cocoapods: default
+      xcode: 16.4
 
     scripts:
+      - name: Debug project structure
+        script: |
+          cd "$CM_BUILD_DIR"
+          pwd
+          ls -la
+          ls -la "Invoice maker"
+
+      - name: List schemes
+        script: |
+          cd "$CM_BUILD_DIR"
+          xcodebuild -list -project "$XCODE_PROJECT"
+
       - name: Set up provisioning profiles
         script: |
-          # If you enabled "Automatic code signing" in the UI,
-          # CodeMagic will fetch / create the profile before this step.
           xcode-project use-profiles \
             --project "$CM_BUILD_DIR/$XCODE_PROJECT"
 
@@ -31,7 +40,7 @@ workflows:
           cd "$CM_BUILD_DIR"
           xcode-project build-ipa \
             --project "$XCODE_PROJECT" \
-            --scheme  "$XCODE_SCHEME" \
+            --scheme "$XCODE_SCHEME" \
             --archive-flags="-skipPackagePluginValidation -skipMacroValidation" \
             --export-flags="-skipPackagePluginValidation -skipMacroValidation"
 
