@@ -1,5 +1,5 @@
 {
-  "originHash" : "0469509ca45aa80138de6adb3a30b0758c14f6f2042c09777fe71036f4992007",
+  "originHash" : "cd0dec108b7d1ecddc005cca3886c811a4ab4f28ce969d546c6a4db44fde8881",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -101,9 +101,9 @@
       }
     },
     {
-      "identity" : "keychainaccess?tab=readme-ov-file",
+      "identity" : "keychainaccess",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/kishikawakatsumi/KeychainAccess?tab=readme-ov-file",
+      "location" : "https://github.com/kishikawakatsumi/KeychainAccess",
       "state" : {
         "branch" : "master",
         "revision" : "e0c7eebc5a4465a3c4680764f26b7a61f567cdaf"
