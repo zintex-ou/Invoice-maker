@@ -15,7 +15,7 @@ workflows:
         XCODE_PROJECT: "Invoice maker/Invoice maker.xcodeproj"
         XCODE_SCHEME: "Invoice maker"
         APP_STORE_APPLE_ID: "6747164323"
-      xcode: 16.4
+      xcode: latest
 
     scripts:
       - name: Debug project structure
